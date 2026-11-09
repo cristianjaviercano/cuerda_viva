@@ -47,7 +47,7 @@ import {
 import {
   createUserDatabase,
   createRequestHandler
-} from './server.js';
+} from './local-server.js';
 
 let passedChecks = 0;
 let totalChecks = 0;

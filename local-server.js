@@ -7,7 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = Number(process.env.PORT || 8080);
-const DEFAULT_DB_FILE = path.join(__dirname, 'data', 'users_db.json');
+const DEFAULT_DB_FILE = process.env.VERCEL
+  ? path.join('/tmp', 'users_db.json')
+  : path.join(__dirname, 'data', 'users_db.json');
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=UTF-8',
@@ -132,11 +134,15 @@ export function createUserDatabase(dbFile = DEFAULT_DB_FILE) {
 
   function save() {
     if (!cache) return;
-    const dir = path.dirname(dbFile);
-    fs.mkdirSync(dir, { recursive: true });
-    const tmp = `${dbFile}.tmp`;
-    fs.writeFileSync(tmp, JSON.stringify(cache, null, 2), 'utf8');
-    fs.renameSync(tmp, dbFile);
+    try {
+      const dir = path.dirname(dbFile);
+      fs.mkdirSync(dir, { recursive: true });
+      const tmp = `${dbFile}.tmp`;
+      fs.writeFileSync(tmp, JSON.stringify(cache, null, 2), 'utf8');
+      fs.renameSync(tmp, dbFile);
+    } catch (err) {
+      // En entornos serverless de solo lectura, mantener el caché en memoria
+    }
   }
 
   function getUserById(id) {
@@ -336,34 +342,36 @@ export function createRequestHandler({ rootDir = __dirname, dbFile = DEFAULT_DB_
     const rawUrl = req.url || '/';
     const reqPath = decodeURIComponent(rawUrl.split('?')[0]);
     const method = (req.method || 'GET').toUpperCase();
+    const cleanPath = reqPath.startsWith('/api') ? (reqPath.slice(4) || '/') : reqPath;
+    const isApi = reqPath.startsWith('/api') || cleanPath === '/health' || cleanPath.startsWith('/users');
 
     // ==================== API REST: REGISTRO DE USUARIOS Y BITÁCORA ====================
-    if (reqPath.startsWith('/api/')) {
+    if (isApi) {
       try {
-        if (method === 'GET' && reqPath === '/api/health') {
+        if (method === 'GET' && (cleanPath === '/health' || cleanPath === '' || cleanPath === '/')) {
           const list = userDb.listUsers();
           return sendJson(res, 200, { ok: true, usersCount: list.users.length, activeUserId: list.activeUserId });
         }
 
-        if (method === 'GET' && reqPath === '/api/users') {
+        if (method === 'GET' && cleanPath === '/users') {
           return sendJson(res, 200, userDb.listUsers());
         }
 
-        if (method === 'POST' && reqPath === '/api/users/register') {
+        if (method === 'POST' && cleanPath === '/users/register') {
           const body = await readJsonBody(req);
           const result = userDb.registerUser(body);
           if (result.error) return sendJson(res, result.status || 400, { error: result.error });
           return sendJson(res, result.created ? 201 : 200, result);
         }
 
-        if (method === 'POST' && reqPath === '/api/users/select') {
+        if (method === 'POST' && cleanPath === '/users/select') {
           const body = await readJsonBody(req);
           const result = userDb.selectUser(body.userId);
           if (result.error) return sendJson(res, result.status || 404, { error: result.error });
           return sendJson(res, 200, result);
         }
 
-        const userMatch = reqPath.match(/^\/api\/users\/([^/]+)(?:\/(state|log|logs|remediation))?$/);
+        const userMatch = cleanPath.match(/^\/users\/([^/]+)(?:\/(state|log|logs|remediation))?$/);
         if (userMatch) {
           const userId = userMatch[1];
           const action = userMatch[2] || '';
@@ -469,4 +477,13 @@ export function startServer(port = PORT, maxAttempts = 5) {
 const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename);
 if (isDirectRun) {
   startServer();
+}
+
+const defaultHandler = createRequestHandler({
+  rootDir: __dirname,
+  dbFile: DEFAULT_DB_FILE
+});
+
+export default function handler(req, res) {
+  return defaultHandler(req, res);
 }

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
+  <meta name="theme-color" content="#58CC02" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="CuerdaViva" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="description" content="CuerdaViva! — Aprende a tocar guitarra de forma interactiva en tu celular o PC: Alabanzas Católicas, Vallenatos y Porros Colombianos, Afinador en Vivo y Método Numérico Keyner Ramírez." />
+  <title>CuerdaViva! — Aprende Guitarra Interactivo (Alabanzas Católicas & Vallenato Colombiano)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <!-- ==================== BARRA SUPERIOR GAMIFICADA ESTILO DUOLINGO ==================== -->
+  <header class="duo-topbar">
+    <div class="topbar-inner">
+      <button class="brand-logo-btn" id="btn-home-logo" title="Ir a tu Ruta de Aprendizaje">
+        <span class="brand-icon-3d">🎸</span>
+        <span class="brand-texts">
+          <strong class="brand-name">CuerdaViva!</strong>
+          <small class="brand-tag">Alabanza &amp; Folclor</small>
+        </span>
+      </button>
+
+      <nav class="main-nav-pills" id="main-nav" aria-label="Secciones principales">
+        <button class="nav-3d-tab active" data-nav="learn">
+          <span class="nav-emo">🏠</span><span>Ruta</span>
+        </button>
+        <button class="nav-3d-tab" data-nav="tabs">
+          <span class="nav-emo">🎯</span><span>Tablaturas</span>
+        </button>
+        <button class="nav-3d-tab" data-nav="songs">
+          <span class="nav-emo">🎶</span><span>Canciones</span>
+        </button>
+        <button class="nav-3d-tab" data-nav="rhythms">
+          <span class="nav-emo">🥁</span><span>Rasgueos</span>
+        </button>
+        <button class="nav-3d-tab" data-nav="fretboard">
+          <span class="nav-emo">🎸</span><span>Mástil</span>
+        </button>
+        <button class="nav-3d-tab" data-nav="guitar3d">
+          <span class="nav-emo">📐</span><span>Guitarra 3D</span>
+        </button>
+        <button class="nav-3d-tab" data-nav="challenge">
+          <span class="nav-emo">🏆</span><span>Reto 30D</span>
+        </button>
+      </nav>
+
+      <div class="topbar-stats">
+        <!-- Botón de Perfil de Estudiante y Bitácora de Aciertos / No Aciertos -->
+        <button class="user-profile-pill" id="btn-open-user-modal" title="Registro de Estudiantes, Bitácora de Progreso y Teorías a Repasar">
+          <span id="nav-user-avatar">🎸</span>
+          <span id="nav-user-name" class="nav-user-name-txt">Estudiante</span>
+          <span id="nav-user-alerts" class="pending-dot hidden" title="Teorías pendientes de repaso">0</span>
+        </button>
+
+        <!-- Botón Vivo de Entrada de Guitarra / Micrófono / Afinador -->
+        <button class="live-input-pill" id="btn-open-audio-modal" title="Configurar Micrófono, Interfaz de Línea USB y Afinador Cromático">
+          <span class="mic-led" id="nav-mic-dot"></span>
+          <span id="nav-live-note" class="nav-live-note-txt">🔌 Conectar / Afinar</span>
+          <span class="mini-vu-track"><span class="mini-vu-fill" id="nav-vu-fill"></span></span>
+        </button>
+
+        <div class="stat-chip chip-flame" title="Racha de días practicando">
+          <span>🔥</span><strong id="stat-streak">1</strong>
+        </div>
+        <button class="stat-chip chip-heart" id="btn-refill-hearts" title="Vidas de práctica (clic para recargar)">
+          <span>❤️</span><strong id="stat-hearts">5</strong>
+        </button>
+        <div class="stat-chip chip-xp" title="Experiencia acumulada y Nivel">
+          <span>⚡</span><strong id="stat-xp">0</strong>
+          <small id="stat-level" class="lvl-pill">Nvl 1</small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== ESCENARIO PRINCIPAL DE VISTAS ==================== -->
+  <main class="app-stage">
+    <!-- 1. RUTA GAMIFICADA DUOLINGO (TEORÍA + PRÁCTICA) -->
+    <section id="view-learn" class="app-view active"></section>
+
+    <!-- 2. INTERFAZ INTERACTIVA DE TABLATURAS -->
+    <section id="view-tabs" class="app-view"></section>
+
+    <!-- 3. INTERFAZ DE PROGRESIONES DE ACORDES SOBRE CANCIONES -->
+    <section id="view-songs" class="app-view"></section>
+
+    <!-- 4. INTERFAZ DE RASGUEOS Y PERCUSIÓN COLOMBIANA / LITÚRGICA -->
+    <section id="view-rhythms" class="app-view"></section>
+
+    <!-- 5. MÁSTIL CROMÁTICO VIVO + DICCIONARIO DE ACORDES -->
+    <section id="view-fretboard" class="app-view"></section>
+
+    <!-- 6. VISOR 3D INTERACTIVO DE GUITARRA, POSTURA Y MÉTODO KEYNER -->
+    <section id="view-guitar3d" class="app-view"></section>
+
+    <!-- 7. RETO INTERACTIVO DE 30 DÍAS -->
+    <section id="view-challenge" class="app-view"></section>
+  </main>
+
+  <!-- ==================== MODAL 1: CONEXIÓN MIC / LÍNEA DIRECTA + AFINADOR ==================== -->
+  <div class="duo-modal-backdrop hidden" id="modal-audio-tuner" role="dialog" aria-modal="true">
+    <div class="duo-modal-box modal-lg">
+      <div class="duo-modal-head">
+        <div>
+          <h3>🎙️🔌 Entrada de Guitarra (Micrófono o Línea USB) &amp; Afinador</h3>
+          <p class="tab-subtitle">Conecta tu guitarra por cable/interfaz o usa el micrófono del equipo para afinar y practicar en vivo.</p>
+        </div>
+        <button class="modal-close-btn" data-close-modal="modal-audio-tuner">✕</button>
+      </div>
+
+      <div class="audio-modal-grid">
+        <!-- Panel Izquierdo: Configuración de Entrada (Micrófono / Interfaz Hi-Z) -->
+        <div class="audio-setup-panel">
+          <div class="audio-power-row">
+            <button id="btn-toggle-mic-power" class="duo-btn btn-green btn-lg">
+              🎙️ Encender Escucha en Vivo
+            </button>
+            <button id="btn-refresh-devices" class="duo-btn btn-outline btn-sm" title="Volver a escanear entradas USB o línea">
+              🔄 Escanear
+            </button>
+          </div>
+
+          <div class="form-field-block">
+            <label for="audio-device-select">1. Fuente de Audio (Micrófono o Interfaz de Guitarra):</label>
+            <select id="audio-device-select" class="duo-select full-w">
+              <option value="default">Entrada predeterminada del sistema</option>
+            </select>
+          </div>
+
+          <div class="form-field-block">
+            <label for="audio-channel-select">2. Canal de Entrada (¡Clave si usas Interfaz USB estéreo!):</label>
+            <select id="audio-channel-select" class="duo-select full-w">
+              <option value="sum">Canal 1 + 2 Combinados (Micrófono normal o Línea Mono)</option>
+              <option value="ch1">Solo Canal 1 — Entrada Izquierda (Mic / Inst 1)</option>
+              <option value="ch2">Solo Canal 2 — Entrada Derecha (Guitarra Hi-Z / Inst 2)</option>
+            </select>
+          </div>
+
+          <div class="form-field-block">
+            <div class="slider-lbl-row">
+              <label for="audio-gain-range">3. Preamplificador Digital (Ganancia):</label>
+              <strong id="audio-gain-val">2.0x</strong>
+            </div>
+            <input type="range" id="audio-gain-range" class="duo-range" min="0.5" max="8.0" step="0.25" value="2.0" />
+            <small class="muted-hint">Súbelo a 3x–6x si conectas tu guitarra pasiva directo a la entrada de línea.</small>
+          </div>
+
+          <div class="form-field-block">
+            <div class="slider-lbl-row">
+              <label for="audio-gate-range">4. Filtro Antirruido (Noise Gate):</label>
+              <strong id="audio-gate-val">Sensible</strong>
+            </div>
+            <input type="range" id="audio-gate-range" class="duo-range" min="0.002" max="0.045" step="0.002" value="0.008" />
+          </div>
+
+          <div class="vu-meter-card">
+            <div class="slider-lbl-row">
+              <span>Nivel de Señal en Tiempo Real:</span>
+              <span id="audio-status-label" class="badge-vivid badge-orange">Apagado</span>
+            </div>
+            <div class="big-vu-track">
+              <div class="big-vu-fill" id="modal-vu-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel Derecho: Afinador Cromático Visual + Tonos de Referencia -->
+        <div class="tuner-stage-panel">
+          <div class="tuner-display-card">
+            <div class="tuner-note-orb" id="tuner-big-note">--</div>
+            <div class="tuner-note-es" id="tuner-note-es">Toca una cuerda al aire</div>
+            <div class="tuner-freq-line" id="tuner-hz">0.0 Hz · 0 cents</div>
+
+            <div class="tuner-gauge-wrap">
+              <div class="tuner-scale-labels">
+                <span>♭ Baja (-50)</span>
+                <span class="in-tune-lbl">✨ ¡AFINADA! (0)</span>
+                <span>♯ Alta (+50)</span>
+              </div>
+              <div class="tuner-meter-bar">
+                <div class="tuner-center-zone"></div>
+                <div class="tuner-needle" id="tuner-needle" style="left: 50%"></div>
+              </div>
+            </div>
+
+            <div id="tuner-guidance-msg" class="tuner-guidance-pill">
+              Pulsa una cuerda en tu guitarra o escucha las cuerdas guía abajo 👇
+            </div>
+          </div>
+
+          <div class="tuner-ref-strings">
+            <p class="tb-lbl">🔊 Escuchar Cuerdas de Referencia (Afinación Estándar E-A-D-G-B-e):</p>
+            <div class="ref-strings-grid" id="tuner-ref-buttons"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 2: EJECUTOR DE LECCIÓN ESTILO DUOLINGO ==================== -->
+  <div class="duo-modal-backdrop hidden" id="modal-lesson" role="dialog" aria-modal="true">
+    <div class="duo-modal-box modal-lesson-runner">
+      <div class="lesson-top-bar">
+        <button class="modal-close-btn" id="btn-quit-lesson" title="Salir de la lección">✕</button>
+        <div class="lesson-progress-track">
+          <div class="lesson-progress-fill" id="lesson-progress-fill" style="width: 15%"></div>
+        </div>
+        <span id="lesson-phase-badge" class="badge-vivid badge-orange hidden"></span>
+        <div class="lesson-hearts-pill">
+          <span>❤️</span><strong id="lesson-hearts-count">5</strong>
+        </div>
+      </div>
+
+      <div class="lesson-step-body" id="lesson-step-body"></div>
+
+      <div class="lesson-footer-bar" id="lesson-footer-bar">
+        <div class="lesson-feedback-msg" id="lesson-feedback-msg"></div>
+        <button class="duo-btn btn-green btn-lg" id="btn-lesson-primary">CONTINUAR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 3: DETALLE Y VARIANTES DE ACORDE ==================== -->
+  <div class="duo-modal-backdrop hidden" id="modal-chord-detail" role="dialog" aria-modal="true">
+    <div class="duo-modal-box modal-lg">
+      <div class="duo-modal-head" id="chord-modal-header"></div>
+      <div class="chord-modal-body" id="chord-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: REGISTRO DE USUARIOS Y BITÁCORA ==================== -->
+  <div class="duo-modal-backdrop hidden" id="modal-user-profile" role="dialog" aria-modal="true">
+    <div class="duo-modal-box modal-lg modal-user-lg">
+      <div class="duo-modal-head">
+        <div>
+          <h3>👤 Registro de Estudiantes &amp; Bitácora de Aprendizaje</h3>
+          <p class="tab-subtitle">Guarda tu progreso, revisa aciertos y no aciertos, y repasa las teorías pendientes para consolidar cada módulo.</p>
+        </div>
+        <button class="modal-close-btn" data-close-modal="modal-user-profile">✕</button>
+      </div>
+      <div class="user-modal-body" id="user-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Contenedor de notificaciones flotantes de XP -->
+  <div class="xp-toast-stack" id="xp-toast-container" aria-live="polite"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

@@ -1,299 +1,113 @@
-# How to learn guitar on a budget
-A guide to the adventurer
+# 🎸 CuerdaViva! — Plataforma Interactiva de Guitarra (Teoría, Práctica & Folclor)
 
-## Description
+Plataforma web gamificada al mejor estilo **Duolingo** para aprender, practicar y perfeccionar guitarra acústica/clásica desde nivel básico hasta intermedio, con enfoque en **Alabanzas Católicas** y **Folclor Colombiano** (**Vallenatos, Cumbias, Porros, Pasillos y Bambucos**), junto al **Método Numérico de Keyner Ramírez Mojica** (*Haga Música con la Guitarra*).
 
-I'm an engineer and exact sciences kind of person, but I strongly believe that everyone should strive to have a well-rounded knowledge and education of the more artistic side of things. I would not like to call them creative side of things because work in sciences can also be very creative, although normally people don't talk in this terms, but experience taught me that. <br>
-Be it in prose or poetry, be it in drawing or in painting, be it in design, in crafts or in music, always thrive to express your artistic self.<br>
-<br>
-Although I'm very intrigued by the following 3 books and maybe latter I will follow their path, because normally I'm a very book oriented person. <br>
-<br>
-**Books:**
+Optimizado al 100% para computadores de escritorio, portátiles y **teléfonos celulares (iOS Safari y Android Chrome)** con controles táctiles ergonómicos, desbloqueo automático de audio Web Audio API y diseño responsivo fluido.
 
-* The Bible of Classical Guitar Technique <br>
-  by Hubert Kappel
+Repositorio oficial: [https://github.com/cristianjaviercano/cuerda_viva](https://github.com/cristianjaviercano/cuerda_viva)
 
-* Pumping Nylon: The Classical Guitarist's Technique Handbook <br>
-  by Scott Tennant
+---
 
-* Guitar Aerobics: A 52-Week, One-lick-per-day Workout Program for Developing, Improving and Maintaining Guitar Technique <br>
-  by Troy Nelson
+## ✨ Características Principales
 
-But currently I have chosen to learn guitar from the free content path on the internet, more precisely currently Electric Guitar. This choice is based on the current moment that we all leave, beginning of the second Covid19 wave in Europe, and the clear feeling that things economically are and will be getting tougher all around the world.
+### 1. 🏠 Ruta Gamificada Estilo Duolingo (`9 Unidades · 36 Lecciones · 150+ Retos`)
+* **Mecánicas Gamificadas**: XP ⚡, Racha de días 🔥, Vidas ❤️, niveles progresivos y efectos de sonido en tiempo real.
+* **Ciclo de Aprendizaje Completo & Remediación Obligatoria**:
+  - Cada reto evalúa un concepto teórico respaldado por la biblioteca pedagógica (`THEORY_LIBRARY`).
+  - Si el estudiante comete un error, el sistema bloquea el avance desordenado y activa la **fase de remediación**: se explica la teoría exacta con ilustraciones y ejemplos sonoros, permitiendo repetir y consolidar el aprendizaje antes de finalizar el módulo.
+* **Registro de Estudiantes & Bitácora**:
+  - Múltiples perfiles de usuario.
+  - Registro pormenorizado de **Aciertos** y **No Aciertos**.
+  - Monitor de teorías pendientes de repaso y tasas de consolidación.
+  - Exportación de métricas en **CSV** (compatible con Excel) y **JSON**.
 
+### 2. 📖 Método Numérico de Keyner Ramírez Mojica (*Haga Música con la Guitarra*)
+* **Notación Cifra Cuerda-Traste (`10–60`)**:
+  - `10` = 1ª cuerda al aire, `11` = 1ª cuerda traste 1, `43` = 4ª cuerda traste 3, etc.
+  - Símbolos armónicos auténticos del libro: `DO+` (Mayor), `LA-` (Menor), `5ª DO` (7ª Dominante), disminuidos y alteraciones.
+* **Canciones del Método**: *Pueblito Viejo*, *Oropel*, *Espumas*, *El Pescador de mi Tierra*, *Carmen de Bolívar*, *El Año Viejo*.
+* **Ilustraciones Técnicas**: Láminas anatómicas de partes de la guitarra, posturas (Clásica y Flamenca/Popular), numeración de dedos (Pulgar, Índice, Medio, Anular) y mapa numérico del diapasón.
 
-## How to tune your guitar
+### 3. 📐 Estudio 3D Interactivo de la Guitarra (Three.js)
+* Modelo tridimensional interactivo de la guitarra acústica con madera, clavijero, cejuela, mástil, trastes de níquel y 6 cuerdas vibrantes.
+* Rotación 360°, zoom orbital táctil con gestos en móvil (`touch-action: manipulation`).
+* Resaltado visual en 3D de notas y acordes en tiempo real.
 
-Use a tuner or a tuner APP and tune to the following mnemonic notes for each string. <br>
-<br>
-**E**ddie - Higher string position <br>
-**A**te      <br>
-**D**ynamite <br>
-**G**ood     <br>
-**B**ye      <br>
-**E**ddie - Lower position string <br>
-<br>
-Higher position string ____ **E** - **A** - **D** - **G** - **B** - **E** ____ Lower position string
+### 4. 🎙️🔌 Entrada de Micrófono + Conexión Directa USB (Hi-Z) & Afinador
+* Conecta tu guitarra mediante interfaz USB / cable directo o usa el micrófono del equipo/celular.
+* Selector de canales estéreo (`Canal 1 + 2`, `Solo Canal 1`, `Solo Canal 2 Hi-Z`).
+* Preamplificador digital (0.5x – 8.0x) y filtro antirruido (*Noise Gate*).
+* Afinador cromático con aguja visual en tiempo real y cuerdas de referencia afinadas en E-A-D-G-B-e.
+* Algoritmo YIN para detección monofónica y análisis espectral FFT Chroma para acordes.
 
+### 5. 🎯 Estudio de Tablaturas Interactivas (TAB)
+* 25+ tablaturas con colores vivos de punteos vallenatos (*Los Caminos de la Vida*, *La Gota Fría*, *Ausencia Sentimental*, *Sin Medir Distancias*, *Matilde Lina*, *Alicia Adorada*, *La Piragua*), cantos católicos (*Pescador de Hombres*, *Dios Está Aquí*, *Nadie Te Ama Como Yo*, *Alma Misionera*, *Junto a Ti María*, *Tan Cerca de Mí*) e intros clásicas colombianas.
+* Modo "Espera mi Guitarra", control de velocidad (50% – 125%), bucle A-B y síntesis de Nylon, Requinto y Acordeón.
 
-## Youtube guitar courses or lessons 
+### 6. 🎶 Cancionero & Progresiones de Acordes (`150+ Canciones`)
+* Línea de tiempo interactiva con grados armónicos (`I`, `IV`, `V7`, `VIm`).
+* Letras con acordes alineados sílaba a sílaba, transposición tonal instantánea y calculadora de Capotraste.
+* Validación sonora de acordes en tiempo real.
 
-* Justin Guitar free course <br>
-  [https://www.justinguitar.com](https://www.justinguitar.com)
+### 7. 🥁 Laboratorio de Rasgueos y Percusión Folclórica / Litúrgica
+* 18 patrones auténticos: Paseo Vallenato, Merengue Vallenato, Son, Puya, Cumbia Colombiana, Porro, Pasillo, Bambuco, Guabina, Bolero, Balada Litúrgica, Pop con Chasquido y Arpegios.
+* Síntesis en Web Audio de percusión autóctona: Caja Vallenata, Guacharaca, Tambor Llamador y Maracón.
 
-* Guitar Lessons 365 - free lessons <br> 
-  [https://guitarlessons365.com/free-lessons/](https://guitarlessons365.com/free-lessons/)
+---
 
-* Ben Eller - This is Why You Suck at Guitar <br>
-  [https://www.youtube.com/playlist?list=PLetEpa_0rdYDSO9rll4ymDoAFT-qnrOnW](https://www.youtube.com/playlist?list=PLetEpa_0rdYDSO9rll4ymDoAFT-qnrOnW)
+## 📱 Experiencia Móvil (Celulares y Tablets)
 
-* Your Guitar Academy free course <br>
-  [https://yourguitaracademy.com/courses](https://yourguitaracademy.com/courses)
+* **Desbloqueo de Audio Táctil**: Compatible con las políticas de auto-play restrictivas de iOS Safari y Android Chrome. Un toque en cualquier parte de la pantalla inicializa y reanuda el `AudioContext` sin retrasos.
+* **Barra de Navegación Deslizable**: Pestañas horizontales fluidas con inercia táctil (`-webkit-overflow-scrolling: touch`).
+* **Diapasón y Tablaturas Touch**: Desplazamiento horizontal sin saltos ni cortes de columnas.
+* **Modales Adaptativos**: Optimizados para pantallas desde 320px hasta 6.7" (iPhone mini, estándar, Pro Max y dispositivos Android).
 
+---
 
-## Youtube to learn to play songs
+## 🚀 Instalación y Ejecución Local
 
-* Guitar Lessons 365 Song <br>
-  [https://www.youtube.com/user/GuitarLessons365Song](https://www.youtube.com/user/GuitarLessons365Song)
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/cristianjaviercano/cuerda_viva.git
+cd cuerda_viva
 
+# 2. Iniciar el servidor local
+npm start
+# o alternativamente: node server.js
+```
 
-## Especially good lessons
+Abre en tu navegador favorito:
+👉 **http://localhost:8080** (o el puerto asignado en consola).
 
-* This Should Be Everyone’s First Guitar Lesson <br>
-  [https://www.youtube.com/watch?v=w4a2ge9N31E](https://www.youtube.com/watch?v=w4a2ge9N31E)
+---
 
-* 10 Things ANYONE Can Do To Get Better At Guitar Faster <br>
-  [https://www.youtube.com/watch?v=xkN9ZX6rW3E](https://www.youtube.com/watch?v=xkN9ZX6rW3E)
+## ☁️ Despliegue en Vercel
 
-* How to learn the notes of the guitar FreeBoard - Music Theory For Guitar <br>
-  [https://www.youtube.com/watch?v=PJddQ6Q0UDo&list=PLxg569q1AjpNhvvkiq1n3bJOL2nJ9T5UZ&index=4](https://www.youtube.com/watch?v=PJddQ6Q0UDo&list=PLxg569q1AjpNhvvkiq1n3bJOL2nJ9T5UZ&index=4)
+La plataforma incluye configuración nativa para **Vercel** (`vercel.json` y función serverless en `api/index.js`):
 
-* How to visualize the freeboard - The Most Powerful System I Know - TOM QUAYLE <br>
-  [https://www.youtube.com/watch?v=dhwix_UAkm0](https://www.youtube.com/watch?v=dhwix_UAkm0)
+### Opción A: Despliegue Automático por Git (Recomendada)
+1. Ve a [vercel.com](https://vercel.com) e inicia sesión con tu cuenta de GitHub.
+2. Haz clic en **Add New Project** e importa el repositorio `cristianjaviercano/cuerda_viva`.
+3. Vercel detectará la configuración automáticamente. Haz clic en **Deploy**.
+4. ¡Listo! Tendrás tu enlace de producción HTTPS activo en segundos.
 
+### Opción B: Despliegue con Vercel CLI
+```bash
+npx vercel --prod
+```
 
-## Freely available guitar ebook resources from there respective sites
+---
 
-* Classical Guitar Method Book Volume 1 by Bradford Werner <br>
-  [https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/](https://www.thisisclassicalguitar.com/free-classical-guitar-method-book-pdf/)
+## 🧪 Pruebas y Auditoría Automatizada
 
-* Guitar Habits - The 150 Essential Chords <br>
-  [https://www.guitarhabits.com/guitarhabitsebook/The150EssentialChords.pdf](https://www.guitarhabits.com/guitarhabitsebook/The150EssentialChords.pdf)
+Para ejecutar el banco integral de pruebas (984+ verificaciones):
 
-* Learn and Master Guitar Lesson Book <br>
-  [https://www.learnandmaster.com/resources/Learn-and-Master-Guitar-Lesson-Book.pdf](https://www.learnandmaster.com/resources/Learn-and-Master-Guitar-Lesson-Book.pdf)
+```bash
+node audit_platform.mjs
+```
 
-* Learn and Master Spotlight Series Blues Guitar Lesson Book <br>
-  [https://www.learnandmaster.com/spotlight-series/blues-guitar/resources/Spotlight_Blues_Guitar_LessonBook.pdf](https://www.learnandmaster.com/spotlight-series/blues-guitar/resources/Spotlight_Blues_Guitar_LessonBook.pdf)
+---
 
-* Music Centre - Free Guitar ebooks <br>
-  [https://www.musiccentre.co.uk/free-guitar-ebooks](https://www.musiccentre.co.uk/free-guitar-ebooks) 
+## 📄 Licencia
 
-## Nice review channels on gear with really good music and improvisation
-
-* EytschPi42 <br>
-  [https://www.youtube.com/channel/UCrPHxHPnSvHzNNYbJlYoyGQ](https://www.youtube.com/channel/UCrPHxHPnSvHzNNYbJlYoyGQ)
-
-
-## In my case after much searching for quality but on cheap guitars, this was the brand I have chosen
-Harley Benton, they currently start at 73 euros for an adult’s guitar. I leave in Europe so shipping is low. They have a lot of variety of models, they are made in China or Indonesia but the quality control is made in Germany by Thomann. I have read about the experiences of others with this brand and it was good so I decided to choose it and I'm pleased with it.
-
-* Harley Benton <br>
-  [https://harleybenton.com](https://harleybenton.com)
-
-
-## The realization, that you can have nice gear with a really low budget
-
-* Harley Benton ST-62 Vintage Series - Full Demo <br>
-  [https://www.youtube.com/watch?v=mbvfZ29OOMg](https://www.youtube.com/watch?v=mbvfZ29OOMg)
-
-* 3 Strats Epic Battle - Harley Benton - Fender - LsL (Part 1 of 2) <br>
-  [https://www.youtube.com/watch?v=JkPsv1TgXJg](https://www.youtube.com/watch?v=JkPsv1TgXJg)
-
-* 3 Strats EPIC BATTLE - Results (Part 2 of 2) <br>
-  [https://www.youtube.com/watch?v=DGSCYmfQazc](https://www.youtube.com/watch?v=DGSCYmfQazc)
-
-
-## Open Source Virtual Guitar Amplifier
-
-* Guitarix <br>
-  [https://guitarix.org/](https://guitarix.org/)
-
-
-## Low budget multi-pedal effects, guitar amp and cabinet simulator, echo and reverb and noise gate
-
-I don't have it yet but my choice is the cheap with good sound quality ZOOM G1 Four with phones so the neighbors don't complain.
-This also has a tuner in it.
-You will also need a cable and some picks.
-
-* ZOOM G1 Four EytschPi42 Review <br>
-  [https://www.youtube.com/watch?v=xNwDqwoAKBw](https://www.youtube.com/watch?v=xNwDqwoAKBw)
-
-
-### In depth review in Portuguese
-
-* Zoom G1 Four Review - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=eS1X9umV6w8](https://www.youtube.com/watch?v=eS1X9umV6w8)
-
-* Zoom G1Four - timbre Clean - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=4ebzKWcnf4A](https://www.youtube.com/watch?v=4ebzKWcnf4A) 
-
-* Zoom G1Four - Amps - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=ct3r0tscy0w](https://www.youtube.com/watch?v=ct3r0tscy0w)
-
-* Zoom G1Four - Ambiências - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=T4Z93xHQQ50](https://www.youtube.com/watch?v=T4Z93xHQQ50)
-
-* Zoom G1Four - Aprenda a criar seu timbre! - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=Aq4dD4chzbw](https://www.youtube.com/watch?v=Aq4dD4chzbw)
-
-* Zoom G1Four - Timbre Funcional (Pra tocar qualquer coisa!) - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=673eGrT-GBE](https://www.youtube.com/watch?v=673eGrT-GBE)
-
-* ZOOM G1FOUR + PEDAIS - Alexandre Almeida <br>
-  [https://www.youtube.com/watch?v=1wFhDidxfnQ](https://www.youtube.com/watch?v=1wFhDidxfnQ)
-
-* Zoom G1Four - Da pra usar com o Violão? - Alexandre Almeida<br>
-  [https://www.youtube.com/watch?v=sKZcvJUQf6k](https://www.youtube.com/watch?v=sKZcvJUQf6k)
-
-* Zoom G1Four - Timbre Stevie Ray Vaughan - Alexandre Almeida<br>
-  [https://www.youtube.com/watch?v=-eEtiCzFCzM](https://www.youtube.com/watch?v=-eEtiCzFCzM)
-
-* Zoom G1Four - Electric Gypsy - Alexandre Almeida<br>
-  [https://www.youtube.com/watch?v=9GOGYI0PiG4](https://www.youtube.com/watch?v=9GOGYI0PiG4) 
-
-
-### How to get a Blues tone from ZOOM G1 Four?
-
-From the comments of Everton Almeida in the following videos of his fantastic Blues. <br> 
-
-"... to make a blusy sound you only need a fender amp simulation and a reverb spring 63 (you will have sufficient gain) if you can do this with phones, to hear the a good sound from the amplifiers of de effects pedal." <br
-<br>
-
-* Everton Almeida - Slow Blues Zoom g1on em linha <br>
-  [https://www.youtube.com/watch?v=xJDNnU5kdcY](https://www.youtube.com/watch?v=xJDNnU5kdcY)
-
-* Everton Almeida - Blues improviso zoom g1 on <br>
-  [https://www.youtube.com/watch?v=ZEXB-JmDEpU](https://www.youtube.com/watch?v=ZEXB-JmDEpU)
-
-* Everton Almeida - Crosscut blues style Albert King Robben Ford on zoom g1 on line <br>
-  [https://www.youtube.com/watch?v=5vqsauA17w0](https://www.youtube.com/watch?v=5vqsauA17w0)
-
-From the comments of Everton Almeida in the following video. <br> 
-
-"Ampli Tw rock <br>
-Gain 22 tube 57 level 150 <br>
-Treb 68 mid 76 bass 60 <br>
-Pres 54 cab tangeine 4x12 line <br>
-Reverb spring 63 <br>
-Notes: This configuration is cool in line in the recording, if you play in with the amp I have to cut the medium frequencies so that it doesn't starts to be the sound of a bee..." <br>
-
-"Used BOSS ds1 to boost the gain..." <br>
-
-* Everton Almeida - Zoom G1on em linha (Blues) <br>
-  [https://www.youtube.com/watch?v=aFMbGBzROp0](https://www.youtube.com/watch?v=aFMbGBzROp0)
-
-From the comments of Everton Almeida in the following video. <br>
-
-"The first two are: Vox jimi with gain in the 20 to 50 and a reverb spring 63 dwell 12 mixer 12  tone 58, the last is a tangerine with gain 60 and the same reverb spring 63 ..." <br>
-
-* Everton Almeida - Guitarra Blues e Zoom G1on <br>
-  [https://www.youtube.com/watch?v=cNUmLktcKFI](https://www.youtube.com/watch?v=cNUmLktcKFI)
-
-
-## A really nice life story to inspire you
-
-* Brian Johnsons A Life on The Road Mark Knopfler <br>
-  [https://www.youtube.com/watch?v=eEvnoYWWuQ4](https://www.youtube.com/watch?v=eEvnoYWWuQ4)  
-
-
-## A Youtube channel to motivate my daughter to play guitar :-D
-
-* Rachelf - A self-thought girl that plays guitar well <br>
-  [https://www.youtube.com/channel/UC_UQOj6d7RevVGVt6ZhDqKg](https://www.youtube.com/channel/UC_UQOj6d7RevVGVt6ZhDqKg)
-
-
-## Future programming and electronics projects for guitar
-I have many projects in my github around the audio subject. Guitar is a really fertile space for ideas in DIY electronics projects and DSP programming projects. Probably I will be inspired to do some specific to guitar in the future.
-
-
-## Learn the technology behind the guitar effects and amplifier simulation
-
-* Audio-Plugin-Development-Resources <br>
-  [https://github.com/jareddrayton/Audio-Plugin-Development-Resources](https://github.com/jareddrayton/Audio-Plugin-Development-Resources)
-
-* pedalSHIELD UNO Arduino Guitar Pedal with schematics and source code <br>
-  [https://www.electrosmash.com/pedalshield-uno](https://www.electrosmash.com/pedalshield-uno)
-
-* Pedal PI - Raspberry Pi ZERO Guitar Pedal with schematics and source code <br>
-  [https://www.electrosmash.com/pedal-pi](https://www.electrosmash.com/pedal-pi)
-
-Example of DSP source code for the following guitar effects: <br>
-
--Clean-Transparent Guitar Pedal. <br>
--Booster Effect Guitar Pedal. <br>
--Distortion Effect Guitar Pedal. <br>
--Fuzz Effect Guitar Pedal. <br>
--Bit-Crusher Guitar Effect Pedal. <br>
--Delay Guitar Effect Pedal. <br>
--Echo Guitar Effect Pedal. <br>
--Octaver Guitar Effect Pedal. <br>
--Reverb Guitar Effect Pedal. <br>
--Tremolo Guitar Effect Pedal. <br>
--Looper Guitar Effect Pedal. <br>
-
-* How to Start Programming Pedal-Pi <br>
-  [https://www.electrosmash.com/forum/pedal-pi/202-how-to-start-programming-pedal-pi?lang=en](https://www.electrosmash.com/forum/pedal-pi/202-how-to-start-programming-pedal-pi?lang=en)
-
-* Simulating the Boss GE-7 Graphic Equalizer in LTSpice <br>
-  [http://cushychicken.github.io/ltspice-boss-ge7-equalizer/](http://cushychicken.github.io/ltspice-boss-ge7-equalizer/)
-
-* Simulating the Schaller Tremolo Pedal in LTSpice <br>
-  [http://cushychicken.github.io/ltspice-schaller-tremolo/](http://cushychicken.github.io/ltspice-schaller-tremolo/)
-
-* Simulating the Dunlop Crybaby Wah Pedal in LTSpice <br>
-  [http://cushychicken.github.io/ltspice-dunlop-crybaby/](http://cushychicken.github.io/ltspice-dunlop-crybaby/)
-
-* Simulating the ProCo RAT Distortion Pedal in LTSpice <br>
-  [http://cushychicken.github.io/ltspice-proco-rat/](http://cushychicken.github.io/ltspice-proco-rat/)
-
-* Simulating the TS808 Tube Screamer in LTSpice <br>
-  [http://cushychicken.github.io/posts/ltspice-tube-screamer/](http://cushychicken.github.io/posts/ltspice-tube-screamer/)
-
-* Hobby hour (schematics of many pedals) <br>
-  [https://www.hobby-hour.com/electronics/s/guitar-effect-schematics.php](https://www.hobby-hour.com/electronics/s/guitar-effect-schematics.php)
-
-
-## The book on programming guitar effects and DSP in general
-
-* Designing Audio Effect Plugins in C++ 2th edition <br>
-  by Will Pirkle <br>
-  704 pages
-
-* Understanding Digital Signal Processing 3rd Edition <br>
-  by Richard Lyons
-  954 pages
-
-
-## Nice Youtube guitar channels in Portuguese and Spanish
-
-* Um café lá em casa <br>
-  [https://www.youtube.com/user/umcafelaemcasa](https://www.youtube.com/user/umcafelaemcasa)
-
-* Kiko Loureiro <br>
-  [https://www.youtube.com/user/kikoloureiroofficial](https://www.youtube.com/user/kikoloureiroofficial)
-
-* Alexandre Almeida <br>
-  [https://www.youtube.com/channel/UCC9QlaCk8fNJVn2H0rgIR5w](https://www.youtube.com/channel/UCC9QlaCk8fNJVn2H0rgIR5w)
-
-* Pituquete <br>
-  [https://www.youtube.com/channel/UC4-ASKOhkRM-GfLGXrqlNzw](https://www.youtube.com/channel/UC4-ASKOhkRM-GfLGXrqlNzw)
-
-* Jeronimo de Carmen <br>
-  [https://www.youtube.com/channel/UC6AkZwMrK5BuhfgH1FyuDyA](https://www.youtube.com/channel/UC6AkZwMrK5BuhfgH1FyuDyA)
-
-
-## Have fun!
-Best regards, <br>
-Joao Nuno Carvalho
-
+Licencia MIT — Desarrollado con ❤️ para la enseñanza musical de la guitarra, la alabanza y la preservación del folclor colombiano.

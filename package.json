@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "type": "module",
   "description": "CuerdaViva! — Plataforma interactiva para aprender guitarra con canciones católicas de alabanza, vallenato y folclor colombiano, método numérico Keyner Ramírez y afinador en vivo.",
+  "main": "server.js",
   "scripts": {
-    "start": "node local-server.js",
-    "dev": "node local-server.js",
+    "start": "node server.js",
+    "dev": "node server.js",
     "py": "python3 serve.py"
   },
   "keywords": [

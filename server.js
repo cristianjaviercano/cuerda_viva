@@ -474,7 +474,11 @@ export function startServer(port = PORT, maxAttempts = 5) {
   return server;
 }
 
-const isDirectRun = process.argv[1] && path.resolve(process.argv[1]) === path.resolve(__filename);
+const arg1 = process.argv[1] ? path.resolve(process.argv[1]) : '';
+const thisFile = path.resolve(__filename);
+const isAudit = arg1.includes('audit');
+const isDirectRun = !isAudit && (arg1 === thisFile || Boolean(process.env.VERCEL));
+
 if (isDirectRun) {
   startServer();
 }

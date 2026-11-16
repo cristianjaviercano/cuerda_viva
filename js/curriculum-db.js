@@ -267,6 +267,11 @@ export const SKILL_UNITS = [
         icon: '📐',
         xp: 25,
         summary: 'Reconoce cada parte acústica del instrumento y domina las 2 posturas correctas.',
+        objectives: [
+          'Nombrar trastes, cejuela, diapasón y puente en tu guitarra',
+          'Sentarte en postura clásica o popular con la tapa vertical',
+          'Hacer sonar limpio Mi menor (Em)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -342,6 +347,10 @@ export const SKILL_UNITS = [
         icon: '🖐️',
         xp: 25,
         summary: 'Asigna cada número de dedo (1–4) y letra derecha (p-i-m-a) con técnica profesional.',
+        objectives: [
+          'Identificar los dedos 1-2-3-4 (izquierda) y p-i-m-a (derecha) en un diagrama',
+          'Pulsar los bajos con el pulgar a 60 BPM (70% de pulsos a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -414,6 +423,11 @@ export const SKILL_UNITS = [
         icon: '🌈',
         xp: 30,
         summary: 'Memoriza los nombres, colores cromáticos y la ley física de los trastes (Mi-Fa / Si-Do).',
+        objectives: [
+          'Nombrar las 6 cuerdas al aire (Mi-La-Re-Sol-Si-Mi)',
+          'Ubicar los semitonos naturales Si–Do y Mi–Fa en el mástil',
+          'Mantener 60 BPM con la 6ª cuerda (70% de pulsos a tiempo)'
+        ],
         practiceSongs: [
           { tab: 'tabs', itemId: 'tab_estrellita', label: 'Estrellita, ¿Dónde Estás? (TAB · tu primera melodía)' }
         ],
@@ -488,6 +502,10 @@ export const SKILL_UNITS = [
         icon: '🌙',
         xp: 30,
         summary: 'Domina los 3 acordes menores abiertos sin que trasteen ni apaguen las primas.',
+        objectives: [
+          'Tocar Em, Am y Dm sin cuerdas apagadas',
+          'Cambiar Em ⇄ Am 8 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -567,6 +585,11 @@ export const SKILL_UNITS = [
         icon: '☀️',
         xp: 35,
         summary: 'El truco biomecánico del dedo ancla para cambiar de acorde a gran velocidad.',
+        objectives: [
+          'Tocar G, D y C limpios usando el dedo pivote',
+          'Cambiar G ⇄ D 8 veces en 30 s',
+          'Distinguir de oído un acorde Mayor de uno menor (3 de 4)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -637,6 +660,11 @@ export const SKILL_UNITS = [
         icon: '🌊',
         xp: 35,
         summary: 'Interioriza el vaivén sin frenos "VOY PIE-DRA TA-PIE-DRA" de todo canto contemporáneo.',
+        objectives: [
+          'Mantener el péndulo de la mano derecha en ↓ · ↓ ↑ · ↑ ↓ ↑',
+          'Rasguear G a 70 BPM (75% de pulsos a ±90 ms)',
+          'Cambiar C ⇄ G7 8 veces en 30 s'
+        ],
         practiceSongs: [
           { tab: 'songs', itemId: 'pop_los_pollitos', label: 'Los Pollitos Dicen (C ⇄ G7)' },
           { tab: 'songs', itemId: 'pop_arroz_con_leche', label: 'Arroz con Leche (C ⇄ G7)' }
@@ -713,6 +741,11 @@ export const SKILL_UNITS = [
         icon: '🔤',
         xp: 30,
         summary: 'Traduce instantáneamente entre A-G, Do-Re-Mi y la notación clásica de Keyner Ramírez.',
+        objectives: [
+          'Traducir un cifrado americano (G, Em, D7) al latino (Sol, Mi menor, Re7)',
+          'Leer los símbolos + y - de un cancionero Keyner',
+          'Distinguir de oído Mayor (+) y menor (-) (3 de 4)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -780,6 +813,10 @@ export const SKILL_UNITS = [
         icon: '⛪',
         xp: 40,
         summary: 'Toca tus primeras alabanzas completas conectando progresiones reales del Cancionero.',
+        objectives: [
+          'Tocar la progresión G - Em - C - D7 de una alabanza sin detenerte',
+          'Cambiar G ⇄ C 8 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -847,6 +884,10 @@ export const SKILL_UNITS = [
         icon: '💥',
         xp: 35,
         summary: 'Imita la caja o redoblante en cantos alegres de júbilo y entrada litúrgica.',
+        objectives: [
+          'Ubicar el chasquido (✕) en los tiempos 2 y 4',
+          'Marcar el 2/4 a 80 BPM (75% de pulsos a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -910,6 +951,11 @@ export const SKILL_UNITS = [
         icon: '🕊️',
         xp: 40,
         summary: 'Domina el balanceo solemne de Comunión en 6/8, el Vals mariano y el Bolero.',
+        objectives: [
+          'Distinguir 3/4 y 6/8 por sus acentos',
+          'Tocar el vals BUM-chas-chas a 90 BPM (75% a tiempo)',
+          'Cambiar G ⇄ D7 8 veces en 30 s'
+        ],
         practiceSongs: [
           { tab: 'songs', itemId: 'pop_cumpleanos_feliz', label: 'Cumpleaños Feliz (vals en G)' },
           { tab: 'songs', itemId: 'pop_las_mananitas', label: 'Las Mañanitas (vals en G)' },
@@ -1000,6 +1046,10 @@ export const SKILL_UNITS = [
         icon: '🎸',
         xp: 35,
         summary: 'Mapea al instante dónde están B1 y B2 en todos los acordes para sonar como un dúo.',
+        objectives: [
+          'Ubicar el bajo primario (B1) y secundario (B2) de C, D y G',
+          'Alternar B1 y B2 a 80 BPM (75% de pulsos a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1071,6 +1121,10 @@ export const SKILL_UNITS = [
         icon: '🕯️',
         xp: 40,
         summary: 'Aprende el estudio clásico de Medina & Caliva para Hora Santa, Comunión y baladas.',
+        objectives: [
+          'Asignar p-i-m-a a sus cuerdas en un arpegio',
+          'Arpegiar Am nota a nota a 80 BPM (70% a tiempo)'
+        ],
         practiceSongs: [
           { tab: 'songs', itemId: 'pop_noche_de_paz', label: 'Noche de Paz (arpegio en 3/4)' },
           { tab: 'songs', itemId: 'pop_cielito_lindo', label: 'Cielito Lindo (vals de serenata)' }
@@ -1145,6 +1199,10 @@ export const SKILL_UNITS = [
         icon: '🧭',
         xp: 30,
         summary: 'Descifra el código de dos dígitos del libro de Keyner Ramírez sin dudar.',
+        objectives: [
+          'Convertir un código Keyner (p. ej. 32) en cuerda y traste',
+          'Ubicar en el mástil la nota de un código de 2 o 3 cifras'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1206,6 +1264,10 @@ export const SKILL_UNITS = [
         icon: '🎼',
         xp: 35,
         summary: 'Lee dobles cuerdas armónicas, bajeos de enlace y la escala de 2 octavas de la pág. 7.',
+        objectives: [
+          'Tocar semiacordes como 21/32 pulsando dos cuerdas a la vez',
+          'Tocar la escala de Do en código Keyner desde el 53'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1272,6 +1334,10 @@ export const SKILL_UNITS = [
         icon: '🎯',
         xp: 35,
         summary: 'Conecta las 6 líneas horizontales de cualquier tablatura de internet con los números Keyner.',
+        objectives: [
+          'Leer una tablatura: líneas = cuerdas, números = trastes',
+          'Reconocer y ejecutar h, p y slide en una frase'
+        ],
         practiceSongs: [
           { tab: 'tabs', itemId: 'tab_himno_alegria', label: 'Himno a la Alegría (TAB · Beethoven)' }
         ],
@@ -1335,6 +1401,9 @@ export const SKILL_UNITS = [
         icon: '🎶',
         xp: 40,
         summary: 'Aplica los códigos 10–60 tocando dos introducciones colombianas auténticas del libro.',
+        objectives: [
+          'Tocar las intros de "Pueblito Viejo" y "El Año Viejo" leyendo el código Keyner'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1407,6 +1476,11 @@ export const SKILL_UNITS = [
         icon: '🔄',
         xp: 35,
         summary: 'Aprende la progresión circular más famosa de la música sacra, bolero y balada.',
+        objectives: [
+          'Nombrar los acordes I – VIm – IIm – V7 en Do y en Sol',
+          'Explicar por qué el V7 pide resolver a la tónica',
+          'Cambiar C ⇄ Am 10 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1469,6 +1543,10 @@ export const SKILL_UNITS = [
         icon: '🥁',
         xp: 40,
         summary: 'Combina el bajo alterno y el chasquido en el ritmo emblemático de Valledupar.',
+        objectives: [
+          'Reproducir el paseo vallenato imitando caja y guacharaca',
+          'Marcar el pulso del paseo a 90 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1532,6 +1610,10 @@ export const SKILL_UNITS = [
         icon: '🔥',
         xp: 40,
         summary: 'Diferencia la alegría rápida del Merengue 6/8 y el peso profundo del Son Vallenato.',
+        objectives: [
+          'Distinguir paseo (4/4), merengue (6/8) y son por su compás',
+          'Marcar los dos pulsos del 6/8 a 70 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1599,6 +1681,10 @@ export const SKILL_UNITS = [
         icon: '🥁',
         xp: 40,
         summary: 'Siente el "tapa-CHÁ" de La Piragua y Yo Me Llamo Cumbia en la palma derecha.',
+        objectives: [
+          'Ubicar el contratiempo del tambor llamador en la cumbia',
+          'Marcar el pulso de la cumbia a 90 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1675,6 +1761,10 @@ export const SKILL_UNITS = [
         icon: '🏔️',
         xp: 45,
         summary: 'Incorpora el alma andina de "Haga Música con la Guitarra" al repertorio de tu mano derecha.',
+        objectives: [
+          'Distinguir pasillo, bambuco y guabina por su acentuación',
+          'Tocar el pasillo en 3/4 a 100 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1738,6 +1828,10 @@ export const SKILL_UNITS = [
         icon: '🎺',
         xp: 45,
         summary: 'Toca la síncopa brillante de las bandas de viento adaptada a guitarra.',
+        objectives: [
+          'Reproducir el rasgueo sincopado del porro',
+          'Marcar el pulso del porro a 100 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1803,6 +1897,10 @@ export const SKILL_UNITS = [
         icon: '🌅',
         xp: 45,
         summary: 'El recurso estrella colombiano para abrir el cielo en los estribillos de folclor.',
+        objectives: [
+          'Explicar la modulación homónima (Am → A) por el cambio de la 3ª',
+          'Distinguir de oído Mayor y menor (5 de 6)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1862,6 +1960,10 @@ export const SKILL_UNITS = [
         icon: '💎',
         xp: 45,
         summary: 'Usa el acorde D#dim7 ("DIS." en Keyner) para enlazar tensiones dramáticas de pasillo.',
+        objectives: [
+          'Tocar un acorde disminuido 7 y moverlo de 3 en 3 trastes',
+          'Cambiar Am ⇄ E7 8 veces en 30 s'
+        ],
         practiceSongs: [
           { tab: 'songs', itemId: 'pop_los_peces_en_el_rio', label: 'Los Peces en el Río (Am ⇄ E7)' },
           { tab: 'songs', itemId: 'pop_campana_sobre_campana', label: 'Campana sobre Campana (Am ⇄ E7)' }
@@ -1938,6 +2040,10 @@ export const SKILL_UNITS = [
         icon: '🔗',
         xp: 45,
         summary: 'Comprende cómo nacen las familias de acordes para sacar cualquier canción de oído.',
+        objectives: [
+          'Encontrar el relativo menor y la dominante de un tono mayor',
+          'Distinguir de oído Mayor y menor (5 de 6)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1997,6 +2103,10 @@ export const SKILL_UNITS = [
         icon: '🚀',
         xp: 45,
         summary: 'El truco detrás de "Cinco Panes y Dos Peces" y "Dios Está Aquí" para empujar el coro.',
+        objectives: [
+          'Identificar un dominante secundario (V7/IV, V7/VI) en una canción',
+          'Cambiar B7 ⇄ Em 6 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2057,6 +2167,11 @@ export const SKILL_UNITS = [
         icon: '🌉',
         xp: 45,
         summary: 'Construye bajos caminantes melódicos y usa el giro nostálgico G → Gm → D.',
+        objectives: [
+          'Tocar acordes con bajo invertido (G/B, D/F#)',
+          'Reconocer el intercambio modal IV → IVm',
+          'Cambiar G ⇄ D/F# 8 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2117,6 +2232,10 @@ export const SKILL_UNITS = [
         icon: '🎚️',
         xp: 45,
         summary: 'Adapta cualquier canto o vallenato a la altura exacta de tu voz en segundos.',
+        objectives: [
+          'Calcular en qué traste poner el capotraste para cambiar de tono',
+          'Nombrar el acorde real que suena con capotraste'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2181,6 +2300,11 @@ export const SKILL_UNITS = [
         icon: '🦴',
         xp: 45,
         summary: 'El giro de 15° del índice y el contrapeso de brazo que eliminan los trasteos en Fa y Bm.',
+        objectives: [
+          'Hacer una cejilla con el borde lateral del índice sin dolor',
+          'Tocar F y Bm con todas las cuerdas sonando',
+          'Cambiar C ⇄ F 6 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2243,6 +2367,10 @@ export const SKILL_UNITS = [
         icon: '🕷️',
         xp: 45,
         summary: 'Despierta el meñique (dedo 4) y gana velocidad para punteos con el ejercicio clásico.',
+        objectives: [
+          'Ejecutar la Arañita 1-2-3-4 dejando los dedos apoyados',
+          'Mantener una nota por pulso a 70 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2306,6 +2434,10 @@ export const SKILL_UNITS = [
         icon: '🗺️',
         xp: 50,
         summary: 'Multiplica tus posiciones usando los 5 moldes móviles C-A-G-E-D con cejilla.',
+        objectives: [
+          'Mover las formas E y A con cejilla a cualquier traste',
+          'Cambiar F ⇄ G 6 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2366,6 +2498,10 @@ export const SKILL_UNITS = [
         icon: '✨',
         xp: 50,
         summary: 'Suaviza la adoración contemporánea dejando 2 cuerdas ancladas en la parte aguda.',
+        objectives: [
+          'Tocar G, Cadd9, Em7 y Dsus4 con los dedos 3 y 4 anclados',
+          'Cambiar G ⇄ Cadd9 10 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2438,6 +2574,10 @@ export const SKILL_UNITS = [
         icon: '🧭',
         xp: 50,
         summary: 'Domina el mapa maestro de 2 notas por cuerda donde ninguna nota choca con el acorde.',
+        objectives: [
+          'Tocar la caja 1 de la pentatónica de Am en el traste 5',
+          'Explicar por qué sirve sobre Do Mayor'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2493,6 +2633,11 @@ export const SKILL_UNITS = [
         icon: '🪗',
         xp: 50,
         summary: 'Captura el sabor diatónico del acordeón de Diomedes/Escalona y la sensible de Cumbia.',
+        objectives: [
+          'Explicar la 7ª bemol del modo mixolidio',
+          'Usar el Sol# de la menor armónica sobre E7',
+          'Cambiar A ⇄ G 8 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2554,6 +2699,10 @@ export const SKILL_UNITS = [
         icon: '⚡',
         xp: 55,
         summary: 'Une escalas, ligados y cambios de posición en las dos intros vallenatas más queridas.',
+        objectives: [
+          'Tocar el punteo de "Los Caminos de la Vida" por frases',
+          'Aplicar un loop A–B al 50–75% para destrabar un pasaje'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2606,6 +2755,10 @@ export const SKILL_UNITS = [
         icon: '🏆',
         xp: 75,
         summary: 'Demuestra tu dominio integral combinando teoría, diapasón, método Keyner y oído vivo.',
+        objectives: [
+          'Tocar una alabanza y un aire colombiano completos',
+          'Mantener 100 BPM sin metrónomo (80% de pulsos a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2679,6 +2832,21 @@ export const SKILL_UNITS = [
     ]
   }
 ];
+
+// ============================================================================
+// TAREAS DE CIERRE DE UNIDAD (autoevaluación con rúbrica, ver js/pedagogy.js)
+// ============================================================================
+export const UNIT_CAPSTONES = {
+  unit_1: { task: 'Alterna Em y Am durante 8 compases de 4/4, un rasgueo por pulso a 60 BPM, sin detenerte.', songId: null },
+  unit_2: { task: 'Toca "Los Pollitos Dicen" o "Alabaré" completa, cantando, con el rasgueo 4/4.', songId: 'pop_los_pollitos' },
+  unit_3: { task: 'Toca "Cumpleaños Feliz" en vals 3/4 con bajo y rasgueo (BUM · chas · chas).', songId: 'pop_cumpleanos_feliz' },
+  unit_4: { task: 'Toca la melodía de "Estrellita" en TAB o la intro de "Pueblito Viejo" en código Keyner.', songId: 'pop_estrellita' },
+  unit_5: { task: 'Acompaña 16 compases de un paseo o una cumbia con su rasgueo característico.', songId: null },
+  unit_6: { task: 'Toca "Los Peces en el Río" o un pasillo con la modulación de menor a mayor.', songId: 'pop_los_peces_en_el_rio' },
+  unit_7: { task: 'Transporta una alabanza con capotraste y tócala completa en el nuevo tono.', songId: null },
+  unit_8: { task: 'Toca una canción que incluya F y Bm con cejilla, sin cuerdas apagadas.', songId: null },
+  unit_9: { task: 'Toca un punteo completo y acompaña una canción de misa y una de parranda.', songId: null }
+};
 
 // ============================================================================
 // RETO INTERACTIVO DE 30 DÍAS (Integrado desde Bono 4 + Folclor + Keyner)

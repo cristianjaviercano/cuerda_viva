@@ -19,6 +19,7 @@ Repositorio oficial: [https://github.com/cristianjaviercano/cuerda_viva](https:/
   - ⏱️ **Cambios de acorde cronometrados** (`chord_change`): cambios limpios entre dos acordes en una ventana de tiempo, detectados por croma FFT.
   - 🥁 **Precisión de pulso** (`strum_timing`): cuenta de entrada y metrónomo silencioso; mide el error medio en ms y la tendencia a adelantarse o atrasarse.
   - 👂 **Oído Mayor / menor** (`ear_quality`): ítems con tónica aleatoria en cada intento.
+* **🧩 Diseño instruccional**: cada lección declara 1–3 objetivos observables y su duración estimada; la teoría se presenta *una idea por pantalla* (≤ 60 palabras) con **glosario emergente** (40 términos); cada unidad cierra con una **autoevaluación** por rúbrica (limpieza, pulso, cambios, postura), grabación local opcional y repaso automático de los criterios débiles.
 * **📅 Repaso espaciado (Leitner)**: cada teoría tiene una tarjeta que se repasa a 1, 3, 7, 14 y 30 días; solo cuenta el recuerdo en días distintos. Incluye *Repaso del día* intercalado y un calentamiento con temas pendientes al iniciar cada lección.
 * **🎉 Canciones para todos**: Cumpleaños Feliz, Las Mañanitas, Noche de Paz, Estrellita, Arroz con Leche, Los Pollitos, Campana sobre Campana, Los Peces en el Río y Cielito Lindo (solo obras tradicionales o de dominio público), con tablaturas de melodía en primera posición y enlazadas desde las lecciones.
 * **Evaluación válida**: opciones barajadas, distractores basados en errores reales y vidas que se recuperan repasando.

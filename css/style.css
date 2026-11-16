@@ -3953,3 +3953,78 @@ button, select, input {
 .victory-songs { margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .victory-songs strong { color: var(--ink-main); }
 .victory-songs-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+/* ==================== DISEÑO INSTRUCCIONAL (Parte E) ==================== */
+/* Una idea por pantalla */
+.idea-dots { display: flex; align-items: center; gap: 6px; margin: 4px 0 2px; }
+.idea-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border-3d); }
+.idea-dot.done { background: var(--duo-green-dark); }
+.idea-dot.on { background: var(--duo-green); transform: scale(1.3); }
+.idea-dots small { color: var(--ink-muted); font-weight: 700; margin-left: 6px; }
+
+/* Glosario emergente */
+.gloss-term {
+  position: relative;
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: help;
+  text-decoration: underline dotted var(--duo-blue-dark);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.gloss-term[data-def]:hover::after,
+.gloss-term[data-def]:focus::after {
+  content: attr(data-def);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: max-content;
+  max-width: min(260px, 80vw);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--ink-main);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  z-index: 50;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+}
+.gloss-sample { cursor: default; }
+
+/* Presentación de la lección y objetivos */
+.lesson-intro-meta { color: var(--ink-muted); font-weight: 700; margin: 0; }
+.lesson-objectives {
+  background: var(--bg-soft);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 560px;
+}
+.lesson-objectives strong { color: var(--ink-main); }
+.lesson-objectives ul { margin: 6px 0 0; padding-left: 20px; color: var(--ink-body); }
+.lesson-objectives li { margin: 3px 0; }
+.lesson-objectives p { margin: 6px 0; color: var(--ink-body); }
+.victory-objectives { margin: 14px auto 0; }
+.lesson-intro-tip { color: var(--ink-muted); font-size: .88rem; margin: 0; }
+.node-minutes { display: block; color: var(--ink-muted); font-weight: 700; font-size: .78rem; margin-top: 2px; }
+
+/* Autoevaluación de cierre de unidad */
+.unit-self-assess-btn { margin-top: 6px; }
+.self-assess-card { gap: 14px; }
+.sa-record { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sa-record small { color: var(--ink-muted); text-align: center; max-width: 460px; }
+.sa-rubric { display: grid; gap: 10px; width: 100%; max-width: 640px; }
+.sa-criterion { border: 2px solid var(--border-light); border-radius: var(--radius-lg); padding: 8px 12px 10px; margin: 0; }
+.sa-criterion legend { font-weight: 800; color: var(--ink-main); padding: 0 6px; }
+.sa-level { display: flex; gap: 8px; align-items: flex-start; padding: 5px 4px; color: var(--ink-body); cursor: pointer; border-radius: var(--radius-md); }
+.sa-level:hover { background: var(--bg-soft); }
+.sa-level input { margin-top: 3px; accent-color: var(--duo-green); }

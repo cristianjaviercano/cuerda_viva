@@ -74,3 +74,110 @@ export function pickReviewTheory(weakTheories, units, completedLessons, rng = Ma
   if (!pool.length) return null;
   return pool[Math.floor(rng() * pool.length)];
 }
+
+// ============================================================================
+// DISEÑO INSTRUCCIONAL (Parte E)
+// ============================================================================
+
+export const MAX_CHUNK_WORDS = 60;
+
+export function countWords(text) {
+  return String(text || '').replace(/[*`•]/g, ' ').split(/\s+/).filter(Boolean).length;
+}
+
+function splitLongLine(line, maxWords) {
+  const sentences = line.match(/[^.!?]+[.!?]*\s*/g) || [line];
+  const out = [];
+  let cur = '';
+  for (const sen of sentences) {
+    if (cur && countWords(cur + sen) > maxWords) { out.push(cur.trim()); cur = ''; }
+    cur += sen;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  // Último recurso: cortar por palabras si una oración sigue siendo demasiado larga.
+  return out.flatMap(piece => {
+    if (countWords(piece) <= maxWords) return [piece];
+    const words = piece.split(/\s+/);
+    const parts = [];
+    for (let i = 0; i < words.length; i += maxWords) parts.push(words.slice(i, i + maxWords).join(' '));
+    return parts;
+  });
+}
+
+/**
+ * Divide un texto teórico en "tarjetas" de una idea cada una (≤ maxWords):
+ * cada viñeta (•) inicia una tarjeta nueva y una línea de introducción
+ * acompaña a la primera viñeta si cabe.
+ */
+export function chunkTheory(body, maxWords = MAX_CHUNK_WORDS) {
+  const lines = String(body || '').split('\n').map(l => l.trim()).filter(Boolean)
+    .flatMap(l => (countWords(l) > maxWords ? splitLongLine(l, maxWords) : [l]));
+  const chunks = [];
+  let cur = [];
+  let curHasBullet = false;
+  for (const line of lines) {
+    const isBullet = line.startsWith('•');
+    const wouldOverflow = countWords([...cur, line].join(' ')) > maxWords;
+    if (cur.length && (wouldOverflow || (isBullet && curHasBullet))) {
+      chunks.push(cur.join('\n'));
+      cur = [];
+      curHasBullet = false;
+    }
+    cur.push(line);
+    if (isBullet) curHasBullet = true;
+  }
+  if (cur.length) chunks.push(cur.join('\n'));
+  return chunks.length ? chunks : [''];
+}
+
+/** Minutos estimados de una lección según sus pasos (lectura y práctica). */
+export function estimateLessonMinutes(lesson) {
+  let sec = 0;
+  for (const st of lesson.steps || []) {
+    if (st.type === 'theory') sec += 40 * chunkTheory(st.body).length;
+    else if (st.type === 'quiz') sec += 30;
+    else if (st.type === 'fretboard_find') sec += 30;
+    else if (st.type === 'play_guitar_chord' || st.type === 'play_guitar_note') sec += 60;
+    else if (st.type === 'ear_quality') sec += 15 * (st.rounds || 4) + 15;
+    else if (st.type === 'chord_change') sec += (st.durationSec || 30) + 45;
+    else if (st.type === 'strum_timing') sec += ((st.bars || 4) * (st.beatsPerBar || 4) + (st.beatsPerBar || 4)) * (60 / (st.bpm || 70)) + 40;
+  }
+  return Math.max(1, Math.round(sec / 60));
+}
+
+/** Rúbrica de autoevaluación de cierre de unidad (niveles 1–3). */
+export const SELF_ASSESSMENT_RUBRIC = [
+  {
+    id: 'limpieza', label: 'Limpieza', theoryId: 'minor_open_chords',
+    levels: ['Varias cuerdas apagadas o trasteando', 'Alguna cuerda falla en los cambios', 'Todas las cuerdas suenan claras']
+  },
+  {
+    id: 'pulso', label: 'Pulso', theoryId: 'strumming_44_engine',
+    levels: ['Me detengo o acelero en los cambios', 'Pulso estable con alguna duda', 'Pulso constante de principio a fin']
+  },
+  {
+    id: 'transiciones', label: 'Cambios de acorde', theoryId: 'major_open_chords',
+    levels: ['Los cambios cortan el ritmo', 'Llego a tiempo pero con tensión', 'Cambios fluidos y anticipados']
+  },
+  {
+    id: 'postura', label: 'Postura', theoryId: 'guitar_posture',
+    levels: ['Tensión en hombros, muñeca o espalda', 'Postura correcta con algo de tensión', 'Relajado, con la tapa vertical']
+  }
+];
+
+/**
+ * Puntúa una autoevaluación { criterioId: 1|2|3 }.
+ * Devuelve total, máximo y las teorías a repasar (criterios en nivel 1).
+ */
+export function scoreSelfAssessment(scores) {
+  const max = SELF_ASSESSMENT_RUBRIC.length * 3;
+  let total = 0;
+  const reviewTheories = [];
+  for (const c of SELF_ASSESSMENT_RUBRIC) {
+    const v = Math.max(1, Math.min(3, Number(scores?.[c.id]) || 1));
+    total += v;
+    if (v === 1) reviewTheories.push(c.theoryId);
+  }
+  const level = total >= max - 1 ? 'Dominado' : total >= Math.ceil(max * 0.66) ? 'En progreso' : 'Necesita práctica';
+  return { total, max, level, reviewTheories };
+}

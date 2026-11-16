@@ -26,7 +26,7 @@ import { SongStudio } from './song-studio.js';
 import { RhythmTrainer } from './rhythm-trainer.js';
 import { FretboardStudio } from './fretboard.js';
 import { Guitar3DStudio } from './guitar-3d.js';
-import { SKILL_UNITS, RETO_30_DIAS, THEORY_LIBRARY } from './curriculum-db.js';
+import { SKILL_UNITS, RETO_30_DIAS, THEORY_LIBRARY, UNIT_CAPSTONES } from './curriculum-db.js';
 import { userStore, createDefaultUserState } from './user-store.js';
 import {
   MAX_HEARTS,
@@ -36,8 +36,13 @@ import {
   neutralFeedback,
   loseHeart,
   gainHearts,
-  pickReviewTheory
+  pickReviewTheory,
+  chunkTheory,
+  estimateLessonMinutes,
+  SELF_ASSESSMENT_RUBRIC,
+  scoreSelfAssessment
 } from './pedagogy.js';
+import { annotateGlossary } from './glossary.js';
 import { DRILL_TYPES, renderDrill } from './skill-drills.js';
 import {
   WARMUP_SIZE,
@@ -74,6 +79,19 @@ function formatRichText(raw) {
     .filter(line => line.trim().length > 0)
     .map(line => `<p>${line}</p>`)
     .join('');
+}
+
+// Texto enriquecido + glosario emergente (primera aparición de cada término).
+function richWithGlossary(raw) {
+  return annotateGlossary(formatRichText(raw));
+}
+
+function chunkDotsHtml(total, idx) {
+  if (total <= 1) return '';
+  return `<div class="idea-dots" aria-label="Idea ${idx + 1} de ${total}">
+    ${Array.from({ length: total }, (_, i) => `<span class="idea-dot ${i === idx ? 'on' : i < idx ? 'done' : ''}"></span>`).join('')}
+    <small>Idea ${idx + 1} de ${total}</small>
+  </div>`;
 }
 
 function formatDateTimeShort(isoStr) {
@@ -462,6 +480,10 @@ class CuerdaVivaApp {
                     <div class="unit-progress-pill">
                       <strong>${unitDone}/${unit.lessons.length}</strong>
                       <span>Completadas</span>
+                      ${unitDone === unit.lessons.length ? `
+                        <button class="duo-btn btn-sm btn-purple unit-self-assess-btn" data-self-assess="${unit.id}">
+                          📝 ${this.state.selfAssessments?.[unit.id] ? `${this.state.selfAssessments[unit.id].total}/${this.state.selfAssessments[unit.id].max}` : 'Autoevaluar'}
+                        </button>` : ''}
                     </div>
                   </div>
 
@@ -487,6 +509,7 @@ class CuerdaVivaApp {
                           <div class="skill-node-caption">
                             <strong>${lesson.title}</strong>
                             <span>${lesson.summary}</span>
+                            <small class="node-minutes">⏱ ~${estimateLessonMinutes(lesson)} min · 🎯 ${(lesson.objectives || []).length} objetivos</small>
                             <em class="node-xp-chip">${isDone ? '✓ Completada · Repasar' : `+${lesson.xp} XP · ${lesson.steps.filter(s => s.type !== 'theory').length} retos`}</em>
                           </div>
                         </div>
@@ -607,6 +630,13 @@ class CuerdaVivaApp {
       this.openAudioTunerModal();
     });
 
+    container.querySelectorAll('[data-self-assess]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const unit = SKILL_UNITS.find(u => u.id === btn.dataset.selfAssess);
+        if (unit) this.openUnitSelfAssessment(unit);
+      });
+    });
+
     container.querySelector('#btn-daily-review')?.addEventListener('click', () => {
       this.openDailyReview();
     });
@@ -725,7 +755,8 @@ class CuerdaVivaApp {
       remediationItem: null,
       remediationCompleted: 0,
       remediationTotalQueued: 0,
-      outOfHearts: false
+      outOfHearts: false,
+      showIntro: mode === 'lesson' && Array.isArray(lesson.objectives) && lesson.objectives.length > 0
     };
 
     const modal = document.getElementById('modal-lesson');
@@ -740,6 +771,189 @@ class CuerdaVivaApp {
     };
 
     this._renderCurrentLessonStep();
+  }
+
+  // Presentación de la lección: objetivos observables y duración estimada.
+  _renderLessonIntro() {
+    const sess = this.lessonSession;
+    const lesson = sess.lesson;
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+    this._updateLessonHeaderChrome(4, '');
+    footer.className = 'lesson-footer-bar';
+    feedbackEl.innerHTML = '';
+    body.innerHTML = `
+      <div class="lesson-card-step lesson-intro-card">
+        <span class="badge-vivid" style="background:${sess.unit.color};color:#fff">${escapeHTML(sess.unit.title || '')}</span>
+        <h2 class="lesson-step-title">${lesson.icon || '🎸'} ${escapeHTML(lesson.title)}</h2>
+        <p class="lesson-intro-meta">⏱ ~${estimateLessonMinutes(lesson)} min · ${lesson.steps.filter(st => st.type !== 'theory').length} retos${sess.warmupCount ? ` · incluye ${sess.warmupCount} de calentamiento` : ''}</p>
+        <div class="lesson-objectives">
+          <strong>🎯 Al terminar podrás:</strong>
+          <ul>${lesson.objectives.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ul>
+        </div>
+        <p class="lesson-intro-tip">Toca los términos <span class="gloss-term gloss-sample">subrayados</span> para ver su definición.</p>
+      </div>`;
+    primaryBtn.textContent = '¡EMPEZAR!';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      sess.showIntro = false;
+      this._renderCurrentLessonStep();
+    };
+  }
+
+  // ==================== AUTOEVALUACIÓN DE CIERRE DE UNIDAD ====================
+  openUnitSelfAssessment(unit) {
+    const cap = UNIT_CAPSTONES[unit.id] || { task: 'Toca una canción completa con lo aprendido en la unidad.' };
+    const modal = document.getElementById('modal-lesson');
+    modal.classList.remove('hidden');
+    pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
+    this.lessonSession = { mode: 'self_assessment', unit, lesson: { id: `self_${unit.id}`, title: 'Autoevaluación' } };
+
+    let recorder = null;
+    let recStream = null;
+    let recTimer = null;
+    let recUrl = null;
+    const stopRecording = () => {
+      clearTimeout(recTimer);
+      if (recorder && recorder.state !== 'inactive') recorder.stop();
+      recStream?.getTracks().forEach(t => t.stop());
+      recStream = null;
+    };
+    this._drillCleanup = () => { stopRecording(); if (recUrl) URL.revokeObjectURL(recUrl); };
+
+    document.getElementById('btn-quit-lesson').onclick = () => {
+      this._cleanupDrill();
+      modal.classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
+
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+    this._updateLessonHeaderChrome(100, `📝 Cierre de la Unidad ${unit.number}`);
+    footer.className = 'lesson-footer-bar';
+    feedbackEl.innerHTML = '';
+    const canRecord = Boolean(navigator.mediaDevices?.getUserMedia && window.MediaRecorder);
+    const prev = this.state.selfAssessments?.[unit.id];
+
+    body.innerHTML = `
+      <div class="lesson-card-step self-assess-card">
+        <span class="badge-vivid" style="background:${unit.color};color:#fff">Unidad ${unit.number} · ${escapeHTML(unit.title)}</span>
+        <h2 class="lesson-step-title">📝 Autoevaluación de la unidad</h2>
+        <div class="lesson-objectives">
+          <strong>🎸 Tarea de cierre:</strong>
+          <p>${escapeHTML(cap.task)}</p>
+          ${cap.songId ? `<button class="duo-btn btn-blue btn-sm" id="sa-open-song">🎶 Abrir la canción</button>` : ''}
+        </div>
+        ${canRecord ? `
+          <div class="sa-record">
+            <button class="duo-btn btn-orange btn-sm" id="sa-rec-btn">🎙️ Grabarme (máx. 60 s)</button>
+            <audio id="sa-audio" controls class="hidden"></audio>
+            <small>Escúchate antes de puntuar. La grabación queda solo en este dispositivo: no se sube a ningún servidor.</small>
+          </div>` : ''}
+        <div class="sa-rubric">
+          ${SELF_ASSESSMENT_RUBRIC.map(c => `
+            <fieldset class="sa-criterion">
+              <legend>${escapeHTML(c.label)}</legend>
+              ${c.levels.map((desc, i) => `
+                <label class="sa-level">
+                  <input type="radio" name="sa-${c.id}" value="${i + 1}" ${prev?.scores?.[c.id] === i + 1 ? 'checked' : ''}>
+                  <span><strong>${i + 1}</strong> ${escapeHTML(desc)}</span>
+                </label>`).join('')}
+            </fieldset>`).join('')}
+        </div>
+      </div>`;
+
+    body.querySelector('#sa-open-song')?.addEventListener('click', () => this._navigateFromActionTarget('songs', cap.songId));
+
+    const recBtn = body.querySelector('#sa-rec-btn');
+    recBtn?.addEventListener('click', async () => {
+      if (recorder && recorder.state === 'recording') { stopRecording(); return; }
+      try {
+        recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const chunks = [];
+        recorder = new MediaRecorder(recStream);
+        recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+        recorder.onstop = () => {
+          if (recUrl) URL.revokeObjectURL(recUrl);
+          recUrl = URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }));
+          const audio = body.querySelector('#sa-audio');
+          audio.src = recUrl;
+          audio.classList.remove('hidden');
+          recBtn.textContent = '🎙️ Volver a grabar';
+        };
+        recorder.start();
+        recBtn.textContent = '⏹ Detener grabación';
+        recTimer = setTimeout(stopRecording, 60000);
+      } catch (_) {
+        recBtn.textContent = '⚠️ Micrófono no disponible';
+        recBtn.disabled = true;
+      }
+    });
+
+    const readScores = () => Object.fromEntries(SELF_ASSESSMENT_RUBRIC.map(c => {
+      const v = body.querySelector(`input[name="sa-${c.id}"]:checked`);
+      return [c.id, v ? Number(v.value) : null];
+    }));
+    const refresh = () => {
+      const filled = Object.values(readScores()).every(v => v !== null);
+      primaryBtn.disabled = !filled;
+    };
+    body.querySelectorAll('.sa-rubric input').forEach(inp => inp.addEventListener('change', refresh));
+
+    primaryBtn.textContent = 'GUARDAR AUTOEVALUACIÓN';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    refresh();
+    primaryBtn.onclick = () => {
+      const scores = readScores();
+      const result = scoreSelfAssessment(scores);
+      this.state.selfAssessments = {
+        ...(this.state.selfAssessments || {}),
+        [unit.id]: { date: todayISO(), scores, total: result.total, max: result.max, level: result.level }
+      };
+      // Los criterios en nivel 1 alimentan el repaso espaciado (vuelven mañana).
+      result.reviewTheories.forEach(tid => { this.state.srs = recordReview(this.state.srs, tid, false); });
+      this._saveState();
+      stopRecording();
+      this._renderSelfAssessmentResult(unit, result);
+    };
+  }
+
+  _renderSelfAssessmentResult(unit, result) {
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+    audioEngine.playSuccess();
+    const names = result.reviewTheories.map(t => this._getTheoryMeta(t).title);
+    body.innerHTML = `
+      <div class="lesson-victory-box">
+        <div class="victory-trophy-bounce">📝</div>
+        <h2>Autoevaluación guardada</h2>
+        <p class="victory-sub">Unidad ${unit.number} · ${escapeHTML(unit.title)}</p>
+        <div class="victory-stats-cards">
+          <div class="v-stat-card card-green"><span>PUNTAJE</span><strong>${result.total}/${result.max}</strong></div>
+          <div class="v-stat-card card-gold"><span>NIVEL</span><strong>${escapeHTML(result.level)}</strong></div>
+        </div>
+        ${names.length ? `<div class="rem-victory-chip">Programamos para mañana el repaso de: <strong>${names.map(escapeHTML).join(', ')}</strong>.</div>` : ''}
+      </div>`;
+    footer.className = 'lesson-footer-bar state-correct';
+    feedbackEl.innerHTML = '<strong>🔁 Vuelve a autoevaluarte</strong> <span>cuando practiques más: verás tu progreso en la ruta.</span>';
+    primaryBtn.textContent = 'VOLVER A LA RUTA';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      this._cleanupDrill();
+      document.getElementById('modal-lesson').classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
   }
 
   _renderSessionEnd() {
@@ -1107,6 +1321,11 @@ class CuerdaVivaApp {
       return;
     }
 
+    if (sess.showIntro) {
+      this._renderLessonIntro();
+      return;
+    }
+
     const total = sess.lesson.steps.length;
     if (sess.stepIdx >= total || sess.outOfHearts) {
       if (sess.remediationQueue.length > 0) {
@@ -1156,12 +1375,13 @@ class CuerdaVivaApp {
         <span class="badge-vivid" style="background:${sess.unit.color};color:#fff">${escapeHTML(step.badge || sess.unit.title)}</span>
         <h2 class="lesson-step-title">${escapeHTML(step.title)}</h2>
         ${step.image ? `
-          <div class="lesson-theory-img-box">
+          <div class="lesson-theory-img-box" data-first-only>
             <img src="${step.image}" alt="${escapeHTML(step.title)}" loading="lazy" />
           </div>
         ` : ''}
-        <div class="lesson-rich-prose">${formatRichText(step.body)}</div>
-        ${step.highlightBox ? `<div class="lesson-tip-callout">💡 <strong>Clave Práctica:</strong> ${escapeHTML(step.highlightBox)}</div>` : ''}
+        <div data-idea-dots></div>
+        <div class="lesson-rich-prose" data-idea-prose></div>
+        ${step.highlightBox ? `<div class="lesson-tip-callout hidden" data-last-only>💡 <strong>Clave Práctica:</strong> ${escapeHTML(step.highlightBox)}</div>` : ''}
         <div class="lesson-demo-row">
           ${step.demoChord ? `
             <div class="lesson-mini-chord-box">
@@ -1192,14 +1412,31 @@ class CuerdaVivaApp {
       this._navigateFromActionTarget(tab, itemId);
     });
 
-    primaryBtn.textContent = '¡ENTENDIDO, CONTINUAR!';
     primaryBtn.className = 'duo-btn btn-green btn-lg';
-    primaryBtn.disabled = false;
-    primaryBtn.onclick = () => {
+    // Una idea por pantalla (≤ 60 palabras), con glosario emergente.
+    this._pageTheoryChunks(body, chunkTheory(step.body), primaryBtn, '¡ENTENDIDO, CONTINUAR!', () => {
       audioEngine.playSuccess();
       sess.stepIdx++;
       this._renderCurrentLessonStep();
+    });
+  }
+
+  _pageTheoryChunks(body, chunks, primaryBtn, finalLabel, onDone) {
+    let idx = 0;
+    const show = () => {
+      const last = idx === chunks.length - 1;
+      body.querySelector('[data-idea-prose]').innerHTML = richWithGlossary(chunks[idx]);
+      body.querySelector('[data-idea-dots]').innerHTML = chunkDotsHtml(chunks.length, idx);
+      body.querySelectorAll('[data-first-only]').forEach(el => el.classList.toggle('hidden', idx !== 0));
+      body.querySelectorAll('[data-last-only]').forEach(el => el.classList.toggle('hidden', !last));
+      primaryBtn.disabled = false;
+      primaryBtn.textContent = last ? finalLabel : 'SIGUIENTE IDEA →';
+      primaryBtn.onclick = () => {
+        if (!last) { idx++; show(); return; }
+        onDone();
+      };
     };
+    show();
   }
 
   _renderRemediationTheoryStep() {
@@ -1242,15 +1479,16 @@ class CuerdaVivaApp {
         ${theory.summary ? `<p class="rem-summary-line">${escapeHTML(theory.summary)}</p>` : ''}
 
         ${theory.image ? `
-          <div class="lesson-theory-img-box">
+          <div class="lesson-theory-img-box" data-first-only>
             <img src="${theory.image}" alt="${escapeHTML(theory.title)}" />
           </div>
         ` : ''}
 
-        <div class="lesson-rich-prose">${formatRichText(theory.explanation)}</div>
+        <div data-idea-dots></div>
+        <div class="lesson-rich-prose" data-idea-prose></div>
 
         ${theory.exampleTip ? `
-          <div class="lesson-tip-callout">💡 <strong>Regla Clave para el Reintento:</strong> ${escapeHTML(theory.exampleTip)}</div>
+          <div class="lesson-tip-callout hidden" data-last-only>💡 <strong>Regla Clave para el Reintento:</strong> ${escapeHTML(theory.exampleTip)}</div>
         ` : ''}
 
         <div class="lesson-demo-row">
@@ -1276,14 +1514,12 @@ class CuerdaVivaApp {
       });
     });
 
-    primaryBtn.textContent = '✅ TEORÍA REPASADA — RESOLVER PREGUNTA';
     primaryBtn.className = 'duo-btn btn-orange btn-lg';
-    primaryBtn.disabled = false;
-    primaryBtn.onclick = () => {
+    this._pageTheoryChunks(body, chunkTheory(theory.explanation), primaryBtn, '✅ TEORÍA REPASADA — RESOLVER PREGUNTA', () => {
       userStore.markTheoryReviewed(item.theoryId, false);
       sess.phase = 'remediation_retry';
       this._renderInteractiveQuestionStep(item.step, item.questionId, true);
-    };
+    });
   }
 
   _finishQuestionAndProceed(wasCorrectInRemediation) {
@@ -1381,7 +1617,7 @@ class CuerdaVivaApp {
             <span class="badge-vivid badge-blue">🧠 Pregunta Teórico-Práctica</span>
             <span class="badge-vivid badge-purple">📖 ${escapeHTML(theory.title)}</span>
           </div>
-          <h2 class="lesson-step-title">${escapeHTML(step.question)}</h2>
+          <h2 class="lesson-step-title">${annotateGlossary(escapeHTML(step.question))}</h2>
           <div class="quiz-options-grid">
             ${shuffledOrder(step.options.length).map((idx, pos) => `
               <button class="quiz-3d-option" data-optidx="${idx}">
@@ -1484,7 +1720,7 @@ class CuerdaVivaApp {
             <span class="badge-vivid badge-purple">🎯 Desafío en el Diapasón</span>
             <span class="badge-vivid badge-blue">📖 ${escapeHTML(theory.title)}</span>
           </div>
-          <h2 class="lesson-step-title">${escapeHTML(step.question)}</h2>
+          <h2 class="lesson-step-title">${annotateGlossary(escapeHTML(step.question))}</h2>
           <p class="muted-hint">💡 Pista: ${escapeHTML(step.hint)}</p>
 
           <div class="lesson-mini-fretboard">
@@ -1771,6 +2007,8 @@ class CuerdaVivaApp {
     audioEngine.playLessonFanfare();
 
     const alreadyDone = this.state.completedLessons.includes(sess.lesson.id);
+    const unitJustCompleted = !alreadyDone && Array.isArray(sess.unit.lessons)
+      && sess.unit.lessons.every(l => l.id === sess.lesson.id || this.state.completedLessons.includes(l.id));
     const earnedXp = alreadyDone ? Math.round(sess.lesson.xp / 2) : sess.lesson.xp;
     if (!alreadyDone) {
       this.state.completedLessons.push(sess.lesson.id);
@@ -1811,6 +2049,18 @@ class CuerdaVivaApp {
             <strong>${this.state.streak} 🔥</strong>
           </div>
         </div>
+        ${(sess.lesson.objectives || []).length ? `
+          <div class="lesson-objectives victory-objectives">
+            <strong>✅ Ahora puedes:</strong>
+            <ul>${sess.lesson.objectives.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ul>
+          </div>
+        ` : ''}
+        ${unitJustCompleted ? `
+          <div class="victory-songs">
+            <strong>🏁 ¡Completaste la Unidad ${sess.unit.number}!</strong>
+            <button class="duo-btn btn-purple" id="btn-victory-self-assess">📝 Cierra la unidad con tu autoevaluación</button>
+          </div>
+        ` : ''}
         ${(sess.lesson.practiceSongs || []).length ? `
           <div class="victory-songs">
             <strong>🎶 Aplícalo en una canción para todos:</strong>
@@ -1826,6 +2076,9 @@ class CuerdaVivaApp {
 
     footer.className = 'lesson-footer-bar state-correct';
     feedbackEl.innerHTML = '<strong>🎉 ¡Gran constancia!</strong> <span>Todos los aciertos y repasos quedaron guardados en tu Bitácora.</span>';
+    body.querySelector('#btn-victory-self-assess')?.addEventListener('click', () => {
+      this.openUnitSelfAssessment(sess.unit);
+    });
     body.querySelectorAll('[data-practice-song]').forEach(btn => {
       btn.addEventListener('click', () => {
         const ps = sess.lesson.practiceSongs[Number(btn.dataset.practiceSong)];

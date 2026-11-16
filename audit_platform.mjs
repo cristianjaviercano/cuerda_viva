@@ -34,7 +34,8 @@ import { RHYTHM_PATTERNS } from './js/rhythm-trainer.js';
 import {
   SKILL_UNITS,
   RETO_30_DIAS,
-  THEORY_LIBRARY
+  THEORY_LIBRARY,
+  UNIT_CAPSTONES
 } from './js/curriculum-db.js';
 import {
   GUITAR_PARTS_3D,
@@ -55,8 +56,14 @@ import {
   neutralFeedback,
   loseHeart,
   gainHearts,
-  pickReviewTheory
+  pickReviewTheory,
+  chunkTheory,
+  countWords,
+  estimateLessonMinutes,
+  SELF_ASSESSMENT_RUBRIC,
+  scoreSelfAssessment
 } from './js/pedagogy.js';
+import { GLOSSARY, annotateGlossary } from './js/glossary.js';
 import {
   OnsetDetector,
   beatGrid,
@@ -819,6 +826,64 @@ async function runAudit() {
     const exists = ps.tab === 'songs' ? MASTER_SONGS.some(sg => sg.id === ps.itemId) : TABS_DB.some(t => t.id === ps.itemId);
     assert(exists, `Lección ${ps.lesson} enlaza "${ps.itemId}" existente`);
   }
+
+  // ==================== 13. DISEÑO INSTRUCCIONAL (PARTE E) ====================
+  console.log('\n🧩 13. Diseño instruccional: objetivos, una idea por pantalla, glosario y autoevaluación');
+
+  // 13.1 Objetivos observables y duración
+  const VAGUE_VERBS = /^(conocer|entender|saber|comprender|aprender|familiarizarse|apreciar|ver|estudiar)\b/i;
+  for (const { lesson } of orderedLessons) {
+    const objs = lesson.objectives || [];
+    const okObjs = objs.length >= 1 && objs.length <= 3 && objs.every(o => o.length <= 110 && !VAGUE_VERBS.test(o) && /^[A-ZÁÉÍÓÚ]/.test(o));
+    assert(okObjs, `Lección ${lesson.id}: 1–3 objetivos observables (sin "conocer/entender/saber…")`);
+    const min = estimateLessonMinutes(lesson);
+    assert(min >= 2 && min <= 12, `Lección ${lesson.id}: duración estimada ${min} min (2–12)`);
+  }
+
+  // 13.2 Una idea por pantalla: tarjetas ≤ 80 palabras sin perder contenido
+  const words = t => String(t).replace(/[*`•]/g, ' ').split(/\s+/).filter(Boolean);
+  let theoryCards = 0;
+  const longCards = [];
+  const lostContent = [];
+  const checkChunks = (id, text) => {
+    const chunks = chunkTheory(text);
+    theoryCards += chunks.length;
+    chunks.forEach((c, i) => { if (countWords(c) > 80) longCards.push(`${id}#${i}`); });
+    if (words(chunks.join(' ')).join(' ') !== words(text).join(' ')) lostContent.push(id);
+  };
+  orderedLessons.forEach(({ lesson }) => lesson.steps.forEach((st, i) => { if (st.type === 'theory') checkChunks(`${lesson.id}_s${i}`, st.body); }));
+  Object.values(THEORY_LIBRARY).forEach(t => checkChunks(`lib:${t.id}`, t.explanation));
+  assert(longCards.length === 0, `Ninguna pantalla teórica supera 80 palabras (${theoryCards} tarjetas)${longCards.length ? ': ' + longCards.join(', ') : ''}`);
+  assert(lostContent.length === 0, `La división en tarjetas conserva todo el texto original${lostContent.length ? ': ' + lostContent.join(', ') : ''}`);
+  assert(/_pageTheoryChunks\(body, chunkTheory\(step\.body\)/.test(appSrc) && /_pageTheoryChunks\(body, chunkTheory\(theory\.explanation\)/.test(appSrc),
+    'La teoría de la lección y la de remediación se muestran una idea por pantalla');
+
+  // 13.3 Glosario emergente
+  const stripTags = h => h.replace(/<[^>]+>/g, '');
+  const sampleHtml = '<p>El <strong>dominante secundario</strong> lleva a la tónica; pisa el traste y otro traste.</p><code>traste</code><img alt="traste">';
+  const annotated = annotateGlossary(sampleHtml);
+  assert(stripTags(annotated) === stripTags(sampleHtml), 'annotateGlossary no altera el texto visible');
+  assert((annotated.match(/class="gloss-term"/g) || []).length === 3, 'Marca solo la primera aparición de cada término (dominante secundario, tónica, traste)');
+  assert(annotated.includes('<code>traste</code>') && annotated.includes('alt="traste"'), 'No marca dentro de <code> ni de atributos');
+  assert(!/data-def="[^"]*<button/.test(annotated), 'Las definiciones insertadas no se vuelven a anotar');
+  assert(GLOSSARY.every(([, def]) => countWords(def) <= 25), 'Cada definición del glosario tiene ≤ 25 palabras');
+  const corpus = orderedLessons.flatMap(o => o.lesson.steps).map(st => [st.body, st.question].filter(Boolean).join(' ')).join(' ')
+    + ' ' + Object.values(THEORY_LIBRARY).map(t => t.explanation).join(' ');
+  const usedTerms = GLOSSARY.filter(([term]) => new RegExp(`(?<![\\p{L}])${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'iu').test(corpus));
+  assert(usedTerms.length / GLOSSARY.length >= 0.8, `El ${Math.round(usedTerms.length / GLOSSARY.length * 100)}% de los términos del glosario aparece en el curso (≥ 80%)`);
+
+  // 13.4 Autoevaluación de cierre de unidad
+  assert(SKILL_UNITS.every(u => UNIT_CAPSTONES[u.id]?.task), 'Cada unidad tiene una tarea de cierre para autoevaluarse');
+  assert(Object.values(UNIT_CAPSTONES).every(c => !c.songId || MASTER_SONGS.some(sg => sg.id === c.songId)), 'Las canciones de las tareas de cierre existen');
+  assert(SELF_ASSESSMENT_RUBRIC.length === 4 && SELF_ASSESSMENT_RUBRIC.every(c => c.levels.length === 3 && THEORY_LIBRARY[c.theoryId]),
+    'La rúbrica tiene 4 criterios × 3 niveles vinculados a teorías existentes');
+  const best = scoreSelfAssessment({ limpieza: 3, pulso: 3, transiciones: 3, postura: 3 });
+  const weakSA = scoreSelfAssessment({ limpieza: 1, pulso: 2, transiciones: 1, postura: 3 });
+  assert(best.total === 12 && best.level === 'Dominado' && best.reviewTheories.length === 0, 'Puntaje máximo → "Dominado" sin repasos');
+  assert(weakSA.total === 7 && weakSA.level === 'Necesita práctica' && weakSA.reviewTheories.join(',') === 'minor_open_chords,major_open_chords',
+    'Los criterios en nivel 1 programan el repaso de su teoría');
+  assert(/openUnitSelfAssessment\(/.test(appSrc) && /recordReview\(this\.state\.srs, tid, false\)/.test(appSrc) && /no se sube a ningún servidor/.test(appSrc),
+    'La app ofrece la autoevaluación, la conecta con el repaso espaciado y la grabación es solo local');
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

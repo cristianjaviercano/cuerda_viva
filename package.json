@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
-    "py": "python3 serve.py"
+    "py": "python3 serve.py",
+    "test": "node audit_platform.mjs"
   },
   "keywords": [
     "guitar",

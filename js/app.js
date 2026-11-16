@@ -28,6 +28,16 @@ import { FretboardStudio } from './fretboard.js';
 import { Guitar3DStudio } from './guitar-3d.js';
 import { SKILL_UNITS, RETO_30_DIAS, THEORY_LIBRARY } from './curriculum-db.js';
 import { userStore, createDefaultUserState } from './user-store.js';
+import {
+  MAX_HEARTS,
+  HEARTS_PER_REVIEW,
+  HEARTS_RESTORED_AFTER_FAILED_LESSON,
+  shuffledOrder,
+  neutralFeedback,
+  loseHeart,
+  gainHearts,
+  pickReviewTheory
+} from './pedagogy.js';
 
 const LEVEL_TITLES = [
   { minXp: 0,    level: 1, title: 'Semilla Musical 🌱' },
@@ -284,14 +294,10 @@ class CuerdaVivaApp {
     });
 
     document.getElementById('btn-refill-hearts')?.addEventListener('click', () => {
-      if (this.state.hearts < 5) {
-        this.state.hearts = 5;
-        this._saveState();
-        this.updateTopbarStats();
-        audioEngine.playSuccess();
-        this._showXPToast('❤️❤️❤️❤️❤️ ¡Vidas recargadas!', 'Sigue practicando sin límites');
+      if (this.state.hearts < MAX_HEARTS) {
+        this._startHeartRecovery();
       } else {
-        this._showXPToast('❤️ Tienes 5/5 vidas completas', '¡Listo para cualquier lección!');
+        this._showXPToast(`❤️ Tienes ${MAX_HEARTS}/${MAX_HEARTS} vidas completas`, '¡Listo para cualquier lección!');
       }
     });
 
@@ -632,9 +638,9 @@ class CuerdaVivaApp {
 
   openLessonModal(unit, lesson) {
     if (this.state.hearts <= 0) {
-      this.state.hearts = 5;
-      this._saveState();
-      this.updateTopbarStats();
+      this._showXPToast('💔 Sin vidas', 'Repasa una teoría para recuperarlas (o vuelve mañana)');
+      this._startHeartRecovery();
+      return;
     }
 
     const questionSteps = lesson.steps.filter(s => s.type !== 'theory');
@@ -652,7 +658,8 @@ class CuerdaVivaApp {
       phase: 'initial', // 'initial' | 'remediation_theory' | 'remediation_retry'
       remediationItem: null,
       remediationCompleted: 0,
-      remediationTotalQueued: 0
+      remediationTotalQueued: 0,
+      outOfHearts: false
     };
 
     const modal = document.getElementById('modal-lesson');
@@ -770,6 +777,82 @@ class CuerdaVivaApp {
     sess.remediationTotalQueued++;
   }
 
+  // ==================== ECONOMÍA DE VIDAS ====================
+  // Las vidas se pierden solo en la ronda inicial. Al llegar a 0 termina la ronda
+  // y se pasa al repaso obligatorio; la lección no se marca como completada.
+  _applyHeartLoss(isRemediation) {
+    const sess = this.lessonSession;
+    const { hearts, depleted } = loseHeart(this.state.hearts, { isRemediation });
+    this.state.hearts = hearts;
+    this._saveState();
+    this.updateTopbarStats();
+    const el = document.getElementById('lesson-hearts-count');
+    if (el) el.textContent = String(hearts);
+    if (depleted && !isRemediation && sess && sess.mode === 'lesson') {
+      sess.outOfHearts = true;
+    }
+  }
+
+  // Recuperar vidas exige practicar: se abre un repaso de una teoría débil
+  // (o de una lección ya superada). Completarlo otorga HEARTS_PER_REVIEW vidas.
+  _startHeartRecovery() {
+    const theoryId = pickReviewTheory(
+      userStore.getWeakTheories(),
+      SKILL_UNITS,
+      this.state.completedLessons
+    );
+    if (!theoryId) {
+      this._showXPToast('❤️ Aún no hay teorías para repasar', 'Las vidas se recargan cada día');
+      return;
+    }
+    this.openStandaloneRemediation(theoryId);
+  }
+
+  _renderLessonOutOfHeartsScreen() {
+    const sess = this.lessonSession;
+    if (!sess) return;
+    pitchDetector.offPitch('lesson-runner');
+    this._updateLessonHeaderChrome(100, '');
+
+    this.state.hearts = gainHearts(this.state.hearts, HEARTS_RESTORED_AFTER_FAILED_LESSON);
+    this._saveState();
+    this.updateTopbarStats();
+
+    const totalQ = Math.max(1, sess.initialQuestionsTotal || 1);
+    const answered = sess.initialHits + sess.mistakes;
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+
+    body.innerHTML = `
+      <div class="lesson-victory-box">
+        <div class="victory-trophy-bounce">💪</div>
+        <h2>Lección aún no superada</h2>
+        <p class="victory-sub">${escapeHTML(sess.lesson.title)}</p>
+        <div class="rem-victory-chip">
+          Repasaste <strong>${sess.remediationCompleted}</strong> teoría(s) y recuperaste
+          <strong>${HEARTS_RESTORED_AFTER_FAILED_LESSON} ❤️</strong>. Vuelve a intentarlo con calma.
+        </div>
+        <div class="victory-stats-cards">
+          <div class="v-stat-card card-green"><span>ACIERTOS 1ª RONDA</span><strong>${sess.initialHits}/${totalQ}</strong></div>
+          <div class="v-stat-card card-orange"><span>RESPONDIDAS</span><strong>${answered}/${totalQ}</strong></div>
+        </div>
+      </div>
+    `;
+
+    footer.className = 'lesson-footer-bar state-remediation';
+    feedbackEl.innerHTML = '<strong>📈 Equivocarse es parte del aprendizaje.</strong> <span>Tus errores quedaron en la Bitácora para repasarlos.</span>';
+    primaryBtn.textContent = 'VOLVER A LA RUTA';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      document.getElementById('modal-lesson').classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
+  }
+
   _getTheoryMeta(theoryId) {
     return THEORY_LIBRARY[theoryId] || {
       id: theoryId || 'general_music',
@@ -817,7 +900,7 @@ class CuerdaVivaApp {
     }
 
     const total = sess.lesson.steps.length;
-    if (sess.stepIdx >= total) {
+    if (sess.stepIdx >= total || sess.outOfHearts) {
       if (sess.remediationQueue.length > 0) {
         sess.phase = 'remediation_theory';
         sess.remediationItem = sess.remediationQueue[0];
@@ -1004,6 +1087,8 @@ class CuerdaVivaApp {
           this._renderRemediationTheoryStep();
         } else if (sess.mode === 'standalone_remediation') {
           this._renderStandaloneRemediationComplete();
+        } else if (sess.outOfHearts) {
+          this._renderLessonOutOfHeartsScreen();
         } else {
           this._renderLessonVictoryScreen();
         }
@@ -1084,10 +1169,10 @@ class CuerdaVivaApp {
           </div>
           <h2 class="lesson-step-title">${escapeHTML(step.question)}</h2>
           <div class="quiz-options-grid">
-            ${step.options.map((opt, idx) => `
+            ${shuffledOrder(step.options.length).map((idx, pos) => `
               <button class="quiz-3d-option" data-optidx="${idx}">
-                <span class="opt-num-badge">${idx + 1}</span>
-                <span class="opt-label-txt">${escapeHTML(opt)}</span>
+                <span class="opt-num-badge">${pos + 1}</span>
+                <span class="opt-label-txt">${escapeHTML(step.options[idx])}</span>
               </button>
             `).join('')}
           </div>
@@ -1115,8 +1200,8 @@ class CuerdaVivaApp {
           sess.stepResolved = true;
           const isCorrect = sess.selectedOption === step.correctIndex;
           lastOutcome = isCorrect;
-          const allOpts = body.querySelectorAll('.quiz-3d-option');
-          allOpts[step.correctIndex]?.classList.add('correct');
+          const optBtn = idx => body.querySelector(`.quiz-3d-option[data-optidx="${idx}"]`);
+          optBtn(step.correctIndex)?.classList.add('correct');
 
           this._logChallengeOutcome({
             step,
@@ -1131,26 +1216,27 @@ class CuerdaVivaApp {
             if (!isRemediation) sess.initialHits++;
             audioEngine.playSuccess();
             footer.className = 'lesson-footer-bar state-correct';
-            feedbackEl.innerHTML = `<strong>✅ ¡Excelente!</strong> <span>${escapeHTML(step.explanation)}</span>`;
+            feedbackEl.innerHTML = `<strong>✅ ¡Excelente!</strong> <span>${escapeHTML(neutralFeedback(step.explanation))}</span>`;
             primaryBtn.textContent = 'CONTINUAR';
             primaryBtn.className = 'duo-btn btn-green btn-lg';
           } else {
-            allOpts[sess.selectedOption]?.classList.add('wrong');
+            optBtn(sess.selectedOption)?.classList.add('wrong');
             audioEngine.playError();
             sess.mistakes++;
-            this.state.hearts = Math.max(1, this.state.hearts - 1);
-            this._saveState();
-            this.updateTopbarStats();
-            document.getElementById('lesson-hearts-count').textContent = String(this.state.hearts);
+            this._applyHeartLoss(isRemediation);
 
             if (!isRemediation) {
               this._queueRemediation(sess, step, questionId);
             }
 
             footer.className = 'lesson-footer-bar state-wrong';
+            const correctTxt = escapeHTML(step.options[step.correctIndex] || '');
+            const why = escapeHTML(neutralFeedback(step.explanation));
             feedbackEl.innerHTML = isRemediation
-              ? `<strong>⚠️ Aún requiere refuerzo:</strong> <span>${escapeHTML(step.explanation)}</span>`
-              : `<strong>💡 Queda anotado para repasar la teoría antes de cerrar el módulo:</strong> <span>${escapeHTML(step.explanation)}</span>`;
+              ? `<strong>⚠️ Aún requiere refuerzo.</strong> <span>Respuesta correcta: «${correctTxt}». ${why}</span>`
+              : sess.outOfHearts
+                ? `<strong>💔 Te quedaste sin vidas.</strong> <span>Respuesta correcta: «${correctTxt}». Ahora repasarás la teoría de tus errores.</span>`
+                : `<strong>💡 Respuesta correcta: «${correctTxt}».</strong> <span>${why} Lo repasaremos antes de cerrar el módulo.</span>`;
             primaryBtn.textContent = isRemediation ? '📖 VOLVER A REPASAR TEORÍA' : 'CONTINUAR';
             primaryBtn.className = 'duo-btn btn-orange btn-lg';
           }
@@ -1252,10 +1338,7 @@ class CuerdaVivaApp {
             if (!missedThisAttempt) {
               missedThisAttempt = true;
               sess.mistakes++;
-              this.state.hearts = Math.max(1, this.state.hearts - 1);
-              this._saveState();
-              this.updateTopbarStats();
-              document.getElementById('lesson-hearts-count').textContent = String(this.state.hearts);
+              this._applyHeartLoss(isRemediation);
 
               this._logChallengeOutcome({
                 step,
@@ -1528,6 +1611,11 @@ class CuerdaVivaApp {
     this._updateLessonHeaderChrome(100, '✅ Consolidado');
     audioEngine.playLessonFanfare();
     this.awardXP(sess.lesson.xp || 20, sess.lesson.title);
+    const heartsBefore = this.state.hearts;
+    this.state.hearts = gainHearts(this.state.hearts, HEARTS_PER_REVIEW);
+    const heartsGained = this.state.hearts - heartsBefore;
+    this._saveState();
+    this.updateTopbarStats();
 
     const body = document.getElementById('lesson-step-body');
     const footer = document.getElementById('lesson-footer-bar');
@@ -1545,7 +1633,7 @@ class CuerdaVivaApp {
         <div class="victory-stats-cards">
           <div class="v-stat-card card-gold"><span>BONO REPASO</span><strong>+20 XP ⚡</strong></div>
           <div class="v-stat-card card-green"><span>DOMINIO</span><strong>100% ✓</strong></div>
-          <div class="v-stat-card card-orange"><span>BITÁCORA</span><strong>Actualizada</strong></div>
+          <div class="v-stat-card card-orange"><span>VIDAS</span><strong>${heartsGained > 0 ? `+${heartsGained} ❤️` : `${this.state.hearts} ❤️`}</strong></div>
         </div>
       </div>
     `;

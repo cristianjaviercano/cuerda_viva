@@ -48,6 +48,14 @@ import {
   createUserDatabase,
   createRequestHandler
 } from './server.js';
+import {
+  MAX_HEARTS,
+  shuffledOrder,
+  neutralFeedback,
+  loseHeart,
+  gainHearts,
+  pickReviewTheory
+} from './js/pedagogy.js';
 
 let passedChecks = 0;
 let totalChecks = 0;
@@ -527,6 +535,70 @@ async function runAudit() {
   const jsonStr = clientStore.exportLogsJSON();
   const jsonParsed = JSON.parse(jsonStr);
   assert(jsonParsed.user && jsonParsed.stats && Array.isArray(jsonParsed.logs), 'exportLogsJSON genera estructura válida con usuario, stats y logs');
+
+  // ==================== 8. VALIDEZ DE LA EVALUACIÓN (PEDAGOGÍA) ====================
+  console.log('\n🧪 8. Validez de la evaluación: barajado, distractores y vidas');
+
+  const quizzes = [];
+  for (const u of SKILL_UNITS) for (const l of u.lessons) l.steps.forEach((st, i) => {
+    if (st.type === 'quiz') quizzes.push({ id: `${l.id}_s${i}`, st });
+  });
+
+  for (const { id, st } of quizzes) {
+    const norm = st.options.map(o => String(o).toLowerCase().trim());
+    assert(
+      st.options.length >= 3 && st.correctIndex >= 0 && st.correctIndex < st.options.length && new Set(norm).size === norm.length,
+      `Quiz ${id}: ≥3 opciones únicas y correctIndex válido`
+    );
+  }
+
+  // Pista de longitud: la opción correcta no debe ser sistemáticamente la más larga.
+  const longestCorrect = quizzes.filter(({ st }) => {
+    const L = st.options.map(o => o.length);
+    return L.every((v, i) => i === st.correctIndex || v < L[st.correctIndex]);
+  }).length;
+  const longestPct = longestCorrect / quizzes.length;
+  assert(longestPct <= 0.35, `Sesgo de longitud: correcta = más larga en ${(longestPct * 100).toFixed(1)}% (≤ 35%)`);
+
+  // Barajado Fisher–Yates: permutación válida y distribución uniforme (semilla fija).
+  let seed = 12345;
+  const rng = () => ((seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648);
+  const perm = shuffledOrder(4, rng);
+  assert([...perm].sort().join(',') === '0,1,2,3', 'shuffledOrder devuelve una permutación válida');
+  const slotCount = [0, 0, 0, 0];
+  const RUNS = 20000;
+  for (let r = 0; r < RUNS; r++) slotCount[shuffledOrder(4, rng).indexOf(1)]++;
+  const maxDev = Math.max(...slotCount.map(c => Math.abs(c / RUNS - 0.25)));
+  assert(maxDev < 0.02, `La respuesta correcta cae en cada posición ~25% (desviación máx. ${(maxDev * 100).toFixed(2)}%)`);
+
+  const appSrc = fs.readFileSync(path.join(__dirname, 'js', 'app.js'), 'utf8');
+  assert(appSrc.includes('shuffledOrder(step.options.length)'), 'El ejecutor de lecciones baraja las opciones del quiz');
+  assert(!/Math\.max\(1,\s*this\.state\.hearts/.test(appSrc), 'Las vidas pueden llegar a 0 (sin piso artificial en 1)');
+  assert(!/this\.state\.hearts\s*=\s*5;/.test(appSrc), 'No existe recarga gratuita de vidas en el cliente');
+
+  // Retroalimentación neutra al fallar
+  assert(neutralFeedback('¡Correcto! Los trastes son...') === 'Los trastes son...', 'neutralFeedback elimina "¡Correcto!" inicial');
+  assert(neutralFeedback('Sin elogio.') === 'Sin elogio.', 'neutralFeedback no altera textos sin elogio');
+
+  // Economía de vidas
+  assert(loseHeart(1).hearts === 0 && loseHeart(1).depleted, 'Perder la última vida deja 0 y marca agotamiento');
+  assert(loseHeart(0).hearts === 0, 'Las vidas nunca son negativas');
+  assert(loseHeart(3, { isRemediation: true }).hearts === 3, 'Los errores en remediación no restan vidas');
+  assert(gainHearts(4, 2) === MAX_HEARTS && gainHearts(0, 2) === 2, 'gainHearts respeta el máximo');
+
+  // Selección de teoría para recuperar vidas
+  assert(
+    pickReviewTheory([{ theoryId: 'x', needsReview: false }, { theoryId: 'guitar_posture', needsReview: true }], SKILL_UNITS, []) === 'guitar_posture',
+    'pickReviewTheory prioriza teorías pendientes de la bitácora'
+  );
+  const fallbackTheory = pickReviewTheory([], SKILL_UNITS, ['u1_l1'], () => 0);
+  assert(Boolean(THEORY_LIBRARY[fallbackTheory]), 'pickReviewTheory usa lecciones completadas si no hay pendientes');
+  assert(
+    pickReviewTheory([{ theoryId: 'hands_nails', needsReview: false }], SKILL_UNITS, []) === 'hands_nails',
+    'pickReviewTheory reutiliza teorías falladas y ya consolidadas (recuperación espaciada)'
+  );
+  assert(pickReviewTheory([], SKILL_UNITS, []) === null, 'pickReviewTheory devuelve null sin historial');
+  assert(!/gainHearts\(this\.state\.hearts,\s*MAX_HEARTS\)/.test(appSrc), 'Sin historial no se regalan vidas');
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

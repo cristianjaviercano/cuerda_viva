@@ -42,3 +42,6 @@ yarn-error.log*
 .env.*.local
 
 .vercel
+
+# Base de datos local de usuarios (generada en tiempo de ejecución)
+data/users_db.json

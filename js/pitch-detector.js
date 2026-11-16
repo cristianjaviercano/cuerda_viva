@@ -244,8 +244,17 @@ class PitchDetector {
     const rms = Math.sqrt(sumSq / this.timeBuffer.length);
     const gateOpen = rms >= this.noiseGate;
 
+    // RMS de los últimos ~23 ms (1024 muestras): resolución temporal para detectar ataques.
+    let recentSq = 0;
+    const recentN = Math.min(1024, this.timeBuffer.length);
+    for (let i = this.timeBuffer.length - recentN; i < this.timeBuffer.length; i++) {
+      recentSq += this.timeBuffer[i] * this.timeBuffer[i];
+    }
+    const rmsRecent = Math.sqrt(recentSq / recentN);
+    const now = performance.now();
+
     this.levelSubscribers.forEach(fn => {
-      try { fn({ rms, peak, active: gateOpen }); } catch (_) {}
+      try { fn({ rms, peak, active: gateOpen, rmsRecent, t: now }); } catch (_) {}
     });
 
     if (gateOpen) {

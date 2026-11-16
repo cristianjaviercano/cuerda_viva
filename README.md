@@ -15,6 +15,11 @@ Repositorio oficial: [https://github.com/cristianjaviercano/cuerda_viva](https:/
 * **Ciclo de Aprendizaje Completo & Remediación Obligatoria**:
   - Cada reto evalúa un concepto teórico respaldado por la biblioteca pedagógica (`THEORY_LIBRARY`).
   - Si el estudiante comete un error, el sistema bloquea el avance desordenado y activa la **fase de remediación**: se explica la teoría exacta con ilustraciones y ejemplos sonoros, permitiendo repetir y consolidar el aprendizaje antes de finalizar el módulo.
+* **Retos de Habilidad Medibles** (con micrófono/línea o, sin él, tocando la pantalla):
+  - ⏱️ **Cambios de acorde cronometrados** (`chord_change`): cambios limpios entre dos acordes en una ventana de tiempo, detectados por croma FFT.
+  - 🥁 **Precisión de pulso** (`strum_timing`): cuenta de entrada y metrónomo silencioso; mide el error medio en ms y la tendencia a adelantarse o atrasarse.
+  - 👂 **Oído Mayor / menor** (`ear_quality`): ítems con tónica aleatoria en cada intento.
+* **Evaluación válida**: opciones barajadas, distractores basados en errores reales y vidas que se recuperan repasando.
 * **Registro de Estudiantes & Bitácora**:
   - Múltiples perfiles de usuario.
   - Registro pormenorizado de **Aciertos** y **No Aciertos**.

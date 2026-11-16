@@ -38,6 +38,7 @@ import {
   gainHearts,
   pickReviewTheory
 } from './pedagogy.js';
+import { DRILL_TYPES, renderDrill } from './skill-drills.js';
 
 const LEVEL_TITLES = [
   { minXp: 0,    level: 1, title: 'Semilla Musical 🌱' },
@@ -339,6 +340,7 @@ class CuerdaVivaApp {
   _navigateFromActionTarget(tab, itemId) {
     document.getElementById('modal-lesson')?.classList.add('hidden');
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
     this.lessonSession = null;
     this.switchView(tab);
     if (tab === 'tabs' && this.tabPlayer && itemId) this.tabPlayer.selectTab(itemId);
@@ -667,6 +669,7 @@ class CuerdaVivaApp {
 
     document.getElementById('btn-quit-lesson').onclick = () => {
       pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
       modal.classList.add('hidden');
       this.lessonSession = null;
       this.renderLearnView();
@@ -758,6 +761,7 @@ class CuerdaVivaApp {
 
     document.getElementById('btn-quit-lesson').onclick = () => {
       pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
       modal.classList.add('hidden');
       this.lessonSession = null;
       this.renderLearnView();
@@ -812,6 +816,7 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
     this._updateLessonHeaderChrome(100, '');
 
     this.state.hearts = gainHearts(this.state.hearts, HEARTS_RESTORED_AFTER_FAILED_LESSON);
@@ -853,6 +858,82 @@ class CuerdaVivaApp {
     };
   }
 
+  _cleanupDrill() {
+    if (typeof this._drillCleanup === 'function') {
+      try { this._drillCleanup(); } catch (_) {}
+    }
+    this._drillCleanup = null;
+  }
+
+  // ---- RETOS DE HABILIDAD MEDIBLES (cambios de acorde, pulso, oído) ----
+  _renderSkillDrillStep(step, questionId, isRemediation, ui) {
+    const sess = this.lessonSession;
+    const { body, footer, feedbackEl, primaryBtn, theory, remediationBannerHtml } = ui;
+    const kindLabel = {
+      chord_change: '⏱️ Cambios de Acorde Cronometrados',
+      strum_timing: '🥁 Precisión de Pulso (ms)',
+      ear_quality: '👂 Entrenamiento Auditivo'
+    }[step.type];
+    let outcome = false;
+
+    primaryBtn.textContent = 'COMPLETA EL EJERCICIO';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = true;
+
+    this._drillCleanup = renderDrill(step, {
+      body,
+      headerHtml: `
+        ${remediationBannerHtml}
+        <div class="step-meta-line" style="justify-content:center;">
+          <span class="badge-vivid badge-orange">${kindLabel}</span>
+          <span class="badge-vivid badge-purple">📖 ${escapeHTML(theory.title)}</span>
+        </div>`,
+      onResult: ({ success, userAnswer, expectedAnswer, summaryHtml }) => {
+        if (sess.stepResolved) return;
+        sess.stepResolved = true;
+        outcome = success;
+        this._logChallengeOutcome({
+          step,
+          questionId,
+          outcome: success ? 'acierto' : 'no_acierto',
+          isRemediation,
+          userAnswer,
+          expectedAnswer
+        });
+
+        const summary = escapeHTML(summaryHtml);
+        if (success) {
+          if (!isRemediation) sess.initialHits++;
+          audioEngine.playSuccess();
+          footer.className = 'lesson-footer-bar state-correct';
+          feedbackEl.innerHTML = `<strong>✅ ¡Meta cumplida!</strong> <span>${summary}</span>`;
+          primaryBtn.textContent = 'CONTINUAR';
+          primaryBtn.className = 'duo-btn btn-green btn-lg';
+        } else {
+          audioEngine.playError();
+          sess.mistakes++;
+          this._applyHeartLoss(isRemediation);
+          if (!isRemediation) this._queueRemediation(sess, step, questionId);
+          footer.className = 'lesson-footer-bar state-wrong';
+          feedbackEl.innerHTML = isRemediation
+            ? `<strong>📈 Aún no alcanzas la meta.</strong> <span>${summary} Repasa la técnica y vuelve a intentarlo.</span>`
+            : sess.outOfHearts
+              ? `<strong>💔 Te quedaste sin vidas.</strong> <span>${summary} Ahora repasarás la técnica.</span>`
+              : `<strong>📈 Aún no alcanzas la meta.</strong> <span>${summary} Lo repetiremos tras repasar la técnica.</span>`;
+          primaryBtn.textContent = isRemediation ? '📖 VOLVER A REPASAR TEORÍA' : 'CONTINUAR';
+          primaryBtn.className = 'duo-btn btn-orange btn-lg';
+        }
+        primaryBtn.disabled = false;
+      }
+    });
+
+    primaryBtn.onclick = () => {
+      if (!sess.stepResolved) return;
+      this._cleanupDrill();
+      this._finishQuestionAndProceed(outcome);
+    };
+  }
+
   _getTheoryMeta(theoryId) {
     return THEORY_LIBRARY[theoryId] || {
       id: theoryId || 'general_music',
@@ -888,6 +969,7 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     if (sess.phase === 'remediation_theory') {
       this._renderRemediationTheoryStep();
@@ -994,6 +1076,7 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess || !sess.remediationItem) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     const item = sess.remediationItem;
     const theory = this._getTheoryMeta(item.theoryId);
@@ -1244,6 +1327,14 @@ class CuerdaVivaApp {
           this._finishQuestionAndProceed(lastOutcome);
         }
       };
+      return;
+    }
+
+    // ---- TIPO D: RETOS DE HABILIDAD MEDIBLES ----
+    if (DRILL_TYPES.includes(step.type)) {
+      this._renderSkillDrillStep(step, questionId, isRemediation, {
+        body, footer, feedbackEl, primaryBtn, theory, remediationBannerHtml
+      });
       return;
     }
 
@@ -1543,6 +1634,7 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     this._updateLessonHeaderChrome(100, '');
     audioEngine.playLessonFanfare();
@@ -1607,6 +1699,7 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     this._updateLessonHeaderChrome(100, '✅ Consolidado');
     audioEngine.playLessonFanfare();

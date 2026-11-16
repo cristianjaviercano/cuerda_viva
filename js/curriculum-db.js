@@ -454,6 +454,17 @@ export const SKILL_UNITS = [
             instruction: 'Enciende el micrófono/línea arriba o valida con la referencia virtual pulsando la 5ª cuerda libre.',
             targetMidi: 45,
             targetLabel: 'A2 (La · 5ª cuerda al aire)'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'open_strings_colors',
+            title: 'Tu primer pulso: 6ª cuerda al aire a 60 BPM',
+            instruction: 'Pulsa la 6ª cuerda (Mi grave) con el pulgar UNA vez por pulso. Escucha la cuenta de entrada y mantén el pulso tú solo.',
+            bpm: 60,
+            beatsPerBar: 4,
+            bars: 2,
+            toleranceMs: 100,
+            minHitRate: 0.7
           }
         ]
       },
@@ -850,6 +861,15 @@ export const SKILL_UNITS = [
             title: 'Toca La Menor (Am / LA-) limpio',
             instruction: 'Cambia de Dm a Am con suavidad y deja sonar desde la 5ª cuerda.',
             chord: 'Am'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'minor_open_chords',
+            title: 'Cambios cronometrados: Em ⇄ Am',
+            instruction: 'Alterna Mi menor y La menor. Cuenta un cambio solo si el nuevo acorde suena limpio. Mueve los dedos como un bloque.',
+            chords: ['Em', 'Am'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       },
@@ -903,6 +923,23 @@ export const SKILL_UNITS = [
             title: 'Ahora pivotea a Re Mayor (D / RE+)',
             instruction: 'Forma el triángulo en las 3 primas dejando el Dedo 3 anclado en 2ª tr.3.',
             chord: 'D'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'major_open_chords',
+            title: 'Cambios cronometrados: G ⇄ D con dedo pivote',
+            instruction: 'Alterna Sol y Re dejando el dedo 3 anclado en la 2ª cuerda traste 3. Prioriza la limpieza sobre la velocidad.',
+            chords: ['G', 'D'],
+            durationSec: 30,
+            targetChanges: 8
+          },
+          {
+            type: 'ear_quality',
+            theoryId: 'major_open_chords',
+            title: 'Oído: ¿Mayor o menor?',
+            instruction: 'Escucha cada acorde y decide si es Mayor (brillante) o menor (oscuro). Cambia la tónica en cada ronda: guíate por el color, no por la altura.',
+            rounds: 4,
+            minCorrect: 3
           }
         ]
       },
@@ -956,6 +993,15 @@ export const SKILL_UNITS = [
             title: 'Y resuelve a casa en Do Mayor (C / DO+)',
             instruction: 'Deja que la tensión de G7 descanse en Do Mayor desde la 5ª cuerda.',
             chord: 'C'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'harmonic_circle_basic',
+            title: 'Cambios cronometrados: C ⇄ Am (dedos comunes)',
+            instruction: 'Alterna Do Mayor y La menor moviendo solo el dedo 3; los dedos 1 y 2 no se levantan.',
+            chords: ['C', 'Am'],
+            durationSec: 30,
+            targetChanges: 10
           }
         ]
       },
@@ -1069,6 +1115,18 @@ export const SKILL_UNITS = [
             title: 'Aplica el Péndulo 4/4 sobre Sol Mayor (G)',
             instruction: 'Marca el compás completo ↓ · ↓ ↑ · ↑ ↓ ↑ lentamente manteniendo el pulso uniforme.',
             chord: 'G'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'strumming_44_engine',
+            title: 'Motor constante: un rasgueo por pulso en G a 70 BPM',
+            instruction: 'Rasguea Sol hacia abajo en cada pulso del 4/4. Tras la cuenta de entrada el metrónomo calla: mantén tú el pulso.',
+            chord: 'G',
+            bpm: 70,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
           }
         ]
       },
@@ -1120,6 +1178,18 @@ export const SKILL_UNITS = [
             title: 'Práctica de Júbilo: Mi Mayor (E) en Corito de Alabanza',
             instruction: 'Prepara E (022100) y alterna B1 (6ª) con chasquido percusivo alegre.',
             chord: 'E'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'slap_percussion_24',
+            title: 'Marcha en 2/4 a 80 BPM',
+            instruction: 'Rasguea Re Mayor en cada pulso del 2/4 (bajo en el 1, chasquido en el 2). Cada ataque debe caer en el pulso.',
+            chord: 'D',
+            bpm: 80,
+            beatsPerBar: 2,
+            bars: 6,
+            toleranceMs: 90,
+            minHitRate: 0.75
           }
         ]
       },
@@ -1184,6 +1254,18 @@ export const SKILL_UNITS = [
             title: 'Práctica en 3/4: Re Séptima (D7) para Vals / Pasillo',
             instruction: 'Pulsa B1 en 4ª cuerda al aire y responde con dos toques suaves en las primas.',
             chord: 'D7'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'meters_34_68_bolero',
+            title: 'Vals 3/4 a 90 BPM: BUM · chas · chas',
+            instruction: 'Sobre Do Mayor: bajo con el pulgar en el tiempo 1 y rasgueo suave en 2 y 3. Un ataque por pulso.',
+            chord: 'C',
+            bpm: 90,
+            beatsPerBar: 3,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
           }
         ]
       },
@@ -1631,6 +1713,14 @@ export const SKILL_UNITS = [
             title: 'Práctica de Contraste: Toca La Mayor (A / LA+)',
             instruction: 'Siente cómo cambia de luz frente a La Menor al subir la 2ª cuerda del espacio 1 al 2.',
             chord: 'A'
+          },
+          {
+            type: 'ear_quality',
+            theoryId: 'homonymous_modulation_dim',
+            title: 'Oído: el cambio de color menor → Mayor',
+            instruction: 'La modulación homónima solo cambia la 3ª. Identifica si cada acorde es Mayor o menor; usa el arpegio si dudas.',
+            rounds: 6,
+            minCorrect: 5
           }
         ]
       },
@@ -1972,6 +2062,15 @@ export const SKILL_UNITS = [
             title: 'Reto Intermedio 2: Si Menor (Bm)',
             instruction: 'Cejilla desde la 5ª cuerda en traste 2 (`x24432`): ¡indispensable en Re Mayor!',
             chord: 'Bm'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'barre_chords_biomechanics',
+            title: 'Cambios cronometrados: C ⇄ F con cejilla',
+            instruction: 'Alterna Do Mayor y Fa Mayor con cejilla. Coloca el índice con el borde lateral y relaja el pulgar tras cada cambio.',
+            chords: ['C', 'F'],
+            durationSec: 30,
+            targetChanges: 6
           }
         ]
       },

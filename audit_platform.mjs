@@ -56,6 +56,15 @@ import {
   gainHearts,
   pickReviewTheory
 } from './js/pedagogy.js';
+import {
+  OnsetDetector,
+  beatGrid,
+  scoreTiming,
+  describeTimingTendency,
+  countChordChanges,
+  ChordChangeCounter,
+  makeEarRounds
+} from './js/practice-metrics.js';
 
 let passedChecks = 0;
 let totalChecks = 0;
@@ -599,6 +608,65 @@ async function runAudit() {
   );
   assert(pickReviewTheory([], SKILL_UNITS, []) === null, 'pickReviewTheory devuelve null sin historial');
   assert(!/gainHearts\(this\.state\.hearts,\s*MAX_HEARTS\)/.test(appSrc), 'Sin historial no se regalan vidas');
+
+  // ==================== 9. RETOS DE HABILIDAD MEDIBLES ====================
+  console.log('\n🎯 9. Retos de habilidad: ataques, pulso, cambios de acorde y oído');
+
+  // 9.1 Detector de ataques sobre una envolvente sintética (rasgueos con decaimiento, cuadros de 16 ms)
+  const strumTimes = [1000, 1857, 2714, 3571];
+  const det = new OnsetDetector({ minRms: 0.01 });
+  const detected = [];
+  for (let t = 0; t <= 4300; t += 16) {
+    let env = 0.002;
+    strumTimes.forEach(st => { if (t >= st) env += 0.2 * Math.exp(-(t - st) / 250); });
+    if (det.push(env, t)) detected.push(t);
+  }
+  assert(detected.length === strumTimes.length, `OnsetDetector detecta ${strumTimes.length} rasgueos (detectó ${detected.length})`);
+  assert(detected.every((t, i) => Math.abs(t - strumTimes[i]) <= 16), 'Cada ataque se detecta en ≤ 1 cuadro (16 ms) del rasgueo real');
+
+  // 9.2 Precisión rítmica
+  const grid = beatGrid(1000, 60, 4);
+  assert(grid.join(',') === '1000,2000,3000,4000', 'beatGrid genera pulsos a 60 BPM cada 1000 ms');
+  const perfect = scoreTiming(grid, grid, 90);
+  assert(perfect.hitRate === 1 && perfect.meanAbsMs === 0, 'Ataques exactos → 100% de acierto y 0 ms de error');
+  const late = scoreTiming(grid.map(b => b + 40), grid, 90);
+  assert(late.hitRate === 1 && late.meanSignedMs === 40, 'Ataques +40 ms → dentro de tolerancia con sesgo +40 ms (tarde)');
+  const sloppy = scoreTiming([1000, 2150, 3400], grid, 90);
+  assert(sloppy.hits === 1 && sloppy.missed === 1, 'Ataques fuera de tolerancia o ausentes no cuentan como acierto');
+  assert(scoreTiming([1000, 1500, 2000, 3000, 4000], grid, 90).extra === 1, 'Se reportan ataques extra fuera del pulso');
+  assert(/tarde/.test(describeTimingTendency(60)) && /adelant/.test(describeTimingTendency(-60)) && /centrado/.test(describeTimingTendency(5)),
+    'describeTimingTendency diagnostica tarde / adelantado / centrado');
+
+  // 9.3 Cambios de acorde
+  const frames = [];
+  const seq = [['A', 0, 400], ['B', 400, 800], [null, 800, 900], ['A', 900, 1300], ['B', 1300, 1380], ['A', 1380, 1700]];
+  seq.forEach(([label, a, b]) => { for (let t = a; t < b; t += 20) frames.push({ t, label }); });
+  assert(countChordChanges(frames, { minHoldMs: 200 }) === 2, 'countChordChanges cuenta A→B→A = 2 e ignora destellos < 200 ms y silencios');
+  const ccc = new ChordChangeCounter({ minHoldMs: 200 });
+  frames.forEach(f => ccc.push(f.label, f.t));
+  assert(ccc.changes === 2, 'ChordChangeCounter (tiempo real) coincide con countChordChanges');
+
+  // 9.4 Oído
+  const ear = makeEarRounds(400);
+  assert(ear.every(r => getChordData(r.chord)), 'Todos los acordes del entrenamiento auditivo existen en CHORDS_DB');
+  assert(ear.every(r => (r.quality === 'minor') === /m$/.test(r.chord)), 'La calidad Mayor/menor de cada ronda coincide con el acorde');
+  const minorShare = ear.filter(r => r.quality === 'minor').length / ear.length;
+  assert(minorShare > 0.4 && minorShare < 0.6, `Mayor y menor aparecen equilibrados (${Math.round(minorShare * 100)}% menor)`);
+
+  // 9.5 Integridad curricular de los retos
+  const drillSteps = [];
+  for (const u of SKILL_UNITS) for (const l of u.lessons) l.steps.forEach((st, i) => {
+    if (['chord_change', 'strum_timing', 'ear_quality'].includes(st.type)) drillSteps.push({ id: `${l.id}_s${i}`, st });
+  });
+  assert(drillSteps.length >= 10, `El currículo incluye ${drillSteps.length} retos de habilidad medibles (≥ 10)`);
+  for (const { id, st } of drillSteps) {
+    let ok = Boolean(THEORY_LIBRARY[st.theoryId]) && Boolean(st.title) && Boolean(st.instruction);
+    if (st.type === 'chord_change') ok = ok && st.chords.length === 2 && st.chords.every(c => getChordData(c)) && st.targetChanges > 0 && st.durationSec >= 15;
+    if (st.type === 'strum_timing') ok = ok && st.bpm >= 40 && st.bpm <= 160 && st.bars * st.beatsPerBar >= 6 && st.toleranceMs >= 50 && st.minHitRate > 0 && st.minHitRate <= 1 && (!st.chord || getChordData(st.chord));
+    if (st.type === 'ear_quality') ok = ok && st.rounds >= 3 && st.minCorrect <= st.rounds;
+    assert(ok, `Reto ${id} (${st.type}) con parámetros y teoría válidos`);
+  }
+  assert(/DRILL_TYPES\.includes\(step\.type\)/.test(appSrc), 'El ejecutor de lecciones despacha los retos de habilidad');
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

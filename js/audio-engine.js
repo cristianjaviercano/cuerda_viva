@@ -320,6 +320,24 @@ class AudioEngine {
   // ============================================================================
   // PERCUSIÓN FOLCLÓRICA COLOMBIANA Y LITÚRGICA
   // ============================================================================
+  // Clic de metrónomo (acento = primer tiempo del compás). Devuelve el instante
+  // programado en el reloj del AudioContext.
+  playClick(accent = false, atTime = null) {
+    const ctx = this.init();
+    const t = atTime !== null ? Math.max(ctx.currentTime, atTime) : ctx.currentTime;
+    const osc = ctx.createOscillator();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(accent ? 1760 : 1175, t);
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(accent ? 0.32 : 0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.05);
+    osc.connect(g);
+    g.connect(this.masterGain);
+    osc.start(t);
+    osc.stop(t + 0.06);
+    return t;
+  }
+
   playPercussion(type, atTime = null) {
     const ctx = this.init();
     const t = atTime !== null ? Math.max(ctx.currentTime, atTime) : ctx.currentTime;

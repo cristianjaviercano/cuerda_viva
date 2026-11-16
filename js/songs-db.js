@@ -1006,7 +1006,7 @@ me dejó cosa muy [E7]buena, cosa muy bo[Am]nita.`
   {
     id: 'pop_cumpleanos_feliz',
     title: 'Cumpleaños Feliz',
-    author: 'Tradicional (melodía de dominio público)',
+    author: 'Mildred J. Hill y Patty S. Hill (1893, melodía "Good Morning to All") · letra en español tradicional',
     category: 'popular',
     occasion: 'Cumpleaños',
     key: 'G',
@@ -1054,7 +1054,7 @@ la [C]luna ya se [D7]me[G]tió.`
   {
     id: 'pop_noche_de_paz',
     title: 'Noche de Paz',
-    author: 'Franz X. Gruber (1818) · letra en español tradicional',
+    author: 'Franz X. Gruber (música, 1818) y Joseph Mohr (letra, 1816) · traducción tradicional al español',
     category: 'popular',
     occasion: 'Navidad',
     key: 'C',
@@ -1171,7 +1171,7 @@ que los [G]ángeles tocan,
   {
     id: 'pop_los_peces_en_el_rio',
     title: 'Los Peces en el Río',
-    author: 'Villancico tradicional',
+    author: 'Villancico tradicional español',
     category: 'popular',
     occasion: 'Navidad',
     key: 'Am',
@@ -1292,7 +1292,7 @@ su boquita tam[C]bién.`
   {
     id: 'nav_dulce_jesus_mio',
     title: 'Dulce Jesús Mío (Gozos de la Novena)',
-    author: 'Novena de Aguinaldos — Fray Fernando de Jesús Larrea (s. XVIII), tradicional',
+    author: 'Novena de Aguinaldos: Fray Fernando de Jesús Larrea (s. XVIII) y Madre María Ignacia Samper (s. XIX) · tradicional',
     category: 'popular',
     occasion: 'Navidad',
     key: 'G',
@@ -1380,7 +1380,7 @@ y al otro tam[C]bién.`
   {
     id: 'nav_venid_fieles',
     title: 'Venid, Fieles Todos (Adeste Fideles)',
-    author: 'John F. Wade (s. XVIII) · letra en español tradicional',
+    author: 'John Francis Wade (s. XVIII) · traducción tradicional al español',
     category: 'popular',
     occasion: 'Navidad',
     key: 'G',
@@ -1407,7 +1407,7 @@ a [G]Cristo el [D7]Se[G]ñor.`
   {
     id: 'nav_riu_riu_chiu',
     title: 'Riu, Riu, Chiu',
-    author: 'Cancionero de Upsala (1556), anónimo español',
+    author: 'Cancionero de Upsala (1556) · anónimo, atribuido a Mateo Flecha el Viejo',
     category: 'popular',
     occasion: 'Navidad',
     key: 'Am',
@@ -1435,6 +1435,128 @@ quísola ha[Am]cer
 que no pudiese pe[G]car,
 ni aun origi[Am]nal
 esta Virgen no tu[E7]vie[Am]ra.`
+  },
+  // ==========================================================================
+  // VILLANCICOS MODERNOS CON DERECHOS VIGENTES (SOLO ACORDES + FRAGMENTO)
+  // Se reconoce su autoría y se remite a la versión oficial para la letra.
+  // ==========================================================================
+  {
+    id: 'nav_mi_burrito_sabanero',
+    title: 'Mi Burrito Sabanero',
+    author: 'Hugo Blanco (1972) · popularizado por el Coro Infantil Venezolano',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'G',
+    rhythmId: 'marcha',
+    bpm: 120,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'mi burrito sabanero coro infantil venezolano oficial',
+    theoryNote: 'Aguinaldo venezolano en G con solo G, C y D7. El coro "tuki tuki" es ideal para que los niños canten mientras la guitarra marca el paso del burrito.',
+    progressionLoop: ['G', 'D7', 'D7', 'G', 'G', 'C', 'D7', 'G'],
+    content: `FRAGMENTO (cita)
+Con mi bu[G]rrito sabanero
+voy camino de Be[D7]lén...
+
+ACORDES DEL CORO
+[G]Tuki tuki... [C]tuki tuki... [D7]tuki tuki... [G]tuki ta`
+  },
+
+  {
+    id: 'nav_el_tamborilero',
+    title: 'El Tamborilero',
+    author: 'Katherine K. Davis, Henry Onorati y Harry Simeone (1958, «The Little Drummer Boy») · versión en español popularizada por Raphael',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'G',
+    rhythmId: 'marcha',
+    bpm: 100,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'el tamborilero raphael oficial',
+    theoryNote: 'Marcha en G (G, C, D): el "ro-po-pom-pom" imita el tambor; practica el rasgueo apagado (✕) en los tiempos 2 y 4.',
+    progressionLoop: ['G', 'C', 'G', 'D', 'G'],
+    content: `FRAGMENTO (cita)
+[G]El camino que lleva a Be[C]lén
+baja hasta el [G]valle que la nieve cu[D]brió...
+
+ACORDES DEL ESTRIBILLO
+[G]Ro-po-pom-pom, [C]ro-po-pom-pom, [D]ro-po-pom-[G]pom`
+  },
+
+  {
+    id: 'nav_feliz_navidad',
+    title: 'Feliz Navidad',
+    author: 'José Feliciano (1970)',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'D',
+    rhythmId: 'pop_folk',
+    bpm: 148,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'feliz navidad jose feliciano oficial',
+    theoryNote: 'Progresión cíclica IV – V – I – VIm (G – A – D – Bm) en Re Mayor: la misma en toda la canción, ideal para afianzar el rasgueo 4/4.',
+    progressionLoop: ['G', 'A', 'D', 'Bm'],
+    content: `FRAGMENTO (cita)
+[G]Feliz Navi[A]dad... [D] [Bm]
+
+ACORDES DEL CICLO COMPLETO
+[G] [A] [D] [Bm]`
+  },
+
+  {
+    id: 'nav_blanca_navidad',
+    title: 'Blanca Navidad',
+    author: 'Irving Berlin (1942, «White Christmas») · versión en español popular',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'C',
+    rhythmId: 'balada_pop',
+    bpm: 76,
+    difficulty: 2,
+    featured: true,
+    youtubeQuery: 'blanca navidad version en español oficial',
+    theoryNote: 'Balada lenta en Do con C, Dm, G7 y F: buen ejercicio de cambios suaves y arpegio p-i-m-a.',
+    progressionLoop: ['C', 'Dm', 'G7', 'C', 'F', 'G7', 'C'],
+    content: `FRAGMENTO (cita)
+[C]Oh, blanca Navi[Dm]dad... [G7] [C]
+
+ACORDES DE LA ESTROFA
+[C] [Dm] [G7] [C] [F] [G7] [C]`
+  },
+
+  {
+    id: 'nav_navidad_jingle_bells',
+    title: 'Navidad, Navidad (Jingle Bells)',
+    author: 'James Lord Pierpont (1857, «Jingle Bells») · adaptación popular en español',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'La melodía (1857) es de dominio público y está completa en la tablatura vinculada. La adaptación en español es de autoría popular no confirmada: se muestra solo un fragmento con fines educativos.',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 120,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_jingle_bells',
+    youtubeQuery: 'navidad navidad hoy es navidad villancico',
+    theoryNote: 'C, F, G7 y D7 (dominante secundario V7/V antes de G7). Toca la melodía completa en la TAB vinculada.',
+    progressionLoop: ['C', 'C', 'F', 'C', 'D7', 'G7', 'C'],
+    content: `FRAGMENTO (cita)
+[C]Navidad, Navidad,
+hoy es Navi[C]dad...
+
+ACORDES DEL CORO
+[C] [C] [F] [C] [D7] [G7] [C]`
   }
 ];
 

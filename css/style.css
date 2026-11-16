@@ -4071,3 +4071,14 @@ button, select, input {
 }
 .xmas-banner strong { color: #991B1B; font-size: 0.98rem; display: block; }
 .xmas-banner p { color: #166534; font-size: 0.86rem; margin: 2px 0 0; font-weight: 700; }
+.rights-notice {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: #FFFBEB;
+  border: 2px solid #FCD34D;
+  color: #92400E;
+  font-size: .86rem;
+  line-height: 1.4;
+}
+.rights-notice a { color: #B45309; font-weight: 800; margin-left: 4px; }

@@ -99,7 +99,7 @@ export function normalizeAuthor(author) {
     && /^\p{Lu}/u.test(clean)
     && !/[“”"«»]/.test(clean)
     && !/\d/.test(clean)
-    && !/,/.test(clean)
+    && !/,\s*\p{Ll}/u.test(clean)
     && !/\s(y|el|la|los|las|de|del|que)$/i.test(clean)
     && !NOT_AN_AUTHOR.has(clean.toLowerCase());
   return looksLikeName ? clean : UNCONFIRMED_AUTHOR;

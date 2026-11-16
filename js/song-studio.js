@@ -300,6 +300,10 @@ export class SongStudio {
                 </div>
                 <h2 class="song-main-title">${song.title}</h2>
                 <p class="tab-subtitle">${song.author || 'Cancionero Digital'}</p>
+                ${song.excerptOnly ? `
+                  <div class="rights-notice">©️ <strong>Autoría:</strong> ${song.author}. ${song.rightsNote || 'Se muestran acordes y un fragmento con fines educativos.'}
+                    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(song.youtubeQuery || song.title)}" target="_blank" rel="noopener">Escuchar la versión oficial ↗</a>
+                  </div>` : ''}
               </div>
 
               <div class="song-hero-actions">

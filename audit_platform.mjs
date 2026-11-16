@@ -828,8 +828,10 @@ async function runAudit() {
       && Boolean(sg.occasion)
       && (!sg.linkedTabId || TABS_DB.some(t => t.id === sg.linkedTabId));
     assert(ok, `Canción "${sg.title}": acordes existentes, ritmo válido, ocasión y TAB vinculada coherentes`);
-    assert(/Tradicional|tradicional|dominio público|\((1[0-8]\d\d|19[01]\d)\)|s\. XVIII/.test(sg.author),
-      `Canción "${sg.title}" declara origen tradicional o de dominio público (${sg.author})`);
+    if (!sg.excerptOnly) {
+      assert(/Tradicional|tradicional|dominio público|\((1[0-8]\d\d|19[01]\d)|s\. XVIII/.test(sg.author),
+        `Canción "${sg.title}" declara origen tradicional o de dominio público (${sg.author})`);
+    }
   }
   const popTabs = TABS_DB.filter(t => t.category === 'popular');
   assert(popTabs.length >= 3, `Hay ${popTabs.length} tablaturas de melodías para todos (≥ 3)`);
@@ -1003,7 +1005,7 @@ async function runAudit() {
   // ==================== 16. NAVIDAD: VILLANCICOS ====================
   console.log('\n🎄 16. Sección de Navidad (villancicos tradicionales y de dominio público)');
   const carols = MASTER_SONGS.filter(isChristmasSong);
-  assert(carols.length >= 10, `Hay ${carols.length} villancicos (≥ 10)`);
+  assert(carols.length >= 15, `Hay ${carols.length} villancicos (≥ 15)`);
   assert(['Tutaina', 'Vamos, Pastores, Vamos', 'Dulce Jesús Mío'].every(t => carols.some(c => c.title.startsWith(t))),
     'Incluye los villancicos de la Novena de Aguinaldos (Tutaina, Vamos Pastores, Gozos)');
   for (const c of carols) {
@@ -1012,9 +1014,24 @@ async function runAudit() {
       `Villancico "${c.title}": todos sus acordes existen en la biblioteca`);
   }
   const PROTECTED = /burrito sabanero|tamborilero|ni[ñn]o del tambor|feliz navidad|blanca navidad|navidad sin ti|rodolfo el reno/i;
-  assert(!MASTER_SONGS.some(sg => PROTECTED.test(sg.title)), 'No incluye villancicos modernos con derechos vigentes (Mi Burrito Sabanero, El Tamborilero, Feliz Navidad…)');
-  assert(carols.filter(c => c.category === 'popular').every(c => /tradicional|dominio público|\((1[0-8]\d\d|19[01]\d)\)|s\. XVIII/i.test(c.author)),
-    'Cada villancico nuevo declara origen tradicional o de dominio público');
+  const protectedSongs = MASTER_SONGS.filter(sg => PROTECTED.test(sg.title));
+  assert(protectedSongs.length >= 4 && protectedSongs.every(sg => sg.excerptOnly && sg.rightsNote),
+    `Los ${protectedSongs.length} villancicos con derechos vigentes se publican solo como acordes + fragmento, con nota de derechos`);
+  const lyricLines = sg => sg.content.split('\n').map(l => l.replace(/\[[^\]]+\]/g, '').trim())
+    .filter(l => /\p{L}{3,}/u.test(l) && !/^(FRAGMENTO|ACORDES|CORO|ESTROFA|ESTRIBILLO)/.test(l));
+  assert(MASTER_SONGS.filter(sg => sg.excerptOnly).every(sg => lyricLines(sg).length <= 3),
+    'Las obras protegidas muestran como máximo 3 líneas de letra (cita breve)');
+  assert(MASTER_SONGS.filter(sg => sg.excerptOnly).every(sg => /\(\d{4}/.test(sg.author) && sg.youtubeQuery),
+    'Cada obra protegida acredita autor y año, y remite a la versión oficial');
+  assert(carols.filter(c => c.category === 'popular' && !c.excerptOnly).every(c => /tradicional|dominio público|\((1[0-8]\d\d|19[01]\d)|s\. XVIII/i.test(c.author)),
+    'Los villancicos con letra completa son tradicionales o de dominio público');
+  const cumple = MASTER_SONGS.find(sg => sg.id === 'pop_cumpleanos_feliz');
+  assert(/Mildred J\. Hill y Patty S\. Hill/.test(cumple.author), 'Cumpleaños Feliz acredita a Mildred y Patty Hill (1893)');
+  const jb = TABS_DB.find(t => t.id === 'tab_jingle_bells');
+  const jbExpected = [52,52,52, 52,52,52, 52,55,48,50, 52, 53,53,53,53, 53,52,52,52,52, 52,50,50,52, 50,55,
+    52,52,52, 52,52,52, 52,55,48,50, 52, 53,53,53,53, 53,52,52,52,52, 55,55,53,50, 48];
+  assert(jb.steps.map(e => getFretMidi(e.s, e.f)).join(',') === jbExpected.join(',') && jb.steps.reduce((a, e) => a + e.dur, 0) === 64,
+    'La melodía de Jingle Bells (1857) es correcta nota a nota: 16 compases de 4/4');
   assert(isChristmasSeason(new Date(2026, 10, 15)) && isChristmasSeason(new Date(2026, 11, 24)) && isChristmasSeason(new Date(2027, 0, 6)),
     'La temporada navideña va del 15 de noviembre al 6 de enero');
   assert(!isChristmasSeason(new Date(2026, 10, 14)) && !isChristmasSeason(new Date(2027, 0, 7)) && !isChristmasSeason(new Date(2026, 6, 1)),

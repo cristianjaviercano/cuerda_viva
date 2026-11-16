@@ -44,6 +44,9 @@ import {
   scoreSelfAssessment
 } from './pedagogy.js';
 import { annotateGlossary } from './glossary.js';
+import { renderCreditsHTML } from './credits.js';
+import { MASTER_SONGS, loadAllSongs } from './songs-db.js';
+import { TABS_DB } from './tabs-db.js';
 import {
   analyzeItems,
   buildItemBank,
@@ -369,7 +372,19 @@ class CuerdaVivaApp {
     if (viewId === 'learn') this.renderLearnView();
     if (viewId === 'guitar3d' && this.guitar3dStudio) this.guitar3dStudio.render();
     if (viewId === 'challenge') this.renderChallengeView();
+    if (viewId === 'credits') this.renderCreditsView();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Agradecimientos y libros: autores generados desde el cancionero completo.
+  async renderCreditsView() {
+    const container = document.getElementById('view-credits');
+    if (!container) return;
+    container.innerHTML = renderCreditsHTML({ songs: MASTER_SONGS, tabs: TABS_DB });
+    try {
+      const all = await loadAllSongs();
+      if (this.activeView === 'credits') container.innerHTML = renderCreditsHTML({ songs: all, tabs: TABS_DB });
+    } catch (_) { /* se mantiene la versión con MASTER_SONGS */ }
   }
 
   _navigateFromActionTarget(tab, itemId) {

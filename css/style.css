@@ -4041,3 +4041,18 @@ button, select, input {
 .ia-ok { color: var(--duo-green-dark); font-weight: 800; }
 .ia-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
 .ia-list { margin: 6px 0; padding-left: 18px; color: var(--ink-body); font-size: .86rem; }
+
+/* ==================== AGRADECIMIENTOS Y LIBROS ==================== */
+.credits-page { display: flex; flex-direction: column; gap: 16px; }
+.credits-hero h1 { margin: 10px 0 6px; color: var(--ink-main); font-size: 1.6rem; }
+.credits-hero p { color: var(--ink-body); margin: 0; }
+.credits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.credits-card h2 { margin: 0 0 6px; color: var(--ink-main); font-size: 1.2rem; }
+.credits-card h3 { margin: 14px 0 6px; color: var(--ink-main); font-size: 1rem; }
+.credits-card p { color: var(--ink-body); line-height: 1.5; }
+.credits-card a { color: var(--duo-blue-dark); word-break: break-word; }
+.credits-card a.duo-btn { color: #fff; text-decoration: none; display: inline-block; }
+.credits-list { margin: 6px 0; padding-left: 18px; color: var(--ink-body); }
+.credits-list li { margin: 6px 0; line-height: 1.4; }
+.credits-list small { color: var(--ink-muted); }
+.credits-authors { max-height: 520px; overflow-y: auto; padding-right: 6px; }

@@ -120,3 +120,15 @@ node audit_platform.mjs
 ## 📄 Licencia
 
 Licencia MIT — Desarrollado con ❤️ para la enseñanza musical de la guitarra, la alabanza y la preservación del folclor colombiano.
+
+---
+
+## 📚 Agradecimientos, libros y derechos de autor
+
+CuerdaViva! es un proyecto **meramente pedagógico, de uso libre y sin ánimo de lucro**, creado para apoyar a los coros, a los niños y jóvenes, y a toda persona que quiera aprender guitarra e incursionar en la música.
+
+- **Agradecimientos:** a los autores de los libros y métodos (Keyner Ramírez Mojica, Carlos Mario Vásquez Rojas "Camavaro", Luis Medina y Juan Caliva, Iván Becerra, Fran Cordón, entre otros) y a todos los compositores de las canciones. La lista completa está en [CREDITOS.md](CREDITOS.md) y en la pestaña **📚 Créditos** de la aplicación.
+- **© 2020–2026 Cristian Javier Cano Mogollón y colaboradores.** Código bajo licencia [MIT](LICENSE); contenido pedagógico original bajo [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es).
+- **Obras de terceros:** las canciones, letras, melodías y libros citados pertenecen a sus autores y se citan con fines educativos. Si eres titular de derechos y quieres que una obra se retire o se cite de otra forma, abre un [issue](https://github.com/cristianjaviercano/cuerda_viva/issues).
+- **Colaboraciones:** las contribuciones son libres y voluntarias, no contractuales ni vinculantes; se reciben como donaciones para el desarrollo de trabajos académicos y pedagógicos.
+

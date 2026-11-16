@@ -67,7 +67,7 @@ export const TABS_DB = [
   {
     id: 'tab_gota_fria',
     title: 'La Gota Fría — Punteo Tradicional',
-    artist: 'Emiliano Zuleta / Carlos Vives',
+    artist: 'Emiliano Zuleta Baquero / Carlos Vives',
     category: 'vallenato',
     subgenre: 'Paseo / Merengue Vallenato',
     key: 'Am',

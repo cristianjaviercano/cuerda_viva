@@ -65,6 +65,7 @@ import {
   scoreSelfAssessment
 } from './js/pedagogy.js';
 import { GLOSSARY, annotateGlossary } from './js/glossary.js';
+import { BOOKS, CONTRIBUTIONS, COPYRIGHT, groupWorksByAuthor, normalizeAuthor, renderCreditsHTML } from './js/credits.js';
 import {
   OnsetDetector,
   beatGrid,
@@ -981,6 +982,23 @@ async function runAudit() {
   assert(/durationMs,\s*\n\s*optionIndex,\s*\n\s*sessionMode/.test(appSrc) && /_recordSessionEnd\('abandono'\)/.test(appSrc) && /optionIndex: sess\.selectedOption/.test(appSrc),
     'La app registra tiempo de respuesta, opción elegida y sesiones abandonadas');
   assert(/estimateLessonMinutes\(lesson, this\._getObservedSeconds\(\)\)/.test(appSrc), 'La ruta muestra duraciones calibradas con datos reales');
+
+  // ==================== 15. AGRADECIMIENTOS Y DERECHOS DE AUTOR ====================
+  console.log('\n📚 15. Agradecimientos, libros y derechos de autor');
+  const creditsHtml = renderCreditsHTML({ songs: MASTER_SONGS, tabs: TABS_DB });
+  const creditAuthors = groupWorksByAuthor(MASTER_SONGS, TABS_DB);
+  assert(['Keyner Ramírez Mojica', 'Carlos Mario Vásquez Rojas', 'Luis Medina y Juan Caliva', 'Iván Becerra'].every(a => BOOKS.some(b => b.author.includes(a))),
+    'Se agradece a los autores de los cuatro métodos principales');
+  assert(MASTER_SONGS.every(sg => creditAuthors.some(a => a.author === normalizeAuthor(sg.author) && a.works.includes(sg.title))),
+    `Cada canción del cancionero aparece con su autor en los créditos (${creditAuthors.length} autores)`);
+  assert(/©/.test(creditsHtml) && creditsHtml.includes(COPYRIGHT.holder) && /MIT/.test(creditsHtml) && /BY-NC-SA/.test(creditsHtml),
+    'La vista de créditos declara el copyright y las licencias de código y contenido');
+  assert(/sin ánimo de lucro/.test(creditsHtml) && /coros/.test(creditsHtml) && CONTRIBUTIONS.some(c => /no son contractuales/i.test(c)) && CONTRIBUTIONS.some(c => /donaciones/.test(c)),
+    'Declara el propósito pedagógico sin ánimo de lucro y que las contribuciones son libres, no contractuales y donaciones');
+  assert(/pertenecen a sus respectivos autores/.test(creditsHtml) && /issues/.test(creditsHtml), 'Reconoce los derechos de terceros y ofrece un canal para solicitudes de retiro');
+  assert(!renderCreditsHTML({ songs: [{ title: '<img src=x onerror=alert(1)>', author: '<b>x</b>' }] }).includes('<img src=x'), 'La vista de créditos escapa el HTML de los datos');
+  assert(fs.existsSync(path.join(__dirname, 'LICENSE')) && fs.existsSync(path.join(__dirname, 'CREDITOS.md')), 'El repositorio incluye LICENSE y CREDITOS.md');
+  assert(/data-nav="credits"/.test(fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8')) && /renderCreditsView\(\)/.test(appSrc), 'La pestaña 📚 Créditos está en la navegación');
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

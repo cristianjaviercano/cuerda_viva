@@ -7,7 +7,7 @@
 // - Práctica de cambios de acordes con Micrófono / Entrada de Línea en tiempo real
 // ============================================================================
 
-import { loadAllSongs, MASTER_SONGS } from './songs-db.js';
+import { loadAllSongs, MASTER_SONGS, isChristmasSong } from './songs-db.js';
 import { RHYTHM_PATTERNS } from './rhythm-trainer.js';
 import { renderChordSVG, getChordData } from './chords-db.js';
 import { audioEngine } from './audio-engine.js';
@@ -199,6 +199,8 @@ export class SongStudio {
       if (this.filterGroup === 'featured' && !s.featured) return false;
       if (this.filterGroup === 'catolica' && s.category !== 'catolica') return false;
       if (this.filterGroup === 'vallenato' && s.category !== 'vallenato') return false;
+      if (this.filterGroup === 'popular' && s.category !== 'popular') return false;
+      if (this.filterGroup === 'navidad' && !isChristmasSong(s)) return false;
       if (this.filterGroup === 'keyner' && s.sourceMethod !== 'keyner') return false;
       if (this.filterGroup === 'easy' && (s.difficulty || 1) > 1) return false;
 
@@ -207,7 +209,7 @@ export class SongStudio {
       }
 
       if (q) {
-        const hay = `${s.title} ${s.author || ''} ${s.liturgicalType || ''} ${s.content || ''}`.toLowerCase();
+        const hay = `${s.title} ${s.author || ''} ${s.liturgicalType || ''} ${s.occasion || ''} ${s.content || ''}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -235,7 +237,7 @@ export class SongStudio {
       this.songs.filter(s => s.category === 'catolica').map(s => s.liturgicalType).filter(Boolean)
     )).sort();
 
-    const ytQuery = song.youtubeQuery || `${song.title} ${song.category === 'vallenato' ? 'vallenato' : 'catolica'} guitarra acordes tutorial`;
+    const ytQuery = song.youtubeQuery || `${song.title} ${song.category === 'vallenato' ? 'vallenato' : song.category === 'popular' ? '' : 'catolica'} guitarra acordes tutorial`;
 
     this.container.innerHTML = `
       <div class="song-studio-grid">
@@ -253,6 +255,8 @@ export class SongStudio {
 
           <div class="ss-filter-pills">
             <button class="mini-pill ${this.filterGroup === 'featured' ? 'active' : ''}" data-sgrp="featured">⭐ Guiadas (${MASTER_SONGS.length})</button>
+            <button class="mini-pill ${this.filterGroup === 'popular' ? 'active' : ''}" data-sgrp="popular">🎉 Para Todos</button>
+            <button class="mini-pill ${this.filterGroup === 'navidad' ? 'active' : ''}" data-sgrp="navidad">🎄 Navidad</button>
             <button class="mini-pill ${this.filterGroup === 'catolica' ? 'active' : ''}" data-sgrp="catolica">🕊️ Católicas</button>
             <button class="mini-pill ${this.filterGroup === 'vallenato' ? 'active' : ''}" data-sgrp="vallenato">🪗 Vallenato/Folclor</button>
             <button class="mini-pill ${this.filterGroup === 'keyner' ? 'active' : ''}" data-sgrp="keyner">📕 Libro Keyner</button>
@@ -271,10 +275,10 @@ export class SongStudio {
             ${filtered.length === 0 ? `<p class="empty-msg">No se encontraron canciones con ese filtro.</p>` : ''}
             ${filtered.map(s => `
               <button class="ss-song-item ${s.id === song.id ? 'selected' : ''}" data-sid="${s.id}">
-                <span class="ss-item-emoji">${s.category === 'vallenato' ? '🪗' : '🕊️'}</span>
+                <span class="ss-item-emoji">${isChristmasSong(s) ? '🎄' : s.category === 'vallenato' ? '🪗' : s.category === 'popular' ? '🎉' : '🕊️'}</span>
                 <div class="ss-item-info">
                   <strong>${s.title}</strong>
-                  <small>${s.liturgicalType || 'Canto'} · Tono ${s.key || 'C'} ${s.linkedTabId ? '· 🎯 Con TAB' : ''}</small>
+                  <small>${s.occasion || s.liturgicalType || 'Canto'} · Tono ${s.key || 'C'} ${s.linkedTabId ? '· 🎯 Con TAB' : ''}</small>
                 </div>
               </button>
             `).join('')}
@@ -288,14 +292,18 @@ export class SongStudio {
             <div class="song-hero-top">
               <div>
                 <div class="tab-badges-line">
-                  <span class="badge-vivid ${song.category === 'vallenato' ? 'badge-orange' : 'badge-blue'}">
-                    ${song.category === 'vallenato' ? '🪗 Folclor / Vallenato' : `🕊️ ${song.liturgicalType || 'Alabanza Católica'}`}
+                  <span class="badge-vivid ${song.category === 'vallenato' ? 'badge-orange' : song.category === 'popular' ? 'badge-green' : 'badge-blue'}">
+                    ${song.category === 'vallenato' ? '🪗 Folclor / Vallenato' : song.category === 'popular' ? (isChristmasSong(song) ? '🎄 Villancico · Navidad' : `🎉 Para Todos · ${song.occasion || 'Popular'}`) : `🕊️ ${song.liturgicalType || 'Alabanza Católica'}`}
                   </span>
                   <span class="badge-vivid badge-green">Tonalidad: ${formatChordLabel(currentKey, this.notationMode)}</span>
                   <span class="badge-vivid badge-purple">Ritmo: ${pat.name} (${bpm} BPM)</span>
                 </div>
                 <h2 class="song-main-title">${song.title}</h2>
                 <p class="tab-subtitle">${song.author || 'Cancionero Digital'}</p>
+                ${song.excerptOnly ? `
+                  <div class="rights-notice">©️ <strong>Autoría:</strong> ${song.author}. ${song.rightsNote || 'Se muestran acordes y un fragmento con fines educativos.'}
+                    <a href="https://www.youtube.com/results?search_query=${encodeURIComponent(song.youtubeQuery || song.title)}" target="_blank" rel="noopener">Escuchar la versión oficial ↗</a>
+                  </div>` : ''}
               </div>
 
               <div class="song-hero-actions">

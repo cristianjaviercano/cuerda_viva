@@ -247,15 +247,15 @@ export const THEORY_LIBRARY = {
   }
 };
 
+// NOTA PARA CONTRIBUIDORES: los IDs de lección (p. ej. 'u3_l1') son identificadores
+// estables del progreso guardado y NO indican la unidad actual. La secuencia
+// pedagógica la define el orden de este arreglo (ver audit_platform.mjs §10).
 export const SKILL_UNITS = [
-  // ============================================================================
-  // UNIDAD 1: ANATOMÍA, POSTURA, MANOS Y CUERDAS AL AIRE (4 LECCIONES)
-  // ============================================================================
   {
     id: 'unit_1',
     number: 1,
-    title: 'Despegue: Anatomía, Postura y Nomenclatura',
-    subtitle: 'Partes de la guitarra, postura clásica/popular, numeración bimanual, cuerdas y cifrados',
+    title: 'Primeros Sonidos: Postura, Em/Am y Pulso',
+    subtitle: 'Postura sin tensión, numeración de dedos, cuerdas al aire con pulso y tus primeros acordes menores',
     color: '#58CC02',
     borderColor: '#46A302',
     icon: '🎸',
@@ -267,6 +267,11 @@ export const SKILL_UNITS = [
         icon: '📐',
         xp: 25,
         summary: 'Reconoce cada parte acústica del instrumento y domina las 2 posturas correctas.',
+        objectives: [
+          'Nombrar trastes, cejuela, diapasón y puente en tu guitarra',
+          'Sentarte en postura clásica o popular con la tapa vertical',
+          'Hacer sonar limpio Mi menor (Em)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -293,10 +298,10 @@ export const SKILL_UNITS = [
             theoryId: 'guitar_anatomy',
             question: '¿Cómo se llaman las barritas metálicas transversales del diapasón y dónde exactamente debe pisar el dedo?',
             options: [
-              'Clavijas; debes pisar justo encima del metal',
-              'Trastes; debes pisar en el espacio justo detrás (antes) de la barra metálica',
-              'Cejuelas; se pisa exactamente en el centro geométrico del diapasón',
-              'Aros; se pisa con el nudillo del dedo índice'
+              'Trastes; debes pisar justo encima de la barra metálica',
+              'Trastes; debes pisar en el espacio, justo antes de la barra',
+              'Trastes; debes pisar en el centro del espacio, lejos de ambas barras',
+              'Cejuelas; debes pisar justo después de cada barra, del lado del puente'
             ],
             correctIndex: 1,
             explanation: '¡Correcto! Los metalitos se llaman trastes y los dedos pisan los espacios milímetros detrás del traste para que la nota suene limpia sin trasteo.'
@@ -307,9 +312,9 @@ export const SKILL_UNITS = [
             question: 'En la Posición Clásica recomendada para punteos exigentes y estudio técnico, ¿sobre qué pierna reposa la cintura de la guitarra?',
             options: [
               'Muslo derecho con la cabeza completamente horizontal',
-              'Muslo izquierdo (elevado con banquito), subiendo el mástil ~45°',
-              'En el suelo apoyando el botón trasero',
-              'Acostada plana sobre ambas rodillas mirando al techo'
+              'Muslo izquierdo (con banquito), mástil a ~45°',
+              'Muslo derecho, con el mástil elevado ~45°',
+              'Muslo izquierdo, con el mástil horizontal y sin banquito'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! El apoyo en el muslo izquierdo con un ángulo de 45° alinea la muñeca izquierda naturalmente sin doblarla.'
@@ -342,6 +347,10 @@ export const SKILL_UNITS = [
         icon: '🖐️',
         xp: 25,
         summary: 'Asigna cada número de dedo (1–4) y letra derecha (p-i-m-a) con técnica profesional.',
+        objectives: [
+          'Identificar los dedos 1-2-3-4 (izquierda) y p-i-m-a (derecha) en un diagrama',
+          'Pulsar los bajos con el pulgar a 60 BPM (70% de pulsos a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -367,9 +376,9 @@ export const SKILL_UNITS = [
             question: 'Según Keyner Ramírez y los conservatorios clásicos, ¿cómo deben mantenerse las uñas de la mano IZQUIERDA?',
             options: [
               'Largas (3–4 mm) para presionar el diapasón',
-              'Bien cortas y limadas para pisar con la punta en martillo sin aplastar otras cuerdas',
-              'Dejando largo solo el dedo 4 (meñique)',
-              'Da exactamente igual el largo de ambas manos'
+              'Bien cortas, para pisar con la punta del dedo',
+              'Medianas (1–2 mm), para apoyar mejor en las cejillas',
+              'Cortas solo en el índice, que hace las cejillas'
             ],
             correctIndex: 1,
             explanation: '¡Correcto! La mano izquierda necesita uñas cortas para pisar verticalmente; la mano derecha usa 1–2 mm redondeados si tocas arpegios sin púa.'
@@ -381,8 +390,8 @@ export const SKILL_UNITS = [
             options: [
               'Tocar únicamente la 1ª cuerda aguda',
               'Pulsar los bajos del acorde en las cuerdas gruesas 6ª, 5ª y 4ª',
-              'Sujetar el borde de la boca de la guitarra sin moverse',
-              'Tapar la 3ª cuerda durante todo el canto'
+              'Apoyarse fijo en la tapa mientras i-m-a tocan todas las cuerdas',
+              'Tocar la 3ª cuerda (Sol), la central del acorde'
             ],
             correctIndex: 1,
             explanation: '¡Perfecto! El pulgar gobierna los bordones graves (cuerdas 6ª, 5ª y 4ª) mientras i-m-a atienden las primas 3ª-2ª-1ª.'
@@ -394,6 +403,17 @@ export const SKILL_UNITS = [
             targetString: 2,
             targetFret: 1,
             hint: '2ª cuerda desde abajo, primer espacio detrás de la cejuela.'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'hands_nails',
+            title: 'Pulgar (p) en los bajos a 60 BPM',
+            instruction: 'Con el pulgar (p) pulsa 6ª, 5ª, 4ª y 5ª cuerda al aire, una por pulso. La mano derecha descansa; solo el pulgar se mueve.',
+            bpm: 60,
+            beatsPerBar: 4,
+            bars: 2,
+            toleranceMs: 100,
+            minHitRate: 0.7
           }
         ]
       },
@@ -403,6 +423,14 @@ export const SKILL_UNITS = [
         icon: '🌈',
         xp: 30,
         summary: 'Memoriza los nombres, colores cromáticos y la ley física de los trastes (Mi-Fa / Si-Do).',
+        objectives: [
+          'Nombrar las 6 cuerdas al aire (Mi-La-Re-Sol-Si-Mi)',
+          'Ubicar los semitonos naturales Si–Do y Mi–Fa en el mástil',
+          'Mantener 60 BPM con la 6ª cuerda (70% de pulsos a tiempo)'
+        ],
+        practiceSongs: [
+          { tab: 'tabs', itemId: 'tab_estrellita', label: 'Estrellita, ¿Dónde Estás? (TAB · tu primera melodía)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -418,7 +446,7 @@ export const SKILL_UNITS = [
             theoryId: 'open_strings_colors',
             question: 'Si la 2ª cuerda al aire es SI (B), ¿en qué traste de esa misma 2ª cuerda encuentras la nota DO (C)?',
             options: [
-              'Traste 1 (por la ley de semitono natural Si → Do)',
+              'Traste 1',
               'Traste 2',
               'Traste 3',
               'Traste 5'
@@ -432,7 +460,7 @@ export const SKILL_UNITS = [
             question: '¿Cuál de estas parejas de cuerdas al aire tiene exactamente dos octavas de diferencia (misma nota grave y aguda)?',
             options: [
               '5ª cuerda y 2ª cuerda',
-              '6ª cuerda (E2) y 1ª cuerda (E4)',
+              '6ª cuerda y 1ª cuerda',
               '4ª cuerda y 1ª cuerda',
               '3ª cuerda y 6ª cuerda'
             ],
@@ -454,6 +482,256 @@ export const SKILL_UNITS = [
             instruction: 'Enciende el micrófono/línea arriba o valida con la referencia virtual pulsando la 5ª cuerda libre.',
             targetMidi: 45,
             targetLabel: 'A2 (La · 5ª cuerda al aire)'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'open_strings_colors',
+            title: 'Tu primer pulso: 6ª cuerda al aire a 60 BPM',
+            instruction: 'Pulsa la 6ª cuerda (Mi grave) con el pulgar UNA vez por pulso. Escucha la cuenta de entrada y mantén el pulso tú solo.',
+            bpm: 60,
+            beatsPerBar: 4,
+            bars: 2,
+            toleranceMs: 100,
+            minHitRate: 0.7
+          }
+        ]
+      },
+      {
+        id: 'u3_l1',
+        title: 'Tríadas Menores (Em, Am, Dm) y Arco Limpio',
+        icon: '🌙',
+        xp: 30,
+        summary: 'Domina los 3 acordes menores abiertos sin que trasteen ni apaguen las primas.',
+        objectives: [
+          'Tocar Em, Am y Dm sin cuerdas apagadas',
+          'Cambiar Em ⇄ Am 8 veces en 30 s'
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'minor_open_chords',
+            badge: 'Acordes Menores · Recogimiento & Cumbia',
+            title: 'Tres amigos menores en primera posición',
+            body: `Los acordes menores llevan **1ª, 3ª menor y 5ª justa**, dándoles color íntimo y expresivo:\n• **Em (\`022000\`)**: el acorde más sencillo; suenan las 6 cuerdas.\n• **Am (\`x02210\`)**: baja los dedos 2 y 3 una cuerda y añade el dedo 1 en la 2ª cuerda, traste 1. Toca desde la **5ª cuerda**.\n• **Dm (\`xx0231\`)**: triángulo en las 3 primeras cuerdas; toca desde la **4ª cuerda al aire**.`,
+            highlightBox: 'Si la 1ª cuerda suena apagada en Am o Dm, sube un milímetro el arco de tus nudillos y pega las uñas bien cortas.',
+            demoChord: 'Dm'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'minor_open_chords',
+            question: 'Al pasar de Mi menor (Em) a La menor (Am), ¿cuál es la relación visual de las 4ª y 3ª cuerdas frente a 5ª y 4ª?',
+            options: [
+              'Subes el bloque una cuerda hacia el techo y retiras el dedo 1',
+              'Bajas el bloque una cuerda hacia el piso y añades el dedo 1 en 2ª cuerda traste 1',
+              'Mueves el bloque un traste hacia el puente',
+              'Mantienes los dedos y solo cambias la cuerda desde donde rasgueas'
+            ],
+            correctIndex: 1,
+            explanation: '¡Correcto! Esta simetría visual te permite cambiar entre E/Em y A/Am de forma casi automática.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'minor_open_chords',
+            question: 'Desde qué cuerda debes rasguear para que el acorde de Re menor (Dm) tenga su bajo fundamental limpio:',
+            options: [
+              'Desde la 6ª cuerda (Mi), tocando las 6 cuerdas',
+              'Desde la 4ª cuerda al aire (Re)',
+              'Desde la 5ª cuerda al aire (La)',
+              'Desde la 3ª cuerda (Sol)'
+            ],
+            correctIndex: 1,
+            explanation: '¡Exacto! El bajo primario de Dm y D es la 4ª cuerda (Re). Tocar la 6ª cuerda (Mi) ensuciaría la base del acorde.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'minor_open_chords',
+            title: 'Toca Re Menor (Dm / RE-) limpio',
+            instruction: 'Dedo 1 en 1ª cuerda traste 1, dedo 2 en 3ª cuerda traste 2 y dedo 3 en 2ª cuerda traste 3. Rasguea desde la 4ª cuerda.',
+            chord: 'Dm'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'minor_open_chords',
+            title: 'Toca La Menor (Am / LA-) limpio',
+            instruction: 'Cambia de Dm a Am con suavidad y deja sonar desde la 5ª cuerda.',
+            chord: 'Am'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'minor_open_chords',
+            title: 'Cambios cronometrados: Em ⇄ Am',
+            instruction: 'Alterna Mi menor y La menor. Cuenta un cambio solo si el nuevo acorde suena limpio. Mueve los dedos como un bloque.',
+            chords: ['Em', 'Am'],
+            durationSec: 30,
+            targetChanges: 8
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'unit_2',
+    number: 2,
+    title: 'Acordes Mayores, Rasgueo 4/4 y Primeras Alabanzas',
+    subtitle: 'Dedo pivote, motor constante de mano derecha, cifrado americano/latino y repertorio sin cejilla',
+    color: '#1CB0F6',
+    borderColor: '#148AC2',
+    icon: '🙌',
+    sourceBook: 'Cancionero Digital (Bono 1) & Fran Cordón',
+    lessons: [
+      {
+        id: 'u3_l2',
+        title: 'Acordes Mayores (G, D, C, A, E) y Dedo Pivote',
+        icon: '☀️',
+        xp: 35,
+        summary: 'El truco biomecánico del dedo ancla para cambiar de acorde a gran velocidad.',
+        objectives: [
+          'Tocar G, D y C limpios usando el dedo pivote',
+          'Cambiar G ⇄ D 8 veces en 30 s',
+          'Distinguir de oído un acorde Mayor de uno menor (3 de 4)'
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'major_open_chords',
+            badge: 'Velocidad de Cambio · Dedo Pivote',
+            title: 'Nunca levantes TODOS los dedos si un dedo puede servir de puente',
+            body: `En la guitarra inteligente ahorramos 50% de movimiento usando **dedos pivote** y **dedos en común**:\n• **G (versión 4 dedos) ↔ D**: deja el **Dedo 3 fijo en la 2ª cuerda traste 3** como eje giratorio.\n• **C ↔ Am**: deja quietos **Dedo 1 (2ª cuerda tr.1) y Dedo 2 (4ª cuerda tr.2)** y mueve solo el Dedo 3 entre la 5ª cuerda tr.3 (Do) y la 3ª cuerda tr.2 (Am).\n• **A ↔ E**: desliza ligeramente y abre 1 cuerda hacia arriba.`,
+            highlightBox: 'Practica 10 cambios seguidos C ↔ Am manteniendo los dedos 1 y 2 pegados como imanes.',
+            demoChord: 'C'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'major_open_chords',
+            question: '¿Qué dos dedos permanecen prácticamente inmóviles en el mástil al cambiar de DO MAYOR (C) a LA MENOR (Am)?',
+            options: [
+              'El Dedo 1 (2ª tr.1) y el Dedo 3 (5ª tr.3): solo mueves el Dedo 2',
+              'El Dedo 1 (2ª tr.1) y el Dedo 2 (4ª tr.2): solo mueves el Dedo 3',
+              'El Dedo 2 (4ª tr.2) y el Dedo 3 (5ª tr.3): solo mueves el Dedo 1',
+              'Ninguno: C y Am no comparten notas'
+            ],
+            correctIndex: 1,
+            explanation: '¡Exacto! Como C (Do-Mi-Sol) y Am (La-Do-Mi) comparten 2 notas idénticas, ¡tus dedos 1 y 2 no tienen por qué despegarse!'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'major_open_chords',
+            question: 'Al cambiar entre SOL MAYOR (4 dedos) y RE MAYOR, ¿qué dedo sirve como pivote anclado en la 2ª cuerda traste 3?',
+            options: ['Dedo 1 (Índice)', 'Dedo 2 (Medio)', 'Dedo 3 (Anular)', 'Pulgar'],
+            correctIndex: 2,
+            explanation: '¡Brillante! Dejar anclado el Dedo 3 en el traste 3 de la 2ª cuerda (nota Re) estabiliza el salto G ↔ D al instante.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'major_open_chords',
+            title: 'Toca Sol Mayor (G / SOL+) con brillo',
+            instruction: '6ª tr.3 (Dedo 2), 5ª tr.2 (Dedo 1) y 1ª tr.3 (Dedo 3 o 4). ¡El acorde #1 de la misa!',
+            chord: 'G'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'major_open_chords',
+            title: 'Ahora pivotea a Re Mayor (D / RE+)',
+            instruction: 'Forma el triángulo en las 3 primas dejando el Dedo 3 anclado en 2ª tr.3.',
+            chord: 'D'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'major_open_chords',
+            title: 'Cambios cronometrados: G ⇄ D con dedo pivote',
+            instruction: 'Alterna Sol y Re dejando el dedo 3 anclado en la 2ª cuerda traste 3. Prioriza la limpieza sobre la velocidad.',
+            chords: ['G', 'D'],
+            durationSec: 30,
+            targetChanges: 8
+          },
+          {
+            type: 'ear_quality',
+            theoryId: 'major_open_chords',
+            title: 'Oído: ¿Mayor o menor?',
+            instruction: 'Escucha cada acorde y decide si es Mayor (brillante) o menor (oscuro). Cambia la tónica en cada ronda: guíate por el color, no por la altura.',
+            rounds: 4,
+            minCorrect: 3
+          }
+        ]
+      },
+      {
+        id: 'u4_l1',
+        title: 'El Motor Constante 4/4 (Balada Básica y Fluida)',
+        icon: '🌊',
+        xp: 35,
+        summary: 'Interioriza el vaivén sin frenos "VOY PIE-DRA TA-PIE-DRA" de todo canto contemporáneo.',
+        objectives: [
+          'Mantener el péndulo de la mano derecha en ↓ · ↓ ↑ · ↑ ↓ ↑',
+          'Rasguear G a 70 BPM (75% de pulsos a ±90 ms)',
+          'Cambiar C ⇄ G7 8 veces en 30 s'
+        ],
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_los_pollitos', label: 'Los Pollitos Dicen (C ⇄ G7)' },
+          { tab: 'songs', itemId: 'pop_arroz_con_leche', label: 'Arroz con Leche (C ⇄ G7)' }
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'strumming_44_engine',
+            badge: 'Mano Derecha · Balada Básica',
+            title: 'El movimiento en "Aire" (·) es el secreto del ritmo perfecto',
+            body: `Patrón de **Balada Básica (Pop Litúrgico)** en 8 corcheas de 4/4:\n\`1 (↓)  y (·) | 2 (↓)  y (↑) | 3 (·)  y (↑) | 4 (↓)  y (↑)\`\n• Aunque los tiempos marcados con \`·\` no tocan cuerdas, **tu muñeca sigue bajando o subiendo en el aire**.\n• En **Balada Fluida de Adoración**, sustituye el primer \`↓\` por **Bajo 1 (B1)** con el pulgar para dar profundidad.`,
+            highlightBox: 'Prueba "🥁 Rasgueos → Balada Básica" a 60 BPM usando sílabas habladas antes de tocar rápido.',
+            actionTarget: { tab: 'rhythms', itemId: 'pop_folk', label: 'Practicar Balada 4/4 en Laboratorio' }
+          },
+          {
+            type: 'quiz',
+            theoryId: 'strumming_44_engine',
+            question: 'En la notación rítmica de CuerdaViva! `↓ · ↓ ↑ · ↑ ↓ ↑`, ¿qué debes hacer físicamente en los espacios marcados con un punto (·)?',
+            options: [
+              'Congelar por completo la mano derecha en el aire',
+              'Seguir moviendo la mano en el aire, sin tocar las cuerdas',
+              'Rasguear más suave, rozando solo las primas',
+              'Tocar un bajo con el pulgar'
+            ],
+            correctIndex: 1,
+            explanation: '¡Exacto! El péndulo continuo garantiza que todas las subidas (↑) caigan exactamente en los contratiempos.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'strumming_44_engine',
+            question: 'En qué se diferencia principalmente la "Balada de Adoración Fluida" (`B1 · ↓ ↑ · ↑ ↓ ↑`) de la Balada Básica:',
+            options: [
+              'Se toca a la mitad del tempo con el mismo patrón',
+              'Cambia la primera bajada por el bajo B1 con el pulgar',
+              'Cambia la primera subida por un chasquido (✕)',
+              'Toca solo bajos con el pulgar, sin rasgueo'
+            ],
+            correctIndex: 1,
+            explanation: '¡Muy bien! Empezar el compás con el peso limpio del bajo crea respiro antes de rasguear las primas.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'strumming_44_engine',
+            title: 'Aplica el Péndulo 4/4 sobre Sol Mayor (G)',
+            instruction: 'Marca el compás completo ↓ · ↓ ↑ · ↑ ↓ ↑ lentamente manteniendo el pulso uniforme.',
+            chord: 'G'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'strumming_44_engine',
+            title: 'Motor constante: un rasgueo por pulso en G a 70 BPM',
+            instruction: 'Rasguea Sol hacia abajo en cada pulso del 4/4. Tras la cuenta de entrada el metrónomo calla: mantén tú el pulso.',
+            chord: 'G',
+            bpm: 70,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'strumming_44_engine',
+            title: 'Cambios cronometrados: C ⇄ G7 ("Los Pollitos")',
+            instruction: 'Alterna Do y Sol séptima manteniendo el rasgueo. En G7 el dedo 1 va en la 1ª cuerda traste 1.',
+            chords: ['C', 'G7'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       },
@@ -463,6 +741,11 @@ export const SKILL_UNITS = [
         icon: '🔤',
         xp: 30,
         summary: 'Traduce instantáneamente entre A-G, Do-Re-Mi y la notación clásica de Keyner Ramírez.',
+        objectives: [
+          'Traducir un cifrado americano (G, Em, D7) al latino (Sol, Mi menor, Re7)',
+          'Leer los símbolos + y - de un cancionero Keyner',
+          'Distinguir de oído Mayor (+) y menor (-) (3 de 4)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -492,7 +775,7 @@ export const SKILL_UNITS = [
             question: 'En "Haga Música con la Guitarra" de Keyner Ramírez, la canción "El Año Viejo" usa "LA-" y "5ª DE LA". ¿Qué acordes son en cifrado americano?',
             options: [
               'La Mayor (A) y La7 (A7)',
-              'La Menor (Am) y Mi Séptima (E7)',
+              'La Menor (Am) y Mi7 (E7)',
               'La Menor (Am) y La5 (A5)',
               'Re Menor (Dm) y Sol7 (G7)'
             ],
@@ -513,20 +796,398 @@ export const SKILL_UNITS = [
             title: 'Práctica: La Menor (Am / LA-)',
             instruction: 'Arma Am (0-0-2-2-1-0 en cifras estándar) y hazlo sonar limpio.',
             chord: 'Am'
+          },
+          {
+            type: 'ear_quality',
+            theoryId: 'notation_dual',
+            title: 'Oído: Mayor (+) o menor (-)',
+            instruction: 'En el cifrado latino y Keyner, + es Mayor y - es menor. Escucha y clasifica cada acorde.',
+            rounds: 4,
+            minCorrect: 3
+          }
+        ]
+      },
+      {
+        id: 'u3_l4',
+        title: 'Repertorio Vivo: Dios Está Aquí, Alma Misionera y Alabaré',
+        icon: '⛪',
+        xp: 40,
+        summary: 'Toca tus primeras alabanzas completas conectando progresiones reales del Cancionero.',
+        objectives: [
+          'Tocar la progresión G - Em - C - D7 de una alabanza sin detenerte',
+          'Cambiar G ⇄ C 8 veces en 30 s'
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'major_open_chords',
+            badge: 'Cancionero Digital Católico · Alabanzas Clásicas',
+            title: 'Tres progresiones inmortales de la Liturgia Católica',
+            body: `• **"Alabaré a mi Señor" (en G)**: solo usa **G, Em, C y D7** (o aún más simple: **G - D7 - C - G**).\n• **"Alma Misionera" (en G)**: estrofa contemplativa **G → D → Em → C → D** y empuje al coro con **G7 → C**.\n• **"Dios Está Aquí" (en D)**: sigue **D → A → Bm (o Bm7) → D7 → G → A → D**.`,
+            highlightBox: 'Abre "🎶 Canciones" y usa la Línea de Tiempo Viva de colores para anticipar cada cambio de acorde.',
+            actionTarget: { tab: 'songs', itemId: 'ms_dios_esta_aqui', label: 'Abrir "Dios Está Aquí" en Canciones' }
+          },
+          {
+            type: 'quiz',
+            theoryId: 'major_open_chords',
+            question: 'En "Alma Misionera" en tono de Sol (G), ¿qué acorde aparece justo antes del coro ("Señor, toma mi vida nueva") para llevar con fuerza hacia DO Mayor?',
+            options: ['Em', 'G7', 'A7', 'Dm'],
+            correctIndex: 1,
+            explanation: '¡Bien! G7 es Sol con séptima: añadir esa nota crea tensión que pide resolver en Do. En la Unidad 5 estudiarás por qué (función dominante).'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'major_open_chords',
+            question: '¿Qué grupo de 4 acordes permite acompañar sin cejilla alabanzas de entrada como "Alabaré" o "Vive Jesús"?',
+            options: [
+              'F#m - C#m - B - G#m',
+              'G - Em - C - D7',
+              'Bb - Eb - Ab - Db',
+              'F - Bb - Cm - Eb7'
+            ],
+            correctIndex: 1,
+            explanation: '¡Correcto! La familia de Sol Mayor sin cejilla (G - Em - C - D7) es amigable y luminosa para cantar en grupo.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'major_open_chords',
+            title: 'Práctica Real: Toca La Mayor (A) del verso de Dios Está Aquí',
+            instruction: 'Agrupa dedos 1-2-3 (o 2-1-3) en traste 2 de las cuerdas 4ª, 3ª y 2ª. Rasguea desde la 5ª.',
+            chord: 'A'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'major_open_chords',
+            title: 'Cambios cronometrados: G ⇄ C ("Alabaré")',
+            instruction: 'Alterna Sol y Do como en "Alabaré". Lleva el bloque de dedos 2-3 una cuerda hacia el piso.',
+            chords: ['G', 'C'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       }
     ]
   },
-
-  // ============================================================================
-  // UNIDAD 2: MÉTODO NUMÉRICO KEYNER RAMÍREZ (10–60) Y TABLATURA (4 LECCIONES)
-  // ============================================================================
   {
-    id: 'unit_2',
-    number: 2,
-    title: 'Método Numérico Keyner (10–60) y Tablaturas',
-    subtitle: 'Lee melodías al instante con dígitos de Cuerda+Espacio y tablaturas interactivas',
+    id: 'unit_3',
+    number: 3,
+    title: 'Mano Derecha: Compases, Bajos y Arpegios',
+    subtitle: 'Chasquido en 2/4, vals 3/4 y 6/8, bajos alternos B1/B2 y arpegios p-i-m-a',
+    color: '#FF9600',
+    borderColor: '#D67B00',
+    icon: '🥁',
+    sourceBook: 'Cancionero Digital (Bono 2), Medina/Caliva & Entre Cuerdas',
+    lessons: [
+      {
+        id: 'u4_l2',
+        title: 'El Chasquido Percusivo (✕) y Marchas de Alabanza',
+        icon: '💥',
+        xp: 35,
+        summary: 'Imita la caja o redoblante en cantos alegres de júbilo y entrada litúrgica.',
+        objectives: [
+          'Ubicar el chasquido (✕) en los tiempos 2 y 4',
+          'Marcar el 2/4 a 80 BPM (75% de pulsos a tiempo)'
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'slap_percussion_24',
+            badge: 'Percusión Acústica · Coritos & Entrada',
+            title: 'Cómo sonar como guitarra + percusión al mismo tiempo',
+            body: `En cantos alegres ("A edificar la iglesia", "El Dios de la Vida"), la mano derecha integra golpes apagados (**✕**):\n• **Técnica del Chasquido**: haz coincidir el borde lateral externo de la palma con las uñas rozando las cuerdas para cortar la vibración de golpe.\n• **Alabanza con Apagado (4/4)**: \`↓ · ✕ ↑ · ↑ ✕ ↑\` (el golpe seco cae en pulsos **2 y 4**).\n• **Corito / Marcha (2/4)**: \`B1 ↑ ✕ ↑ | B2 ↑ ↓ ↑\`.`,
+            highlightBox: 'Si el chasquido te cuesta, empieza practicando solo golpear suavemente las cuerdas con los nudillos cerrados en los tiempos 2 y 4.',
+            demoChord: 'E'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'slap_percussion_24',
+            question: 'En el rasgueo de Alabanza Alegre 4/4 (`↓ · ✕ ↑ · ↑ ✕ ↑`), ¿sobre qué tiempos del compás cae el chasquido percusivo (✕)?',
+            options: [
+              'En los tiempos 1 y 3 (los mismos que el bajo)',
+              'En los tiempos 2 y 4',
+              'En los contratiempos (las "y") de cada tiempo',
+              'En los tiempos 1 y 2'
+            ],
+            correctIndex: 1,
+            explanation: '¡Brillante! Acentuar 2 y 4 con chasquido le da un groove irresistible y alegre a toda la asamblea.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'slap_percussion_24',
+            question: '¿Qué movimiento físico produce un chasquido (✕) limpio sin lastimar el puente?',
+            options: [
+              'Golpear la tapa con los nudillos, sin tocar las cuerdas',
+              'Dejar caer el borde de la palma sobre las cuerdas al bajar',
+              'Rasguear hacia arriba con más fuerza que hacia abajo',
+              'Dejar la palma apoyada sobre el puente durante todo el compás'
+            ],
+            correctIndex: 1,
+            explanation: '¡Exacto! El apagado combina el roce breve de las uñas con la amortiguación inmediata de la palma.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'slap_percussion_24',
+            title: 'Práctica de Júbilo: Mi Mayor (E) en Corito de Alabanza',
+            instruction: 'Prepara E (022100) y alterna B1 (6ª) con chasquido percusivo alegre.',
+            chord: 'E'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'slap_percussion_24',
+            title: 'Marcha en 2/4 a 80 BPM',
+            instruction: 'Rasguea Re Mayor en cada pulso del 2/4 (bajo en el 1, chasquido en el 2). Cada ataque debe caer en el pulso.',
+            chord: 'D',
+            bpm: 80,
+            beatsPerBar: 2,
+            bars: 6,
+            toleranceMs: 90,
+            minHitRate: 0.75
+          }
+        ]
+      },
+      {
+        id: 'u4_l3',
+        title: 'Métricas Ternarias: Vals 3/4, 6/8 y Bolero',
+        icon: '🕊️',
+        xp: 40,
+        summary: 'Domina el balanceo solemne de Comunión en 6/8, el Vals mariano y el Bolero.',
+        objectives: [
+          'Distinguir 3/4 y 6/8 por sus acentos',
+          'Tocar el vals BUM-chas-chas a 90 BPM (75% a tiempo)',
+          'Cambiar G ⇄ D7 8 veces en 30 s'
+        ],
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_cumpleanos_feliz', label: 'Cumpleaños Feliz (vals en G)' },
+          { tab: 'songs', itemId: 'pop_las_mananitas', label: 'Las Mañanitas (vals en G)' },
+          { tab: 'tabs', itemId: 'tab_cumpleanos_feliz', label: 'Cumpleaños Feliz (TAB · melodía)' }
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'meters_34_68_bolero',
+            badge: 'Métricas Ternarias & Serenata',
+            title: 'No confundas jamás 3/4 con 6/8',
+            body: `Aunque ambos dividen en grupos de 3, su acento rítmico es completamente distinto:\n• **Vals (3/4)**: tiene **3 pulsos** iguales (**UN**-dos-tres: **B1 · ↓ ↑ ↓ ·**). Clásico en "Eran Cien Ovejas" y música andina.\n• **Seis por Ocho (6/8)**: tiene **2 pulsos ternarios** (**UN**-dos-tres **CUÁ**-tro-cinco-seis: **B1 ↓ ↑ ↓ ↓ ↑**). Es el mecido de "Pescador de Hombres" y el Merengue.\n• **Bolero Clásico (4/4)**: **B1 · ↓ ↑ ✕ ↑ B2 ↓** con rubato elegante.`,
+            highlightBox: 'Escucha y compara "Vals 3/4" vs "Adoración 6/8" en nuestro Laboratorio de Rasgueos para entrenar el oído.',
+            actionTarget: { tab: 'rhythms', itemId: 'seis_ocho', label: 'Comparar 6/8 en Rasgueos' }
+          },
+          {
+            type: 'quiz',
+            theoryId: 'meters_34_68_bolero',
+            question: '¿Cuántos acentos principales grandes sientes dentro de un compás de Adoración en 6/8 ("Pescador de Hombres")?',
+            options: [
+              'Cuatro pulsos secos',
+              'Dos pulsos, cada uno dividido en 3',
+              'Tres pulsos secos tipo marcha',
+              'Seis pulsos iguales, sin acentos'
+            ],
+            correctIndex: 1,
+            explanation: '¡Perfecto! El 6/8 es un compás binario de subdivisión ternaria: su vaivén mecido acentúa los tiempos 1 y 4.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'meters_34_68_bolero',
+            question: 'En el Vals Litúrgico y Popular en 3/4, ¿qué ocurre exactamente en el Tiempo 1?',
+            options: [
+              'Se hace un apagado mudo sin sonido',
+              'El pulgar toca el bajo; 2 y 3 rasguean las primas',
+              'Un chasquido percusivo (✕) sobre las cuerdas',
+              'Rasgueo completo; el bajo cae en el tiempo 3'
+            ],
+            correctIndex: 1,
+            explanation: '¡Exacto! El típico "BUM - chas - chas" del vals nace de separar el Bajo (tiempo 1) de los acompañamientos en 2 y 3.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'meters_34_68_bolero',
+            question: '¿Qué combinación integra el Bolero Clásico de Serenata (`B1 · ↓ ↑ ✕ ↑ B2 ↓`)?',
+            options: [
+              'Bajo en 1, chasquido en 2 y Bajo B2 en el tiempo 3',
+              'Bajo en 1, chasquido en 3 y Bajo B2 en el tiempo 4',
+              'Chasquido en 1, bajo en 3 y regreso a B1 en el tiempo 4',
+              'Bajos en 1 y 3, sin chasquido'
+            ],
+            correctIndex: 1,
+            explanation: '¡Excelente! Esa caída sobre el Bajo Secundario en el 4º tiempo le da al bolero su balanceo cadencioso tan reconocible.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'meters_34_68_bolero',
+            title: 'Práctica en 3/4: Re Séptima (D7) para Vals / Pasillo',
+            instruction: 'Pulsa B1 en 4ª cuerda al aire y responde con dos toques suaves en las primas.',
+            chord: 'D7'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'meters_34_68_bolero',
+            title: 'Vals 3/4 a 90 BPM: BUM · chas · chas',
+            instruction: 'Sobre Do Mayor: bajo con el pulgar en el tiempo 1 y rasgueo suave en 2 y 3. Un ataque por pulso.',
+            chord: 'C',
+            bpm: 90,
+            beatsPerBar: 3,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'meters_34_68_bolero',
+            title: 'Cambios cronometrados: G ⇄ D7 ("Cumpleaños Feliz")',
+            instruction: 'Alterna Sol y Re séptima: son los dos acordes de la primera mitad de "Cumpleaños Feliz".',
+            chords: ['G', 'D7'],
+            durationSec: 30,
+            targetChanges: 8
+          }
+        ]
+      },
+      {
+        id: 'u5_l1',
+        title: 'Geometría de Bajos Primario (B1) y Secundario (B2)',
+        icon: '🎸',
+        xp: 35,
+        summary: 'Mapea al instante dónde están B1 y B2 en todos los acordes para sonar como un dúo.',
+        objectives: [
+          'Ubicar el bajo primario (B1) y secundario (B2) de C, D y G',
+          'Alternar B1 y B2 a 80 BPM (75% de pulsos a tiempo)'
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'bass_alternation_b1_b2',
+            badge: 'Fundamento del Folclor · Camavaro',
+            title: 'Cómo construir tu propio bajista usando solo el Pulgar',
+            body: `Sin alternancia de bajos no hay Vallenato, Vals ni Cumbia:\n• **G / Em / E / F**: **B1 = 6ª cuerda**, **B2 = 5ª o 4ª cuerda**.\n• **C / Am / A / B7**: **B1 = 5ª cuerda**, **B2 = 4ª cuerda** (¡o en Do Mayor sube el dedo 3 a la **6ª traste 3 = Sol** para un B2 más grave!).\n• **D / Dm / D7**: **B1 = 4ª al aire (Re)**, **B2 = 5ª al aire (La)**.`,
+            highlightBox: 'Todos nuestros diagramas de acorde marcan B1 en azul claro y B2 en turquesa debajo de las cuerdas.',
+            demoChord: 'C'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'bass_alternation_b1_b2',
+            question: 'En los acordes de RE MAYOR (D) y RE MENOR (Dm), ¿cuáles son respectivamente el Bajo Primario (B1) y Secundario (B2)?',
+            options: [
+              'B1 = 6ª cuerda al aire (Mi) y B2 = 5ª al aire (La)',
+              'B1 = 4ª al aire (Re) y B2 = 5ª al aire (La)',
+              'B1 = 3ª al aire y B2 = 2ª al aire',
+              'B1 = 5ª cuerda al aire (La) y B2 = 4ª al aire (Re)'
+            ],
+            correctIndex: 1,
+            explanation: '¡Exacto! La 4ª es Re (Tónica del acorde) y la 5ª es La (su 5ª justa); alternar 4ª y 5ª al aire suena limpio y profundo.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'bass_alternation_b1_b2',
+            question: 'En Vallenato y Vals sobre DO MAYOR (C), ¿qué movimiento hace el dedo 3 para conseguir el Bajo Secundario más grave y sabroso?',
+            options: [
+              'Pasa de 5ª tr.3 (Do) a 4ª tr.2 (Mi)',
+              'Pasa de 5ª tr.3 (Do) a 6ª tr.3 (Sol)',
+              'Pasa de 5ª tr.3 (Do) a 6ª tr.1 (Fa)',
+              'Se queda fijo; el B2 es la 6ª cuerda al aire (Mi)'
+            ],
+            correctIndex: 1,
+            explanation: '¡Truco profesional! Como Sol es la 5ª de Do, subir el dedo 3 a la 6ª cuerda traste 3 da un contraste potente de bajos entre Do y Sol grave.'
+          },
+          {
+            type: 'fretboard_find',
+            theoryId: 'bass_alternation_b1_b2',
+            question: 'Marca el Bajo Secundario profundo de Do Mayor (6ª cuerda traste 3 = Sol):',
+            targetString: 6,
+            targetFret: 3,
+            hint: '6ª cuerda arriba, traste 3.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'bass_alternation_b1_b2',
+            title: 'Alterna B1(5ª) y B2(6ª/4ª) sobre Do Mayor (C)',
+            instruction: 'Arma Do Mayor y practica tocar B1 y luego B2 antes de rasguear.',
+            chord: 'C'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'bass_alternation_b1_b2',
+            title: 'Bajos alternos B1–B2 sobre Do a 80 BPM',
+            instruction: 'Tiempo 1: B1 (5ª cuerda tr.3); tiempo 2: rasgueo; tiempo 3: B2 (6ª cuerda tr.3); tiempo 4: rasgueo. Un ataque por pulso.',
+            chord: 'C',
+            bpm: 80,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
+          }
+        ]
+      },
+      {
+        id: 'u4_l4',
+        title: 'Arpegios Clásicos de Carulli (p-i-m-a-m-i)',
+        icon: '🕯️',
+        xp: 40,
+        summary: 'Aprende el estudio clásico de Medina & Caliva para Hora Santa, Comunión y baladas.',
+        objectives: [
+          'Asignar p-i-m-a a sus cuerdas en un arpegio',
+          'Arpegiar Am nota a nota a 80 BPM (70% a tiempo)'
+        ],
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_noche_de_paz', label: 'Noche de Paz (arpegio en 3/4)' },
+          { tab: 'songs', itemId: 'pop_cielito_lindo', label: 'Cielito Lindo (vals de serenata)' }
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'classical_arpeggios',
+            badge: 'Estudio Carulli · Medina & Caliva p.32',
+            title: 'El arte de hacer cantar cada cuerda por separado',
+            body: `En el **Estudio en Do Mayor de Carulli** la mano derecha adopta un orden invariable:\n• **p (Pulgar)**: cuerda del **bajo del acorde** (5ª en C/Am, 4ª en Dm, 6ª en G/Em).\n• **i (Índice)**: siempre atiende la **3ª cuerda**.\n• **m (Medio)**: siempre la **2ª cuerda**.\n• **a (Anular)**: siempre la **1ª cuerda**.\nLa fórmula **\`p - i - m - a - m - i\`** llena cualquier momento de adoración con serenidad.`,
+            highlightBox: 'Procura que tu muñeca derecha permanezca arqueada a ~2 cm de la tapa, sin tensar el meñique.',
+            actionTarget: { tab: 'tabs', itemId: 'tab_carulli_arpegio', label: 'Practicar Estudio de Carulli en TAB' }
+          },
+          {
+            type: 'quiz',
+            theoryId: 'classical_arpeggios',
+            question: 'En la digitación clásica estándar de arpegios, ¿qué dedo de la mano derecha atiende la 2ª cuerda (Si)?',
+            options: ['Pulgar (p)', 'Índice (i)', 'Medio (m)', 'Anular (a)'],
+            correctIndex: 2,
+            explanation: '¡Exacto! p = bajos (6/5/4), i = 3ª cuerda, m = 2ª cuerda y a = 1ª cuerda.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'classical_arpeggios',
+            question: '¿Por qué es un error técnico jalar las cuerdas hacia afuera (lejos de la tapa) al arpegiar?',
+            options: [
+              'Porque la cuerda choca con los trastes y zumba',
+              'Porque obliga a tocar con uñas largas',
+              'No es un error: jalar hacia afuera da más volumen y claridad',
+              'Porque desafina la cuerda de forma permanente'
+            ],
+            correctIndex: 0,
+            explanation: '¡Bien! El movimiento correcto nace de flexionar las falanges de i-m-a en dirección hacia la palma, obteniendo volumen cálido y control.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'classical_arpeggios',
+            title: 'Arpegio Contemplativo: Do Maj7 (Cmaj7)',
+            instruction: 'Levanta el dedo 1 de Do Mayor (`x32000`) y arpegia p(5ª)-i(3ª)-m(2ª)-a(1ª)-m(2ª)-i(3ª).',
+            chord: 'Cmaj7'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'classical_arpeggios',
+            title: 'Arpegio p-i-m-a sobre Am, una nota por pulso',
+            instruction: 'Pulsa p (5ª), i (3ª), m (2ª) y a (1ª) de La menor, una nota por pulso y sin apagar las anteriores.',
+            chord: 'Am',
+            bpm: 80,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 100,
+            minHitRate: 0.7
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'unit_4',
+    number: 4,
+    title: 'Lectura de Melodías: Tablatura y Método Keyner (10–60)',
+    subtitle: 'Lee punteos en TAB y en código cuerda + espacio, y toca tus primeras introducciones',
     color: '#A55EEA',
     borderColor: '#7C3AED',
     icon: '🔢',
@@ -538,6 +1199,10 @@ export const SKILL_UNITS = [
         icon: '🧭',
         xp: 30,
         summary: 'Descifra el código de dos dígitos del libro de Keyner Ramírez sin dudar.',
+        objectives: [
+          'Convertir un código Keyner (p. ej. 32) en cuerda y traste',
+          'Ubicar en el mástil la nota de un código de 2 o 3 cifras'
+        ],
         steps: [
           {
             type: 'theory',
@@ -555,9 +1220,9 @@ export const SKILL_UNITS = [
             question: 'En el código numérico de Keyner Ramírez, ¿qué significa el número "32"?',
             options: [
               '2ª cuerda en el espacio 3',
-              '3ª cuerda (Sol) en el espacio/traste 2 (nota La)',
-              'Tocar 3 veces el espacio 2 en cualquier cuerda',
-              'Traste 32 de una guitarra especial'
+              '3ª cuerda en el espacio 2',
+              '3ª cuerda al aire y luego 2ª cuerda al aire',
+              '2ª y 3ª cuerda pulsadas a la vez, al aire'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! Primer dígito = 3 (3ª cuerda); segundo dígito = 2 (espacio/traste 2).'
@@ -568,8 +1233,8 @@ export const SKILL_UNITS = [
             question: 'En "Pueblito Viejo" aparece el código "115" (115-114...). ¿Dónde pisas exactamente cuando hay 3 cifras empezando por 1?',
             options: [
               '11ª cuerda traste 5',
-              '1ª cuerda (Mi agudo) en el espacio/traste 15',
-              'Cuerdas 1 y 5 simultáneas al aire',
+              '1ª cuerda en el traste 15',
+              '1ª cuerda traste 1 y luego traste 5',
               '5ª cuerda espacio 11'
             ],
             correctIndex: 1,
@@ -599,6 +1264,10 @@ export const SKILL_UNITS = [
         icon: '🎼',
         xp: 35,
         summary: 'Lee dobles cuerdas armónicas, bajeos de enlace y la escala de 2 octavas de la pág. 7.',
+        objectives: [
+          'Tocar semiacordes como 21/32 pulsando dos cuerdas a la vez',
+          'Tocar la escala de Do en código Keyner desde el 53'
+        ],
         steps: [
           {
             type: 'theory',
@@ -615,10 +1284,10 @@ export const SKILL_UNITS = [
             theoryId: 'keyner_semichords_scale',
             question: 'Si ves escrito en una canción de pasillo "21/32" separado por una diagonal "/", ¿qué debes hacer?',
             options: [
-              'Elegir solo uno de los dos números al azar',
-              'Pulsar simultáneamente la 2ª cuerda en traste 1 (Do) y la 3ª cuerda en traste 2 (La)',
-              'Tocar 21 veces el traste 32',
-              'Poner el capotraste en el traste 2'
+              'Tocar primero 21 y luego 32, como notas sucesivas',
+              'Pulsar a la vez 2ª cuerda traste 1 y 3ª cuerda traste 2',
+              'Deslizar (slide) desde el 21 hasta el 32',
+              'Tocar 21 como bajo con el pulgar y 32 rasgueado'
             ],
             correctIndex: 1,
             explanation: '¡Muy bien! La barra "/" agrupa notas de un semi-acorde o intervalo simultáneo, típico en pasillos y requintos.'
@@ -628,9 +1297,9 @@ export const SKILL_UNITS = [
             theoryId: 'keyner_semichords_scale',
             question: 'En primera posición bajo el método de Keyner, si aparece el código "43" seguido de "42", ¿qué dedos debes asignar respectivamente?',
             options: [
-              'Dedo 4 para ambos',
-              'Dedo 3 en el 43 (espacio 3) y Dedo 2 en el 42 (espacio 2)',
-              'Solo el pulgar izquierdo',
+              'Dedo 4 en el 43 y Dedo 3 en el 42',
+              'Dedo 3 en el 43 y Dedo 2 en el 42',
+              'Dedo 1 en ambos, desplazando la mano',
               'Dedo 1 en el 43 y Dedo 4 en el 42'
             ],
             correctIndex: 1,
@@ -641,10 +1310,10 @@ export const SKILL_UNITS = [
             theoryId: 'keyner_semichords_scale',
             question: '¿Qué indica un asterisco (*) junto a un código de cuerda grave como "53*" o "52*"?',
             options: [
-              'Que la cuerda está desafinada',
-              'Un bajo melódico de enlace o bordoneo ejecutado con el pulgar',
-              'Que la canción terminó completamente',
-              'Silencio absoluto de 4 compases'
+              'Que la nota se ejecuta con slide (arrastre)',
+              'Un bajo de enlace (bordoneo) tocado con el pulgar',
+              'Que la nota se repite dos veces',
+              'Que la cuerda se apaga con la palma (muteo)'
             ],
             correctIndex: 1,
             explanation: '¡Correcto! Es un bajo de paso característico que une acordes sin interrumpir el canto.'
@@ -665,6 +1334,13 @@ export const SKILL_UNITS = [
         icon: '🎯',
         xp: 35,
         summary: 'Conecta las 6 líneas horizontales de cualquier tablatura de internet con los números Keyner.',
+        objectives: [
+          'Leer una tablatura: líneas = cuerdas, números = trastes',
+          'Reconocer y ejecutar h, p y slide en una frase'
+        ],
+        practiceSongs: [
+          { tab: 'tabs', itemId: 'tab_himno_alegria', label: 'Himno a la Alegría (TAB · Beethoven)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -681,9 +1357,9 @@ export const SKILL_UNITS = [
             question: 'En una tablatura horizontal estándar, ¿qué cuerda representa la LÍNEA SUPERIOR (más arriba en la pantalla)?',
             options: [
               'La 6ª cuerda (Mi grave, la más gruesa)',
-              'La 1ª cuerda (Mi agudo, la más delgada)',
+              'La 1ª cuerda (Mi agudo)',
               'La 3ª cuerda (Sol)',
-              'Depende de si es música católica o vallenata'
+              'La 4ª cuerda (Re)'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! La 1ª cuerda está arriba en la tablatura porque simula cómo miras el mástil desde arriba mientras tocas.'
@@ -693,10 +1369,10 @@ export const SKILL_UNITS = [
             theoryId: 'tab_reading_techniques',
             question: 'Si en un punteo vallenato ves "15h17" o "21/23", ¿qué técnicas indican "h" y "/"?',
             options: [
-              'Hammer-on (ligado martillado sin volver a pulsar) y Slide (arrastre deslizante)',
-              'Hacer silencio y parar',
-              'Rasgueo fuerte y apagado de palma',
-              'Afinar medio tono abajo y arriba'
+              'Hammer-on (ligado ascendente) y slide (deslizamiento)',
+              'Pull-off (ligado descendente) y slide (deslizamiento)',
+              'Hammer-on (ligado ascendente) y bend (estirar la cuerda)',
+              'Armónico natural y slide (deslizamiento)'
             ],
             correctIndex: 0,
             explanation: '¡Brillante! Ligados (h/p) y arrastres (/) imitan el glissando y las apoyaturas del acordeón vallenato y el requinto.'
@@ -725,6 +1401,9 @@ export const SKILL_UNITS = [
         icon: '🎶',
         xp: 40,
         summary: 'Aplica los códigos 10–60 tocando dos introducciones colombianas auténticas del libro.',
+        objectives: [
+          'Tocar las intros de "Pueblito Viejo" y "El Año Viejo" leyendo el código Keyner'
+        ],
         steps: [
           {
             type: 'theory',
@@ -781,137 +1460,27 @@ export const SKILL_UNITS = [
       }
     ]
   },
-
-  // ============================================================================
-  // UNIDAD 3: ACORDES ABIERTOS Y CÍRCULOS DE ALABANZA (4 LECCIONES)
-  // ============================================================================
   {
-    id: 'unit_3',
-    number: 3,
-    title: 'Acordes Base y Círculos de Alabanza',
-    subtitle: 'Tríadas menores, mayores con dedo pivote, círculo armónico y tus primeras misas',
-    color: '#1CB0F6',
-    borderColor: '#148AC2',
-    icon: '🙌',
-    sourceBook: 'Cancionero Digital (Bono 1) & Fran Cordón',
+    id: 'unit_5',
+    number: 5,
+    title: 'Armonía Funcional y Ritmos de la Costa',
+    subtitle: 'Círculo armónico I–VIm–IIm–V7, paseo, merengue y son vallenato, y cumbia',
+    color: '#00CD9C',
+    borderColor: '#00A37B',
+    icon: '🪗',
+    sourceBook: 'Haga Música con la Guitarra & Entre Cuerdas',
     lessons: [
-      {
-        id: 'u3_l1',
-        title: 'Tríadas Menores (Em, Am, Dm) y Arco Limpio',
-        icon: '🌙',
-        xp: 30,
-        summary: 'Domina los 3 acordes menores abiertos sin que trasteen ni apaguen las primas.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'minor_open_chords',
-            badge: 'Acordes Menores · Recogimiento & Cumbia',
-            title: 'Tres amigos menores en primera posición',
-            body: `Los acordes menores llevan **1ª, 3ª menor y 5ª justa**, dándoles color íntimo y expresivo:\n• **Em (\`022000\`)**: el acorde más sencillo; suenan las 6 cuerdas.\n• **Am (\`x02210\`)**: baja los dedos 2 y 3 una cuerda y añade el dedo 1 en \`21\`. Toca desde la **5ª cuerda**.\n• **Dm (\`xx0231\`)**: triángulo en las 3 primeras cuerdas; toca desde la **4ª cuerda al aire**.`,
-            highlightBox: 'Si la 1ª cuerda suena apagada en Am o Dm, sube un milímetro el arco de tus nudillos y pega las uñas bien cortas.',
-            demoChord: 'Dm'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'minor_open_chords',
-            question: 'Al pasar de Mi menor (Em) a La menor (Am), ¿cuál es la relación visual de las 4ª y 3ª cuerdas frente a 5ª y 4ª?',
-            options: [
-              'No tienen ningún parecido',
-              'Bajas el bloque exactamente una cuerda hacia el piso y agregas el dedo 1 en 2ª cuerda traste 1 (21)',
-              'Se invierten hacia el traste 7',
-              'Solo cambia el bajo de la 6ª a la 1ª cuerda'
-            ],
-            correctIndex: 1,
-            explanation: '¡Correcto! Esta simetría visual te permite cambiar entre E/Em y A/Am de forma casi automática.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'minor_open_chords',
-            question: 'Desde qué cuerda debes rasguear para que el acorde de Re menor (Dm) tenga su bajo fundamental limpio:',
-            options: [
-              'Desde la 6ª cuerda (Mi) con toda fuerza',
-              'Desde la 4ª cuerda al aire (Re), evitando golpear la 6ª',
-              'Únicamente la 1ª y 2ª cuerda',
-              'Desde el traste 5'
-            ],
-            correctIndex: 1,
-            explanation: '¡Exacto! El bajo primario de Dm y D es la 4ª cuerda (Re). Tocar la 6ª cuerda (Mi) ensuciaría la base del acorde.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'minor_open_chords',
-            title: 'Toca Re Menor (Dm / RE-) limpio',
-            instruction: 'Dedo 1 en 11, Dedo 2 en 32 y Dedo 3 en 23. Rasguea desde la 4ª cuerda.',
-            chord: 'Dm'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'minor_open_chords',
-            title: 'Toca La Menor (Am / LA-) limpio',
-            instruction: 'Cambia de Dm a Am con suavidad y deja sonar desde la 5ª cuerda.',
-            chord: 'Am'
-          }
-        ]
-      },
-      {
-        id: 'u3_l2',
-        title: 'Acordes Mayores (G, D, C, A, E) y Dedo Pivote',
-        icon: '☀️',
-        xp: 35,
-        summary: 'El truco biomecánico del dedo ancla para cambiar de acorde a gran velocidad.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'major_open_chords',
-            badge: 'Velocidad de Cambio · Dedo Pivote',
-            title: 'Nunca levantes TODOS los dedos si un dedo puede servir de puente',
-            body: `En la guitarra inteligente ahorramos 50% de movimiento usando **dedos pivote** y **dedos en común**:\n• **G (versión 4 dedos) ↔ D**: deja el **Dedo 3 fijo en \`23\` (2ª cuerda traste 3)** como eje giratorio.\n• **C ↔ Am**: deja quietos **Dedo 1 (\`21\`) y Dedo 2 (\`42\`)** y mueve solo el Dedo 3 entre \`53\` (Do) y \`32\` (Am).\n• **A ↔ E**: desliza ligeramente y abre 1 cuerda hacia arriba.`,
-            highlightBox: 'Practica 10 cambios seguidos C ↔ Am manteniendo los dedos 1 y 2 pegados como imanes.',
-            demoChord: 'C'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'major_open_chords',
-            question: '¿Qué dos dedos permanecen prácticamente inmóviles en el mástil al cambiar de DO MAYOR (C) a LA MENOR (Am)?',
-            options: [
-              'Ninguno, hay que levantar toda la mano',
-              'El Dedo 1 (2ª tr.1) y el Dedo 2 (4ª tr.2): solo mueves el Dedo 3',
-              'Solo el dedo 4 meñique',
-              'Los dedos 3 y 4 en la 1ª cuerda'
-            ],
-            correctIndex: 1,
-            explanation: '¡Exacto! Como C (Do-Mi-Sol) y Am (La-Do-Mi) comparten 2 notas idénticas, ¡tus dedos 1 y 2 no tienen por qué despegarse!'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'major_open_chords',
-            question: 'Al cambiar entre SOL MAYOR (4 dedos) y RE MAYOR, ¿qué dedo sirve como pivote anclado en la 2ª cuerda traste 3 (cód. 23)?',
-            options: ['Dedo 1 (Índice)', 'Dedo 2 (Medio)', 'Dedo 3 (Anular)', 'Pulgar'],
-            correctIndex: 2,
-            explanation: '¡Brillante! Dejar anclado el Dedo 3 en el traste 3 de la 2ª cuerda (nota Re) estabiliza el salto G ↔ D al instante.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'major_open_chords',
-            title: 'Toca Sol Mayor (G / SOL+) con brillo',
-            instruction: '6ª tr.3 (Dedo 2), 5ª tr.2 (Dedo 1) y 1ª tr.3 (Dedo 3 o 4). ¡El acorde #1 de la misa!',
-            chord: 'G'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'major_open_chords',
-            title: 'Ahora pivotea a Re Mayor (D / RE+)',
-            instruction: 'Forma el triángulo en las 3 primas dejando el Dedo 3 anclado en 2ª tr.3.',
-            chord: 'D'
-          }
-        ]
-      },
       {
         id: 'u3_l3',
         title: 'El Círculo Armónico (I – VIm – IIm – V7)',
         icon: '🔄',
         xp: 35,
         summary: 'Aprende la progresión circular más famosa de la música sacra, bolero y balada.',
+        objectives: [
+          'Nombrar los acordes I – VIm – IIm – V7 en Do y en Sol',
+          'Explicar por qué el V7 pide resolver a la tónica',
+          'Cambiar C ⇄ Am 10 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -939,7 +1508,7 @@ export const SKILL_UNITS = [
             type: 'quiz',
             theoryId: 'harmonic_circle_basic',
             question: 'En el círculo de Do (`C - Am - Dm - G7`), ¿qué acorde aporta la mayor tensión ("suspenso") pidiendo volver a descansar en Do?',
-            options: ['Am', 'Dm', 'G7 (el V grado Dominante)', 'C'],
+            options: ['Am', 'Dm', 'G7', 'C'],
             correctIndex: 2,
             explanation: '¡Correcto! La presencia del intervalo tritono dentro de G7 (Si + Fa) exige resolver hacia Do Mayor (Do + Mi).'
           },
@@ -956,355 +1525,15 @@ export const SKILL_UNITS = [
             title: 'Y resuelve a casa en Do Mayor (C / DO+)',
             instruction: 'Deja que la tensión de G7 descanse en Do Mayor desde la 5ª cuerda.',
             chord: 'C'
-          }
-        ]
-      },
-      {
-        id: 'u3_l4',
-        title: 'Repertorio Vivo: Dios Está Aquí, Alma Misionera y Alabaré',
-        icon: '⛪',
-        xp: 40,
-        summary: 'Toca tus primeras alabanzas completas conectando progresiones reales del Cancionero.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'major_open_chords',
-            badge: 'Cancionero Digital Católico · Alabanzas Clásicas',
-            title: 'Tres progresiones inmortales de la Liturgia Católica',
-            body: `• **"Alabaré a mi Señor" (en G)**: solo usa **G, Em, C y D7** (o aún más simple: **G - D7 - C - G**).\n• **"Alma Misionera" (en G)**: estrofa contemplativa **G → D → Em → C → D** y empuje al coro con **G7 → C**.\n• **"Dios Está Aquí" (en D)**: sigue **D → A → Bm (o Bm7) → D7 → G → A → D**.`,
-            highlightBox: 'Abre "🎶 Canciones" y usa la Línea de Tiempo Viva de colores para anticipar cada cambio de acorde.',
-            actionTarget: { tab: 'songs', itemId: 'ms_dios_esta_aqui', label: 'Abrir "Dios Está Aquí" en Canciones' }
           },
           {
-            type: 'quiz',
+            type: 'chord_change',
             theoryId: 'harmonic_circle_basic',
-            question: 'En "Alma Misionera" en tono de Sol (G), ¿qué acorde aparece justo antes del coro ("Señor, toma mi vida nueva") para llevar con fuerza hacia DO Mayor?',
-            options: ['Em', 'G7 (Dominante Secundario V7/IV)', 'A7', 'Dm'],
-            correctIndex: 1,
-            explanation: '¡Excelente oído teórico! Al agregar el 7 a G (G7 = 5ª de Do), proyectas la armonía directo hacia Do Mayor.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'major_open_chords',
-            question: '¿Qué grupo de 4 acordes permite acompañar sin cejilla alabanzas de entrada como "Alabaré" o "Vive Jesús"?',
-            options: [
-              'F#m - C#m - B - G#m',
-              'G - Em - C - D7',
-              'Bb - Eb - Ab - Db',
-              'F - Bb - Cm - Eb7'
-            ],
-            correctIndex: 1,
-            explanation: '¡Correcto! La familia de Sol Mayor sin cejilla (G - Em - C - D7) es amigable y luminosa para cantar en grupo.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'major_open_chords',
-            title: 'Práctica Real: Toca La Mayor (A) del verso de Dios Está Aquí',
-            instruction: 'Agrupa dedos 1-2-3 (o 2-1-3) en traste 2 de las cuerdas 4ª, 3ª y 2ª. Rasguea desde la 5ª.',
-            chord: 'A'
-          }
-        ]
-      }
-    ]
-  },
-
-  // ============================================================================
-  // UNIDAD 4: RASGUEOS LITÚRGICOS, CHASQUIDO Y ARPEGIOS (4 LECCIONES)
-  // ============================================================================
-  {
-    id: 'unit_4',
-    number: 4,
-    title: 'Mano Derecha: Rasgueos, Chasquido y Arpegios',
-    subtitle: 'El péndulo constante 4/4, chasquido percusivo (✕), vals 3/4, 6/8 y arpegios p-i-m-a',
-    color: '#FF9600',
-    borderColor: '#D67B00',
-    icon: '🥁',
-    sourceBook: 'Cancionero Digital (Bono 2) & Medina/Caliva',
-    lessons: [
-      {
-        id: 'u4_l1',
-        title: 'El Motor Constante 4/4 (Balada Básica y Fluida)',
-        icon: '🌊',
-        xp: 35,
-        summary: 'Interioriza el vaivén sin frenos "VOY PIE-DRA TA-PIE-DRA" de todo canto contemporáneo.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'strumming_44_engine',
-            badge: 'Mano Derecha · Balada Básica',
-            title: 'El movimiento en "Aire" (·) es el secreto del ritmo perfecto',
-            body: `Patrón de **Balada Básica (Pop Litúrgico)** en 8 corcheas de 4/4:\n\`1 (↓)  y (·) | 2 (↓)  y (↑) | 3 (·)  y (↑) | 4 (↓)  y (↑)\`\n• Aunque los tiempos marcados con \`·\` no tocan cuerdas, **tu muñeca sigue bajando o subiendo en el aire**.\n• En **Balada Fluida de Adoración**, sustituye el primer \`↓\` por **Bajo 1 (B1)** con el pulgar para dar profundidad.`,
-            highlightBox: 'Prueba "🥁 Rasgueos → Balada Básica" a 60 BPM usando sílabas habladas antes de tocar rápido.',
-            actionTarget: { tab: 'rhythms', itemId: 'pop_folk', label: 'Practicar Balada 4/4 en Laboratorio' }
-          },
-          {
-            type: 'quiz',
-            theoryId: 'strumming_44_engine',
-            question: 'En la notación rítmica de CuerdaViva! `↓ · ↓ ↑ · ↑ ↓ ↑`, ¿qué debes hacer físicamente en los espacios marcados con un punto (·)?',
-            options: [
-              'Congelar por completo la mano derecha en el aire',
-              'Seguir moviendo la mano sin rozar las cuerdas para mantener el péndulo del pulso intacto',
-              'Pisar un traste con la mano derecha',
-              'Soltar la guitarra un segundo'
-            ],
-            correctIndex: 1,
-            explanation: '¡Exacto! El péndulo continuo garantiza que todas las subidas (↑) caigan exactamente en los contratiempos.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'strumming_44_engine',
-            question: 'En qué se diferencia principalmente la "Balada de Adoración Fluida" (`B1 · ↓ ↑ · ↑ ↓ ↑`) de la Balada Básica:',
-            options: [
-              'Se toca mucho más lento con cejilla',
-              'Sustituye la primera bajada completa por el pulgar en el Bajo Primario (B1), dando calidez al inicio del compás',
-              'Elimina por completo las cuerdas agudas',
-              'Solo usa la mano izquierda'
-            ],
-            correctIndex: 1,
-            explanation: '¡Muy bien! Empezar el compás con el peso limpio del bajo crea respiro antes de rasguear las primas.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'strumming_44_engine',
-            title: 'Aplica el Péndulo 4/4 sobre Sol Mayor (G)',
-            instruction: 'Marca el compás completo ↓ · ↓ ↑ · ↑ ↓ ↑ lentamente manteniendo el pulso uniforme.',
-            chord: 'G'
-          }
-        ]
-      },
-      {
-        id: 'u4_l2',
-        title: 'El Chasquido Percusivo (✕) y Marchas de Alabanza',
-        icon: '💥',
-        xp: 35,
-        summary: 'Imita la caja o redoblante en cantos alegres de júbilo y entrada litúrgica.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'slap_percussion_24',
-            badge: 'Percusión Acústica · Coritos & Entrada',
-            title: 'Cómo sonar como guitarra + percusión al mismo tiempo',
-            body: `En cantos alegres ("A edificar la iglesia", "El Dios de la Vida"), la mano derecha integra golpes apagados (**✕**):\n• **Técnica del Chasquido**: haz coincidir el borde lateral externo de la palma con las uñas rozando las cuerdas para cortar la vibración de golpe.\n• **Alabanza con Apagado (4/4)**: \`↓ · ✕ ↑ · ↑ ✕ ↑\` (el golpe seco cae en pulsos **2 y 4**).\n• **Corito / Marcha (2/4)**: \`B1 ↑ ✕ ↑ | B2 ↑ ↓ ↑\`.`,
-            highlightBox: 'Si el chasquido te cuesta, empieza practicando solo golpear suavemente las cuerdas con los nudillos cerrados en los tiempos 2 y 4.',
-            demoChord: 'E'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'slap_percussion_24',
-            question: 'En el rasgueo de Alabanza Alegre 4/4 (`↓ · ✕ ↑ · ↑ ✕ ↑`), ¿sobre qué tiempos del compás cae el chasquido percusivo (✕)?',
-            options: [
-              'En los tiempos 1 y 3 (los mismos que el bajo)',
-              'En los tiempos 2 y 4 (donde tradicionalmente pega la caja o redoblante)',
-              'Únicamente en el último contratiempo',
-              'Nunca lleva chasquido la alabanza festiva'
-            ],
-            correctIndex: 1,
-            explanation: '¡Brillante! Acentuar 2 y 4 con chasquido le da un groove irresistible y alegre a toda la asamblea.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'slap_percussion_24',
-            question: '¿Qué movimiento físico produce un chasquido (✕) limpio sin lastimar el puente?',
-            options: [
-              'Golpear la madera de la tapa con fuerza usando el codo',
-              'Dejar caer el borde blando lateral de la palma sobre las cuerdas justo cuando las uñas rozan hacia abajo',
-              'Soltar la púa dentro de la boca de la guitarra',
-              'Pisar los trastes con el pulgar'
-            ],
-            correctIndex: 1,
-            explanation: '¡Exacto! El apagado combina el roce breve de las uñas con la amortiguación inmediata de la palma.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'slap_percussion_24',
-            title: 'Práctica de Júbilo: Mi Mayor (E) en Corito de Alabanza',
-            instruction: 'Prepara E (022100) y alterna B1 (6ª) con chasquido percusivo alegre.',
-            chord: 'E'
-          }
-        ]
-      },
-      {
-        id: 'u4_l3',
-        title: 'Métricas Ternarias: Vals 3/4, 6/8 y Bolero',
-        icon: '🕊️',
-        xp: 40,
-        summary: 'Domina el balanceo solemne de Comunión en 6/8, el Vals mariano y el Bolero.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'meters_34_68_bolero',
-            badge: 'Métricas Ternarias & Serenata',
-            title: 'No confundas jamás 3/4 con 6/8',
-            body: `Aunque ambos dividen en grupos de 3, su acento rítmico es completamente distinto:\n• **Vals (3/4)**: tiene **3 pulsos** iguales (**UN**-dos-tres: **B1 · ↓ ↑ ↓ ·**). Clásico en "Eran Cien Ovejas" y música andina.\n• **Seis por Ocho (6/8)**: tiene **2 pulsos ternarios** (**UN**-dos-tres **CUÁ**-tro-cinco-seis: **B1 ↓ ↑ ↓ ↓ ↑**). Es el mecido de "Pescador de Hombres" y el Merengue.\n• **Bolero Clásico (4/4)**: **B1 · ↓ ↑ ✕ ↑ B2 ↓** con rubato elegante.`,
-            highlightBox: 'Escucha y compara "Vals 3/4" vs "Adoración 6/8" en nuestro Laboratorio de Rasgueos para entrenar el oído.',
-            actionTarget: { tab: 'rhythms', itemId: 'seis_ocho', label: 'Comparar 6/8 en Rasgueos' }
-          },
-          {
-            type: 'quiz',
-            theoryId: 'meters_34_68_bolero',
-            question: '¿Cuántos acentos principales grandes sientes dentro de un compás de Adoración en 6/8 ("Pescador de Hombres")?',
-            options: [
-              'Cuatro pulsos secos',
-              'Dos grandes pulsos balanceados (en las corcheas 1 y 4), cada uno subdividido en 3 ("1-2-3, 4-5-6")',
-              'Tres pulsos secos tipo marcha',
-              'Uno solo cada diez segundos'
-            ],
-            correctIndex: 1,
-            explanation: '¡Perfecto! El 6/8 es un compás binario de subdivisión ternaria: su vaivén mecido acentúa los tiempos 1 y 4.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'meters_34_68_bolero',
-            question: 'En el Vals Litúrgico y Popular en 3/4, ¿qué ocurre exactamente en el Tiempo 1?',
-            options: [
-              'Se hace un apagado mudo sin sonido',
-              'El pulgar marca un Bajo profundo (B1 o B2), y los tiempos 2 y 3 responden con rasgueos suaves en primas',
-              'Se suben todas las cuerdas de la 1ª a la 6ª rápido',
-              'Solo entra la guitarra en el tiempo 3'
-            ],
-            correctIndex: 1,
-            explanation: '¡Exacto! El típico "BUM - chas - chas" del vals nace de separar el Bajo (tiempo 1) de los acompañamientos en 2 y 3.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'meters_34_68_bolero',
-            question: '¿Qué combinación integra el Bolero Clásico de Serenata (`B1 · ↓ ↑ ✕ ↑ B2 ↓`)?',
-            options: [
-              'Únicamente cuerdas al aire en 3/4',
-              'Bajo en 1, chasquido en 3 y regreso ligado hacia el Bajo Alterno B2 en el tiempo 4',
-              'Tres chasquidos seguidos al empezar',
-              'Velocidad extrema arriba de 180 BPM'
-            ],
-            correctIndex: 1,
-            explanation: '¡Excelente! Esa caída sobre el Bajo Secundario en el 4º tiempo le da al bolero su balanceo cadencioso tan reconocible.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'meters_34_68_bolero',
-            title: 'Práctica en 3/4: Re Séptima (D7) para Vals / Pasillo',
-            instruction: 'Pulsa B1 en 4ª cuerda al aire y responde con dos toques suaves en las primas.',
-            chord: 'D7'
-          }
-        ]
-      },
-      {
-        id: 'u4_l4',
-        title: 'Arpegios Clásicos de Carulli (p-i-m-a-m-i)',
-        icon: '🕯️',
-        xp: 40,
-        summary: 'Aprende el estudio clásico de Medina & Caliva para Hora Santa, Comunión y baladas.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'classical_arpeggios',
-            badge: 'Estudio Carulli · Medina & Caliva p.32',
-            title: 'El arte de hacer cantar cada cuerda por separado',
-            body: `En el **Estudio en Do Mayor de Carulli** la mano derecha adopta un orden invariable:\n• **p (Pulgar)**: cuerda del **bajo del acorde** (5ª en C/Am, 4ª en Dm, 6ª en G/Em).\n• **i (Índice)**: siempre atiende la **3ª cuerda**.\n• **m (Medio)**: siempre la **2ª cuerda**.\n• **a (Anular)**: siempre la **1ª cuerda**.\nLa fórmula **\`p - i - m - a - m - i\`** llena cualquier momento de adoración con serenidad.`,
-            highlightBox: 'Procura que tu muñeca derecha permanezca arqueada a ~2 cm de la tapa, sin tensar el meñique.',
-            actionTarget: { tab: 'tabs', itemId: 'tab_carulli_arpegio', label: 'Practicar Estudio de Carulli en TAB' }
-          },
-          {
-            type: 'quiz',
-            theoryId: 'classical_arpeggios',
-            question: 'En la digitación clásica estándar de arpegios, ¿qué dedo de la mano derecha atiende la 2ª cuerda (Si)?',
-            options: ['Pulgar (p)', 'Índice (i)', 'Medio (m)', 'Anular (a)'],
-            correctIndex: 2,
-            explanation: '¡Exacto! p = bajos (6/5/4), i = 3ª cuerda, m = 2ª cuerda y a = 1ª cuerda.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'classical_arpeggios',
-            question: '¿Por qué es un error técnico jalar las cuerdas hacia afuera (lejos de la tapa) al arpegiar?',
-            options: [
-              'Porque las cuerdas azotan contra los trastes generando zumbido metálico y haciendo brincar toda la mano',
-              'Porque la guitarra suena demasiado dulce',
-              'Porque el arpegio solo funciona sin uñas',
-              'Porque cambia la afinación de 440Hz a 330Hz'
-            ],
-            correctIndex: 0,
-            explanation: '¡Bien! El movimiento correcto nace de flexionar las falanges de i-m-a en dirección hacia la palma, obteniendo volumen cálido y control.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'classical_arpeggios',
-            title: 'Arpegio Contemplativo: Do Maj7 (Cmaj7)',
-            instruction: 'Levanta el dedo 1 de Do Mayor (`x32000`) y arpegia p(5ª)-i(3ª)-m(2ª)-a(1ª)-m(2ª)-i(3ª).',
-            chord: 'Cmaj7'
-          }
-        ]
-      }
-    ]
-  },
-
-  // ============================================================================
-  // UNIDAD 5: BAJO ALTERNO (B1/B2) Y FOLCLOR COLOMBIANO (4 LECCIONES)
-  // ============================================================================
-  {
-    id: 'unit_5',
-    number: 5,
-    title: 'Bajo Alterno (B1/B2), Vallenato y Aire Andino',
-    subtitle: 'El bajeo B1/B2, Paseo, Merengue, Son Vallenato y Pasillo/Bambuco Colombiano',
-    color: '#00CD9C',
-    borderColor: '#00A37B',
-    icon: '🪗',
-    sourceBook: 'Haga Música con la Guitarra & Entre Cuerdas',
-    lessons: [
-      {
-        id: 'u5_l1',
-        title: 'Geometría de Bajos Primario (B1) y Secundario (B2)',
-        icon: '🎸',
-        xp: 35,
-        summary: 'Mapea al instante dónde están B1 y B2 en todos los acordes para sonar como un dúo.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'bass_alternation_b1_b2',
-            badge: 'Fundamento del Folclor · Camavaro',
-            title: 'Cómo construir tu propio bajista usando solo el Pulgar',
-            body: `Sin alternancia de bajos no hay Vallenato, Vals ni Cumbia:\n• **G / Em / E / F**: **B1 = 6ª cuerda**, **B2 = 5ª o 4ª cuerda**.\n• **C / Am / A / B7**: **B1 = 5ª cuerda**, **B2 = 4ª cuerda** (¡o en Do Mayor sube el dedo 3 a la **6ª traste 3 = Sol** para un B2 más grave!).\n• **D / Dm / D7**: **B1 = 4ª al aire (Re)**, **B2 = 5ª al aire (La)**.`,
-            highlightBox: 'Todos nuestros diagramas de acorde marcan B1 en azul claro y B2 en turquesa debajo de las cuerdas.',
-            demoChord: 'C'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'bass_alternation_b1_b2',
-            question: 'En los acordes de RE MAYOR (D) y RE MENOR (Dm), ¿cuáles son respectivamente el Bajo Primario (B1) y Secundario (B2)?',
-            options: [
-              'B1 = 6ª al aire y B2 = 1ª al aire',
-              'B1 = 4ª cuerda al aire (Re) y B2 = 5ª cuerda al aire (La)',
-              'B1 = 3ª al aire y B2 = 2ª al aire',
-              'Solo usa 6ª cuerda traste 3'
-            ],
-            correctIndex: 1,
-            explanation: '¡Exacto! La 4ª es Re (Tónica del acorde) y la 5ª es La (su 5ª justa); alternar 4ª y 5ª al aire suena limpio y profundo.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'bass_alternation_b1_b2',
-            question: 'En Vallenato y Vals sobre DO MAYOR (C), ¿qué movimiento hace el dedo 3 para conseguir el Bajo Secundario más grave y sabroso?',
-            options: [
-              'Levanta todos los dedos en cada golpe',
-              'Pasa de 5ª cuerda traste 3 (Do = cód. 53) a pisar la 6ª cuerda traste 3 (Sol = cód. 63)',
-              'Pisa la 1ª cuerda traste 5',
-              'Pisa la 4ª cuerda traste 1'
-            ],
-            correctIndex: 1,
-            explanation: '¡Truco profesional! Como Sol es la 5ª de Do, subir el dedo 3 a `63` da un contraste potente de bajos entre Do y Sol grave.'
-          },
-          {
-            type: 'fretboard_find',
-            theoryId: 'bass_alternation_b1_b2',
-            question: 'Marca el Bajo Secundario profundo de Do Mayor ("63" = 6ª cuerda traste 3 = Sol):',
-            targetString: 6,
-            targetFret: 3,
-            hint: '6ª cuerda arriba, traste 3.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'bass_alternation_b1_b2',
-            title: 'Alterna B1(5ª) y B2(6ª/4ª) sobre Do Mayor (C)',
-            instruction: 'Arma Do Mayor y practica tocar B1 y luego B2 antes de rasguear.',
-            chord: 'C'
+            title: 'Cambios cronometrados: C ⇄ Am (dedos comunes)',
+            instruction: 'Alterna Do Mayor y La menor moviendo solo el dedo 3; los dedos 1 y 2 no se levantan.',
+            chords: ['C', 'Am'],
+            durationSec: 30,
+            targetChanges: 10
           }
         ]
       },
@@ -1314,6 +1543,10 @@ export const SKILL_UNITS = [
         icon: '🥁',
         xp: 40,
         summary: 'Combina el bajo alterno y el chasquido en el ritmo emblemático de Valledupar.',
+        objectives: [
+          'Reproducir el paseo vallenato imitando caja y guacharaca',
+          'Marcar el pulso del paseo a 90 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1329,10 +1562,10 @@ export const SKILL_UNITS = [
             theoryId: 'vallenato_airs',
             question: 'En el Paseo Vallenato clásico ejecutado en guitarra (`B1 ↑ ✕ ↓ B2 · ↓ ↑`), ¿qué dos instrumentos de percusión típicos reemplaza la mano derecha?',
             options: [
-              'Triángulo y piano de cola',
-              'La Caja Vallenata (en los bajos y chasquidos) y la Guacharaca (en los roces de arriba/abajo)',
-              'Clarinete y saxofón',
-              'La armónica únicamente'
+              'La Caja Vallenata y el acordeón',
+              'La Caja Vallenata y la Guacharaca',
+              'La Guacharaca y el bajo eléctrico',
+              'El tambor alegre y la tambora'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! B1/B2/✕ reproducen los golpes graves y secos de la caja; las subidas y bajadas mantienen el raspado de la guacharaca.'
@@ -1342,10 +1575,10 @@ export const SKILL_UNITS = [
             theoryId: 'vallenato_airs',
             question: '¿En qué compás se construye el Paseo Vallenato tradicional frente al Merengue Vallenato?',
             options: [
-              'Paseo es binario 4/4 (caminado y romántico), mientras Merengue es 6/8 más acelerado',
-              'Paseo es siempre 3/4 y Merengue 7/8',
-              'Ambos son exactamente el mismo rasgueo sin diferencia',
-              'Paseo no usa bajos en absoluto'
+              'Paseo en 4/4; Merengue en 6/8',
+              'Paseo en 3/4 (como el vals); Merengue en 4/4',
+              'Ambos en 4/4; solo cambia el tempo',
+              'Paseo en 6/8; Merengue en 4/4'
             ],
             correctIndex: 0,
             explanation: '¡Brillante! El Paseo camina en 4/4 (`Los Caminos de la Vida`), permitiendo frases largas cantables y líricas.'
@@ -1356,6 +1589,18 @@ export const SKILL_UNITS = [
             title: 'Práctica de Paseo Vallenato en Sol Séptima (G7)',
             instruction: 'Marca G7 y haz sonar el B1 (6ª tr.3) seguido del chasquido en el tiempo 2.',
             chord: 'G7'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'vallenato_airs',
+            title: 'Paseo vallenato: el pulso de la caja a 90 BPM',
+            instruction: 'Sobre La menor, marca cada pulso del 4/4 alternando bajo (tiempos 1 y 3) y chasquido (2 y 4).',
+            chord: 'Am',
+            bpm: 90,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
           }
         ]
       },
@@ -1365,6 +1610,10 @@ export const SKILL_UNITS = [
         icon: '🔥',
         xp: 40,
         summary: 'Diferencia la alegría rápida del Merengue 6/8 y el peso profundo del Son Vallenato.',
+        objectives: [
+          'Distinguir paseo (4/4), merengue (6/8) y son por su compás',
+          'Marcar los dos pulsos del 6/8 a 70 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1379,7 +1628,7 @@ export const SKILL_UNITS = [
             type: 'quiz',
             theoryId: 'vallenato_airs',
             question: '¿Qué aire vallenato es famoso por su cadencia pausada donde el BAJO y los bordoneos (`*`) tienen el protagonismo absoluto?',
-            options: ['La Puya acelerada', 'El Son Vallenato', 'El Vals vienés', 'El Merengue rápido'],
+            options: ['La Puya acelerada', 'El Son Vallenato', 'El Paseo Vallenato', 'El Merengue rápido'],
             correctIndex: 1,
             explanation: '¡Muy bien! El Son Vallenato respira lento para destacar el diálogo melódico de los bordones en la 5ª y 6ª cuerda.'
           },
@@ -1388,10 +1637,10 @@ export const SKILL_UNITS = [
             theoryId: 'vallenato_airs',
             question: '¿Qué secuencia numérica Keyner construye una bajada de bajo clásica ("bordoneo") para ir de DO MAYOR (C) hacia SOL MAYOR (G)?',
             options: [
-              '10 - 11 - 12 - 13',
+              '53 (Do) → 52 (Si) → 50 (La) → 60 (Mi)',
               '53 (Do) → 52 (Si) → 50 (La) → 63 (Sol)',
-              '30 - 32 - 34 - 35',
-              '20 - 21 - 23 - 10'
+              '40 (Re) → 42 (Mi) → 43 (Fa) → 30 (Sol)',
+              '63 (Sol) → 60 (Mi) → 53 (Do) → 52 (Si)'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! Bajas escala grado a grado desde Do en la 5ª cuerda hasta aterrizar justo en la raíz Sol de la 6ª traste 3.'
@@ -1410,82 +1659,32 @@ export const SKILL_UNITS = [
             title: 'Práctica de Merengue 6/8 en Am / E7',
             instruction: 'Toca La Séptima (A7) o Mi7 (E7) sintiendo los 6 pulsos vivos del Merengue.',
             chord: 'A7'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'vallenato_airs',
+            title: 'Merengue en 6/8: los dos pulsos grandes',
+            instruction: 'En 6/8 hay dos pulsos por compás (1 y 4). Marca solo esos pulsos con el bajo sobre Mi menor.',
+            chord: 'Em',
+            bpm: 70,
+            beatsPerBar: 2,
+            bars: 6,
+            toleranceMs: 90,
+            minHitRate: 0.75,
+            meter: '6/8 (2 pulsos)'
           }
         ]
       },
-      {
-        id: 'u5_l4',
-        title: 'Pasillo Andino, Bambuco y Guabina ("Espumas" y "Oropel")',
-        icon: '🏔️',
-        xp: 45,
-        summary: 'Incorpora el alma andina de "Haga Música con la Guitarra" al repertorio de tu mano derecha.',
-        steps: [
-          {
-            type: 'theory',
-            theoryId: 'pasillo_bambuco_guabina',
-            badge: 'Folclor Andino Colombiano · Keyner Ramírez',
-            title: 'Cómo acompañar Pasillos y Bambucos como un maestro huilense',
-            body: `Gran parte del tesoro del libro de **Keyner Ramírez** pertenece al folclor andino colombiano:\n• **Pasillo Colombiano (3/4 vivo)**: \`B1 ↑ ✕ ↑ B2 ↓\` — el **chasquido (✕) en el pulso 2** le da ese corte elegante e inconfundible (*Espumas*, *Oropel*, *Pescador, Lucero y Río*, *Las Acacias*).\n• **Bambuco (6/8 sincopado)**: \`B1 ↓ ✕ B2 ↓ ✕\` — cruza acentos de 3/4 contra 6/8.\n• **Guabina (3/4 dulce)**: suave y cantable con alternancia de bajos B1/B2.`,
-            highlightBox: 'Explora nuestras canciones "Espumas", "Oropel" y "Al Sur" con el rasgueo de Pasillo Andino ya activado.',
-            actionTarget: { tab: 'songs', itemId: 'col_espumas', label: 'Estudiar "Espumas" (Jorge Villamil)' }
-          },
-          {
-            type: 'quiz',
-            theoryId: 'pasillo_bambuco_guabina',
-            question: '¿Qué distingue rítmicamente el PASILLO COLOMBIANO (`B1 ↑ ✕ ↑ B2 ↓`) de un Vals tradicional lento?',
-            options: [
-              'El Pasillo suele ir más vivo e inserta un corte o chasquido marcado (✕) sobre el 2º pulso del 3/4',
-              'El Pasillo no utiliza acordes menores jamás',
-              'El Pasillo se toca en 4/4 con caja vallenata',
-              'No usa el pulgar en los bajos'
-            ],
-            correctIndex: 0,
-            explanation: '¡Exacto! Ese corte apagado en el segundo pulso diferencia inmediatamente el Pasillo de Jorge Villamil/José A. Morales del Vals europeo.'
-          },
-          {
-            type: 'quiz',
-            theoryId: 'pasillo_bambuco_guabina',
-            question: 'En qué región y compás nace el Bambuco Colombiano tradicional (`B1 ↓ ✕ B2 ↓ ✕`):',
-            options: [
-              'Región Andina, caracterizado por una sabrosa síncopa en 6/8',
-              'Música electrónica europea en 2/4',
-              'Canto gregoriano sin ritmo',
-              'Únicamente en tonalidad disminuida'
-            ],
-            correctIndex: 0,
-            explanation: '¡Muy bien! La síncopa 6/8 con los apagados en 3 y 6 define el pulso del Bambuco.'
-          },
-          {
-            type: 'play_guitar_chord',
-            theoryId: 'pasillo_bambuco_guabina',
-            title: 'Práctica de Pasillo: La Mayor (A / LA+) de Espumas',
-            instruction: 'Toca La Mayor marcando el tiempo 1 con la 5ª cuerda al aire y rasgueo brillante en primas.',
-            chord: 'A'
-          }
-        ]
-      }
-    ]
-  },
-
-  // ============================================================================
-  // UNIDAD 6: CUMBIA, PORRO, MODULACIONES Y DISMINUIDOS (4 LECCIONES)
-  // ============================================================================
-  {
-    id: 'unit_6',
-    number: 6,
-    title: 'Cumbia, Porro y Modulaciones Colombianas',
-    subtitle: 'El contratiempo costeño, Carmen de Bolívar, modulación homónima y acorde DIS.',
-    color: '#FF4B4B',
-    borderColor: '#D33131',
-    icon: '🌴',
-    sourceBook: 'Folclor del Caribe & Haga Música con la Guitarra',
-    lessons: [
       {
         id: 'u6_l1',
         title: 'Cumbia Tradicional: El Contratiempo del Tambor Llamador',
         icon: '🥁',
         xp: 40,
         summary: 'Siente el "tapa-CHÁ" de La Piragua y Yo Me Llamo Cumbia en la palma derecha.',
+        objectives: [
+          'Ubicar el contratiempo del tambor llamador en la cumbia',
+          'Marcar el pulso de la cumbia a 90 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1501,10 +1700,10 @@ export const SKILL_UNITS = [
             theoryId: 'cumbia_porro_groove',
             question: 'En la secuencia rítmica de Cumbia (`B1 ↑ ✕ ↑ B2 ↑ ✕ ↑`), ¿qué hace el rasgueo exactamente en las sílabas débiles ("y")?',
             options: [
-              'Sube suavemente en las primas imitando el golpe del tambor llamador a contratiempo',
+              'Sube suave en las primas, como el tambor llamador',
               'Toca siempre el bajo de la 6ª cuerda',
-              'Guarda silencio absoluto todo el compás',
-              'Apaga las cuerdas con la mano izquierda'
+              'Toca un chasquido (✕) en cada "y"',
+              'Baja con fuerza sobre las 6 cuerdas'
             ],
             correctIndex: 0,
             explanation: '¡Exacto! Las subidas continuas en contratiempo amarran el ritmo con los bajos B1/B2 y los apagados ✕ en 2 y 4.'
@@ -1516,8 +1715,8 @@ export const SKILL_UNITS = [
             options: [
               'G - C - D',
               'Am (LA-) y E7 (5ª de La)',
-              'F - Bb - C7',
-              'Bm - F#m'
+              'Am (LA-) y G7 (5ª de DO)',
+              'Am (LA-) y Dm (RE-)'
             ],
             correctIndex: 1,
             explanation: '¡Correcto! La menor (LA-) y Mi Séptima (5ª LA) bastan para acompañar de principio a fin este clásico decembrino.'
@@ -1528,6 +1727,98 @@ export const SKILL_UNITS = [
             title: 'Práctica Costeña: Mi Séptima (E7 / 5ª LA)',
             instruction: 'Solo 2 dedos: 5ª tr.2 (Dedo 2) y 3ª tr.1 (Dedo 1). Rasguea las 6 cuerdas con fuego.',
             chord: 'E7'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'cumbia_porro_groove',
+            title: 'Cumbia: el bajo en cada pulso a 90 BPM',
+            instruction: 'Marca con el bajo cada pulso del compás de cumbia (2 por compás) sobre La menor; las subidas a contratiempo vendrán después.',
+            chord: 'Am',
+            bpm: 90,
+            beatsPerBar: 2,
+            bars: 8,
+            toleranceMs: 90,
+            minHitRate: 0.75,
+            meter: '2/2'
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'unit_6',
+    number: 6,
+    title: 'Aire Andino, Porro y Modulaciones',
+    subtitle: 'Pasillo y bambuco, porro sabanero, modulación homónima y acorde disminuido',
+    color: '#FF4B4B',
+    borderColor: '#D33131',
+    icon: '🌴',
+    sourceBook: 'Folclor del Caribe & Haga Música con la Guitarra',
+    lessons: [
+      {
+        id: 'u5_l4',
+        title: 'Pasillo Andino, Bambuco y Guabina ("Espumas" y "Oropel")',
+        icon: '🏔️',
+        xp: 45,
+        summary: 'Incorpora el alma andina de "Haga Música con la Guitarra" al repertorio de tu mano derecha.',
+        objectives: [
+          'Distinguir pasillo, bambuco y guabina por su acentuación',
+          'Tocar el pasillo en 3/4 a 100 BPM (75% a tiempo)'
+        ],
+        steps: [
+          {
+            type: 'theory',
+            theoryId: 'pasillo_bambuco_guabina',
+            badge: 'Folclor Andino Colombiano · Keyner Ramírez',
+            title: 'Cómo acompañar Pasillos y Bambucos como un maestro huilense',
+            body: `Gran parte del tesoro del libro de **Keyner Ramírez** pertenece al folclor andino colombiano:\n• **Pasillo Colombiano (3/4 vivo)**: \`B1 ↑ ✕ ↑ B2 ↓\` — el **chasquido (✕) en el pulso 2** le da ese corte elegante e inconfundible (*Espumas*, *Oropel*, *Pescador, Lucero y Río*, *Las Acacias*).\n• **Bambuco (6/8 sincopado)**: \`B1 ↓ ✕ B2 ↓ ✕\` — cruza acentos de 3/4 contra 6/8.\n• **Guabina (3/4 dulce)**: suave y cantable con alternancia de bajos B1/B2.`,
+            highlightBox: 'Explora nuestras canciones "Espumas", "Oropel" y "Al Sur" con el rasgueo de Pasillo Andino ya activado.',
+            actionTarget: { tab: 'songs', itemId: 'col_espumas', label: 'Estudiar "Espumas" (Jorge Villamil)' }
+          },
+          {
+            type: 'quiz',
+            theoryId: 'pasillo_bambuco_guabina',
+            question: '¿Qué distingue rítmicamente el PASILLO COLOMBIANO (`B1 ↑ ✕ ↑ B2 ↓`) de un Vals tradicional lento?',
+            options: [
+              'El Pasillo va más vivo y marca un chasquido en el 2º pulso',
+              'El Pasillo va más lento y sin chasquido',
+              'El Pasillo está en 6/8 y el Vals en 3/4',
+              'El Pasillo pone el chasquido en el 1er pulso, sobre el bajo'
+            ],
+            correctIndex: 0,
+            explanation: '¡Exacto! Ese corte apagado en el segundo pulso diferencia inmediatamente el Pasillo de Jorge Villamil/José A. Morales del Vals europeo.'
+          },
+          {
+            type: 'quiz',
+            theoryId: 'pasillo_bambuco_guabina',
+            question: 'En qué región y compás nace el Bambuco Colombiano tradicional (`B1 ↓ ✕ B2 ↓ ✕`):',
+            options: [
+              'Región Andina, con síncopa en 6/8',
+              'Costa Caribe, en 4/4 como la cumbia',
+              'Llanos Orientales, en 3/4 como el joropo',
+              'Región Andina, en 2/4 como una marcha'
+            ],
+            correctIndex: 0,
+            explanation: '¡Muy bien! La síncopa 6/8 con los apagados en 3 y 6 define el pulso del Bambuco.'
+          },
+          {
+            type: 'play_guitar_chord',
+            theoryId: 'pasillo_bambuco_guabina',
+            title: 'Práctica de Pasillo: La Mayor (A / LA+) de Espumas',
+            instruction: 'Toca La Mayor marcando el tiempo 1 con la 5ª cuerda al aire y rasgueo brillante en primas.',
+            chord: 'A'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'pasillo_bambuco_guabina',
+            title: 'Pasillo 3/4 a 100 BPM',
+            instruction: 'Sobre Mi menor: bajo en el tiempo 1, chasquido en el 2 y rasgueo en el 3. Un ataque por pulso.',
+            chord: 'Em',
+            bpm: 100,
+            beatsPerBar: 3,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
           }
         ]
       },
@@ -1537,6 +1828,10 @@ export const SKILL_UNITS = [
         icon: '🎺',
         xp: 45,
         summary: 'Toca la síncopa brillante de las bandas de viento adaptada a guitarra.',
+        objectives: [
+          'Reproducir el rasgueo sincopado del porro',
+          'Marcar el pulso del porro a 100 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1552,10 +1847,10 @@ export const SKILL_UNITS = [
             theoryId: 'cumbia_porro_groove',
             question: 'En el Porro Sabanero ("Carmen de Bolívar" en el libro de Keyner), ¿qué papel juega el rasgueo sincopado `↓ ↑ ✕ ↑ B2 ↓`?',
             options: [
-              'Sostener una balada fúnebre ultra lenta',
-              'Responder a los metales con un golpe firme en B1, síncopa en el centro y rebote rítmico hacia el siguiente compás',
-              'Tocar solo cuerdas muteadas sin nota',
-              'Eliminar la 1ª y 2ª cuerda'
+              'Marcar los 4 tiempos iguales, sin síncopa, como una marcha',
+              'Imitar la banda: golpe firme, síncopa central y rebote',
+              'Imitar el acordeón con arpegios ligados',
+              'Acentuar el tiempo 3, como en el vals'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! El porro combina el peso del bombo de banda (B1/B2) con la respuesta chispeante de platillos y redoblante.'
@@ -1565,10 +1860,10 @@ export const SKILL_UNITS = [
             theoryId: 'keyner_numeric_grid',
             question: 'En la intro de "Carmen de Bolívar" (`22-22-23-10 · 24-10-12-10`), ¿qué significa "24" seguido de "10"?',
             options: [
-              '2ª cuerda traste 4 (Re#) seguido de 1ª cuerda al aire (Mi)',
+              '2ª cuerda traste 4 (Re#) y luego 1ª al aire (Mi)',
               '4ª cuerda traste 2 seguido de 1ª traste 10',
-              '24 veces 1ª cuerda al aire',
-              'Cuerda 6 traste 4'
+              '2ª cuerda traste 4 (Re) seguido de 1ª al aire (Mi)',
+              '4ª cuerda traste 2 (Mi) seguido de 1ª traste 1 (Fa)'
             ],
             correctIndex: 0,
             explanation: '¡Lectura Keyner ágil! 24 = 2ª cuerda traste 4 (nota de paso cromática Re# hacia Mi al aire = 10).'
@@ -1580,6 +1875,19 @@ export const SKILL_UNITS = [
             targetString: 2,
             targetFret: 4,
             hint: '2ª cuerda desde abajo, traste 4.'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'cumbia_porro_groove',
+            title: 'Porro: el golpe del bombo a 100 BPM',
+            instruction: 'Marca con un golpe firme cada pulso del porro (2 por compás) sobre Sol Mayor.',
+            chord: 'G',
+            bpm: 100,
+            beatsPerBar: 2,
+            bars: 8,
+            toleranceMs: 90,
+            minHitRate: 0.75,
+            meter: '2/2'
           }
         ]
       },
@@ -1589,6 +1897,10 @@ export const SKILL_UNITS = [
         icon: '🌅',
         xp: 45,
         summary: 'El recurso estrella colombiano para abrir el cielo en los estribillos de folclor.',
+        objectives: [
+          'Explicar la modulación homónima (Am → A) por el cambio de la 3ª',
+          'Distinguir de oído Mayor y menor (5 de 6)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1604,10 +1916,10 @@ export const SKILL_UNITS = [
             theoryId: 'homonymous_modulation_dim',
             question: '¿Qué significa que "Pueblito Viejo" y "Al Sur" modulen de LA MENOR (Am) a su HOMÓNIMO MAYOR (La Mayor / A)?',
             options: [
-              'Que cambian de tonalidad manteniendo la MISMA nota tónica (La), pero volviendo Mayor la 3ª (de Do a Do#)',
+              'Que mantienen la tónica La, pero la 3ª pasa de Do a Do#',
               'Que bajan a Sol Menor',
-              'Que cambian de guitarra acústica a bajo eléctrico',
-              'Que pasan del traste 1 al traste 12 de golpe'
+              'Que pasan a su relativo mayor (Do Mayor)',
+              'Que suben un semitono, de La menor a La# menor'
             ],
             correctIndex: 0,
             explanation: '¡Brillante! "Homónimo" significa "mismo nombre": ambos comparten el centro tonal LA (A) y comparten además el mismo acorde Dominante E7 (5ª de La)!'
@@ -1618,7 +1930,7 @@ export const SKILL_UNITS = [
             question: '¿Qué único acorde sirve como puente natural común entre La Menor (LA-) y La Mayor (LA+)?',
             options: [
               'Fa Mayor',
-              'Mi Séptima (E7 · 5ª DE LA), que es el V7 dominante de ambos modos',
+              'Mi Séptima (E7 · 5ª DE LA)',
               'Do Mayor',
               'Si bemol Mayor'
             ],
@@ -1631,6 +1943,14 @@ export const SKILL_UNITS = [
             title: 'Práctica de Contraste: Toca La Mayor (A / LA+)',
             instruction: 'Siente cómo cambia de luz frente a La Menor al subir la 2ª cuerda del espacio 1 al 2.',
             chord: 'A'
+          },
+          {
+            type: 'ear_quality',
+            theoryId: 'homonymous_modulation_dim',
+            title: 'Oído: el cambio de color menor → Mayor',
+            instruction: 'La modulación homónima solo cambia la 3ª. Identifica si cada acorde es Mayor o menor; usa el arpegio si dudas.',
+            rounds: 6,
+            minCorrect: 5
           }
         ]
       },
@@ -1640,6 +1960,14 @@ export const SKILL_UNITS = [
         icon: '💎',
         xp: 45,
         summary: 'Usa el acorde D#dim7 ("DIS." en Keyner) para enlazar tensiones dramáticas de pasillo.',
+        objectives: [
+          'Tocar un acorde disminuido 7 y moverlo de 3 en 3 trastes',
+          'Cambiar Am ⇄ E7 8 veces en 30 s'
+        ],
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_los_peces_en_el_rio', label: 'Los Peces en el Río (Am ⇄ E7)' },
+          { tab: 'songs', itemId: 'pop_campana_sobre_campana', label: 'Campana sobre Campana (Am ⇄ E7)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -1655,10 +1983,10 @@ export const SKILL_UNITS = [
             theoryId: 'homonymous_modulation_dim',
             question: 'En "Oropel" (pág. 20 de Keyner Ramírez), ¿qué simboliza la abreviatura "DIS." sobre la palabra "Si apuestas al amor"?',
             options: [
-              'Disminuir el volumen casi a cero',
-              'Acorde Disminuido 7 (ej. D#dim7 · xx1212), puente de máxima tensión dramática',
-              'Disponer el capotraste en traste 4',
-              'Descanso de 2 compases'
+              'Diminuendo: bajar el volumen gradualmente',
+              'Acorde disminuido 7 (ej. D#dim7)',
+              'Acorde de séptima mayor (maj7)',
+              'Acorde suspendido (sus4) antes de resolver'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! El acorde disminuido añade ese clímax nostálgico clásico de los pasillos y boleros latinoamericanos.'
@@ -1668,10 +1996,10 @@ export const SKILL_UNITS = [
             theoryId: 'homonymous_modulation_dim',
             question: '¿Por qué es única la geometría del acorde Disminuido 7 (dim7) en el diapasón de la guitarra?',
             options: [
-              'Porque solo usa cuerdas al aire',
-              'Porque está formado por terceras menores simétricas (3 semitonos): ¡si lo corres 3 trastes son las mismas 4 notas en distinto orden!',
-              'Porque lleva 7 cejillas simultáneas',
-              'Porque nunca aparece en música colombiana'
+              'Porque es la forma del acorde mayor con un dedo más',
+              'Porque sus notas están separadas por terceras menores (3 semitonos)',
+              'Porque se repite cada 12 trastes, como cualquier acorde',
+              'Porque sus notas están separadas por terceras mayores (4 semitonos)'
             ],
             correctIndex: 1,
             explanation: '¡Así es! Cada 3 trastes en la guitarra repites el mismo acorde disminuido, lo que sirve para hacer adornos ascendentes bellísimos.'
@@ -1682,15 +2010,20 @@ export const SKILL_UNITS = [
             title: 'Toca tu primer Acorde Disminuido: D#dim7 (DIS.)',
             instruction: 'Pisa solo las 4 primeras cuerdas (`xx1212`: dedos 1-3-2-4) y escúchalo resolver a Mi.',
             chord: 'D#dim7'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'homonymous_modulation_dim',
+            title: 'Cambios cronometrados: Am ⇄ E7 ("El Año Viejo")',
+            instruction: 'Alterna La menor y Mi séptima: los dedos 2 y 3 bajan juntos una cuerda y el dedo 1 pasa a la 3ª cuerda.',
+            chords: ['Am', 'E7'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       }
     ]
   },
-
-  // ============================================================================
-  // UNIDAD 7: ARMONÍA FUNCIONAL, TABLA KEYNER, DOMINANTES Y CAPO (4 LECCIONES)
-  // ============================================================================
   {
     id: 'unit_7',
     number: 7,
@@ -1707,6 +2040,10 @@ export const SKILL_UNITS = [
         icon: '🔗',
         xp: 45,
         summary: 'Comprende cómo nacen las familias de acordes para sacar cualquier canción de oído.',
+        objectives: [
+          'Encontrar el relativo menor y la dominante de un tono mayor',
+          'Distinguir de oído Mayor y menor (5 de 6)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1723,7 +2060,7 @@ export const SKILL_UNITS = [
             question: 'Según las Relaciones Armónicas de los Tonos, si el Tono Primitivo es RE MAYOR (D), ¿cuál es su Relativo Menor y su 5ª Dominante?',
             options: [
               'Relativo Am y 5ª G7',
-              'Relativo Si Menor (Bm) y 5ª Dominante La Séptima (A7)',
+              'Relativo Bm y 5ª A7',
               'Relativo Em y 5ª E7',
               'Relativo Cm y 5ª F7'
             ],
@@ -1735,10 +2072,10 @@ export const SKILL_UNITS = [
             theoryId: 'keyner_harmonic_relations',
             question: '¿Cómo encuentras al instante el Relativo Menor (VIm) desde cualquier acorde Mayor en la guitarra?',
             options: [
-              'Subes una cuerda y listo',
-              'Bajas 3 semitonos (3 trastes atrás) desde la nota Tónica Mayor: Do → (3 trastes atrás) = La menor',
+              'Subes 3 semitonos (3 trastes) desde la tónica mayor',
+              'Bajas 3 semitonos (3 trastes) desde la tónica mayor',
               'Avanzas 5 trastes hacia el puente',
-              'Pones cejilla siempre en el traste 1'
+              'Bajas 2 semitonos (un tono) desde la tónica mayor'
             ],
             correctIndex: 1,
             explanation: '¡Regla geométrica infalible! C -3st → Am; G -3st → Em; D -3st → Bm; A -3st → F#m.'
@@ -1749,6 +2086,14 @@ export const SKILL_UNITS = [
             title: 'Toca la pareja inseparable de Do: La Menor (Am) y Do (C)',
             instruction: 'Haz sonar Do Mayor y escucha la hermandad tonal inmediata frente a La Menor.',
             chord: 'C'
+          },
+          {
+            type: 'ear_quality',
+            theoryId: 'keyner_harmonic_relations',
+            title: 'Oído: tono primitivo (Mayor) vs. relativo (menor)',
+            instruction: 'Cada tono Mayor tiene un relativo menor. Identifica la calidad de cada acorde con tónica aleatoria.',
+            rounds: 6,
+            minCorrect: 5
           }
         ]
       },
@@ -1758,6 +2103,10 @@ export const SKILL_UNITS = [
         icon: '🚀',
         xp: 45,
         summary: 'El truco detrás de "Cinco Panes y Dos Peces" y "Dios Está Aquí" para empujar el coro.',
+        objectives: [
+          'Identificar un dominante secundario (V7/IV, V7/VI) en una canción',
+          'Cambiar B7 ⇄ Em 6 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1773,8 +2122,8 @@ export const SKILL_UNITS = [
             theoryId: 'secondary_dominants',
             question: 'En "Cinco Panes y Dos Peces" (tonalidad Sol Mayor), ¿qué función cumple el acorde B7 justo antes de Mi menor ("dale de comer a mis hermanos")?',
             options: [
-              'Es un error de impresión del cancionero',
-              'Dominante Secundario (V7/VI): actúa como 5ª Dominante temporal de Em para darle fuerza emotiva',
+              'Dominante principal (V7) de Sol Mayor',
+              'Dominante Secundario (V7/VI) de Em',
               'Subdominante de Do',
               'Acorde disminuido de paso'
             ],
@@ -1786,10 +2135,10 @@ export const SKILL_UNITS = [
             theoryId: 'secondary_dominants',
             question: 'Si estás tocando "Dios Está Aquí" en Re Mayor (D) y ves "D → D7 → G", ¿por qué se transforma D en D7 justo antes de G?',
             options: [
-              'Porque D7 es el V7/IV ("5ª de Sol"): prepara con expectativa la llegada del Subdominante Sol (G)',
-              'Para volver la canción menor',
-              'Para bajar el volumen',
-              'Para afinar la 6ª cuerda'
+              'Porque D7 es el V7/IV: prepara la llegada de G',
+              'Para modular de forma permanente a Re menor',
+              'Porque D7 es el V7 de la tonalidad (Re Mayor)',
+              'Porque D7 es el IV grado de Sol'
             ],
             correctIndex: 0,
             explanation: '¡Perfecto! Añadir esa 7ª menor (Do natural) rompe la estabilidad de D y empuja directo hacia Sol Mayor.'
@@ -1800,6 +2149,15 @@ export const SKILL_UNITS = [
             title: 'Práctica de V7/VI: Si Séptima (B7) sin cejilla',
             instruction: 'Arma B7 abierto (`x21202`: dedos 2-1-3-0-4) y resuélvelo hacia Em!',
             chord: 'B7'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'secondary_dominants',
+            title: 'Cambios cronometrados: B7 ⇄ Em (V7/VI → VIm)',
+            instruction: 'Alterna Si séptima y Mi menor como en "Cinco Panes": siente cómo B7 empuja hacia Em.',
+            chords: ['B7', 'Em'],
+            durationSec: 30,
+            targetChanges: 6
           }
         ]
       },
@@ -1809,6 +2167,11 @@ export const SKILL_UNITS = [
         icon: '🌉',
         xp: 45,
         summary: 'Construye bajos caminantes melódicos y usa el giro nostálgico G → Gm → D.',
+        objectives: [
+          'Tocar acordes con bajo invertido (G/B, D/F#)',
+          'Reconocer el intercambio modal IV → IVm',
+          'Cambiar G ⇄ D/F# 8 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1825,9 +2188,9 @@ export const SKILL_UNITS = [
             question: 'Cuando encuentras escrito `D/F#` ("Re con bajo en Fa#") entre `G` y `Em`, ¿qué debe sonar como nota más grave del acorde?',
             options: [
               'La nota Re al aire únicamente',
-              'La nota Fa sostenido (6ª cuerda traste 2 pisada con dedo 1 o pulgar), manteniendo arriba la tríada de Re Mayor',
-              'Una mezcla confusa de Re Mayor y Fa# Mayor',
-              'Solamente la 1ª cuerda'
+              'Fa# (6ª cuerda traste 2), con Re Mayor arriba',
+              'Re (4ª cuerda al aire), con Fa# en la parte aguda',
+              'Fa# en la 1ª cuerda traste 2'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! El bajo camina cromáticamente Sol (63) → Fa# (62) → Mi (60) creando fluidez coral.'
@@ -1837,10 +2200,10 @@ export const SKILL_UNITS = [
             theoryId: 'secondary_dominants',
             question: 'En "Eran Cien Ovejas" (`...al contarlas [G]todas, [Gm]le faltaba [D]una`), ¿cómo se llama el recurso armónico de pasar de Sol Mayor (IV) a Sol Menor (IVm)?',
             options: [
-              'Intercambio Modal (tomar prestado el IV menor del modo menor homónimo)',
-              'Afinación Drop D',
-              'Círculo pentatónico',
-              'Sustitución de cejilla abierta'
+              'Intercambio Modal',
+              'Dominante Secundario (V7/IV)',
+              'Acorde disminuido de paso',
+              'Modulación a la tonalidad relativa'
             ],
             correctIndex: 0,
             explanation: '¡Análisis de nivel superior! El Intercambio Modal IV → IVm → I es uno de los colores más emotivos de la armonía moderna y sacra.'
@@ -1851,6 +2214,15 @@ export const SKILL_UNITS = [
             title: 'Práctica de Puentes: Sol con Bajo en Si (G/B)',
             instruction: 'Pisa 5ª tr.2 (Dedo 1) y 2ª/1ª tr.3 (Dedos 3 y 4) evitando la 6ª cuerda.',
             chord: 'G/B'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'slash_chords_capo',
+            title: 'Cambios cronometrados: G ⇄ D/F#',
+            instruction: 'Alterna Sol y Re con bajo en Fa#: el pulgar o el dedo 1 pisa la 6ª cuerda traste 2.',
+            chords: ['G', 'D/F#'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       },
@@ -1860,6 +2232,10 @@ export const SKILL_UNITS = [
         icon: '🎚️',
         xp: 45,
         summary: 'Adapta cualquier canto o vallenato a la altura exacta de tu voz en segundos.',
+        objectives: [
+          'Calcular en qué traste poner el capotraste para cambiar de tono',
+          'Nombrar el acorde real que suena con capotraste'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1876,9 +2252,9 @@ export const SKILL_UNITS = [
             question: 'Si una alabanza está escrita en SI BEMOL (Bb) con muchas cejillas difíciles, ¿dónde colocas el Capotraste para tocarla usando las figuras abiertas de LA (A - D - E7)?',
             options: [
               'Capo en Traste 5',
-              'Capo en Traste 1 (La + 1 semitono = La#/Bb)',
+              'Capo en Traste 1',
               'Capo en Traste 7',
-              'No existe forma con capotraste'
+              'Capo en Traste 2'
             ],
             correctIndex: 1,
             explanation: '¡Cálculo perfecto! La (A) más 1 traste hacia adelante es Si bemol (Bb). O también Capo 3 tocando figuras de Sol (G).'
@@ -1889,7 +2265,7 @@ export const SKILL_UNITS = [
             question: 'Si tienes el Capotraste puesto en el TRASTE 3 y formas la figura visual de Mi Menor (Em), ¿qué acorde REAL está escuchando el público?',
             options: [
               'Mi menor igual',
-              'Sol Menor (Gm · E + 3 semitonos = F → F# → G)',
+              'Sol Menor (Gm)',
               'La Menor',
               'Do Mayor'
             ],
@@ -1908,10 +2284,6 @@ export const SKILL_UNITS = [
       }
     ]
   },
-
-  // ============================================================================
-  // UNIDAD 8: NIVEL INTERMEDIO — CEJILLA, ARAÑITA, CAGED Y COLORES (4 LECCIONES)
-  // ============================================================================
   {
     id: 'unit_8',
     number: 8,
@@ -1928,6 +2300,11 @@ export const SKILL_UNITS = [
         icon: '🦴',
         xp: 45,
         summary: 'El giro de 15° del índice y el contrapeso de brazo que eliminan los trasteos en Fa y Bm.',
+        objectives: [
+          'Hacer una cejilla con el borde lateral del índice sin dolor',
+          'Tocar F y Bm con todas las cuerdas sonando',
+          'Cambiar C ⇄ F 6 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1944,9 +2321,9 @@ export const SKILL_UNITS = [
             question: '¿Qué parte del dedo índice debe presionar las cuerdas en una cejilla limpia y sin dolor?',
             options: [
               'La parte carnosa frontal donde se doblan las articulaciones',
-              'El borde óseo lateral del índice (girando ~15° hacia el clavijero) pegado detrás del metal del traste',
+              'El borde lateral del índice, girado un poco, junto al traste',
               'Solo la punta doblada del dedo',
-              'Pisar montando el dedo medio siempre sobre la 1ª cuerda'
+              'La yema plana, con máxima fuerza del pulgar tras el mástil'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! El costado lateral del índice es rígido y plano, evitando que las cuerdas del medio queden hundidas en un pliegue.'
@@ -1955,7 +2332,7 @@ export const SKILL_UNITS = [
             type: 'quiz',
             theoryId: 'barre_chords_biomechanics',
             question: 'Si estás cansado en medio de una canción rápida y aparece un FA MAYOR (F), ¿qué sustituto abierto sin cejilla conserva el color dulce de Fa?',
-            options: ['Fmaj7 (`xx3210`) o Fa fácil', 'C#m7', 'Bb mayor', 'Em7 al aire'],
+            options: ['Fmaj7 (`xx3210`)', 'C#m7', 'Bb mayor', 'Em7 al aire'],
             correctIndex: 0,
             explanation: '¡Bien! Fmaj7 (`xx3210`) comparte las notas clave de Fa sin exigir cejilla completa en traste 1.'
           },
@@ -1972,6 +2349,15 @@ export const SKILL_UNITS = [
             title: 'Reto Intermedio 2: Si Menor (Bm)',
             instruction: 'Cejilla desde la 5ª cuerda en traste 2 (`x24432`): ¡indispensable en Re Mayor!',
             chord: 'Bm'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'barre_chords_biomechanics',
+            title: 'Cambios cronometrados: C ⇄ F con cejilla',
+            instruction: 'Alterna Do Mayor y Fa Mayor con cejilla. Coloca el índice con el borde lateral y relaja el pulgar tras cada cambio.',
+            chords: ['C', 'F'],
+            durationSec: 30,
+            targetChanges: 6
           }
         ]
       },
@@ -1981,6 +2367,10 @@ export const SKILL_UNITS = [
         icon: '🕷️',
         xp: 45,
         summary: 'Despierta el meñique (dedo 4) y gana velocidad para punteos con el ejercicio clásico.',
+        objectives: [
+          'Ejecutar la Arañita 1-2-3-4 dejando los dedos apoyados',
+          'Mantener una nota por pulso a 70 BPM (75% a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -1996,10 +2386,10 @@ export const SKILL_UNITS = [
             theoryId: 'spider_independence_caged',
             question: 'Durante el ejercicio cromático "La Arañita" (1-2-3-4), ¿qué debes vigilar con tus dedos izquierdos mientras avanzas por la misma cuerda?',
             options: [
-              'Levantar bruscamente cada dedo lo más lejos posible del diapasón',
-              'Dejar apoyados con suavidad los dedos anteriores detrás de su traste hasta completar la cuerda, evitando que "salten por los aires"',
-              'Tocar los 4 trastes con un único dedo índice',
-              'Apretar lo más fuerte posible hasta doblar el cuello'
+              'Levantar cada dedo apenas suena su nota, para liberar la cuerda',
+              'Dejar apoyados los dedos anteriores hasta completar la cuerda',
+              'Usar solo los dedos 1-2-3 y saltar el meñique por débil',
+              'Apretar con fuerza máxima para que nunca trastee'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! Mantener la mano económica (cerca de las cuerdas, sin dedos voladores) es el secreto de toda velocidad limpia.'
@@ -2009,10 +2399,10 @@ export const SKILL_UNITS = [
             theoryId: 'hands_nails',
             question: 'En la mano derecha durante escalas o punteos como "La Arañita", ¿qué técnica da mayor fluidez y velocidad?',
             options: [
-              'Repetir el dedo pulgar únicamente para todas las cuerdas primas',
-              'Alternar estrictamente Índice y Medio (i - m - i - m) "caminando" sobre las cuerdas',
-              'Usar el meñique para las notas rápidas',
-              'Tocar solo hacia abajo con la uña del anular'
+              'Usar siempre el mismo dedo (índice) en todas las notas',
+              'Alternar índice y medio (i - m - i - m)',
+              'Pulsar i-m-a juntos, como en un acorde',
+              'Repetir el pulgar en todas las cuerdas primas'
             ],
             correctIndex: 1,
             explanation: '¡Perfecto! Alternar `i-m` dobla tu velocidad máxima de inmediato y mantiene regular el ritmo.'
@@ -2024,6 +2414,17 @@ export const SKILL_UNITS = [
             targetString: 4,
             targetFret: 4,
             hint: '4ª cuerda, espacio 4 (Dedo 4).'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'spider_independence_caged',
+            title: 'La Arañita a 70 BPM: una nota por pulso',
+            instruction: 'Recorre 1-2-3-4 en la 6ª cuerda (trastes 1 a 4), una nota por pulso, dejando apoyados los dedos anteriores.',
+            bpm: 70,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 90,
+            minHitRate: 0.75
           }
         ]
       },
@@ -2033,6 +2434,10 @@ export const SKILL_UNITS = [
         icon: '🗺️',
         xp: 50,
         summary: 'Multiplica tus posiciones usando los 5 moldes móviles C-A-G-E-D con cejilla.',
+        objectives: [
+          'Mover las formas E y A con cejilla a cualquier traste',
+          'Cambiar F ⇄ G 6 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2049,7 +2454,7 @@ export const SKILL_UNITS = [
             question: 'Si tomas el molde móvil de "MI MAYOR" (6ª en cejilla) y colocas tu índice en el TRASTE 8 (donde la 6ª cuerda da DO), ¿qué acorde suena?',
             options: [
               'Sol Mayor',
-              'Do Mayor en posición aguda (`8-10-10-9-8-8`)',
+              'Do Mayor',
               'Fa Menor',
               'Re Séptima'
             ],
@@ -2063,7 +2468,7 @@ export const SKILL_UNITS = [
             options: [
               'Traste 2',
               'Traste 3',
-              'Traste 5 (donde la 5ª cuerda es Re = D)',
+              'Traste 5',
               'Traste 7'
             ],
             correctIndex: 2,
@@ -2075,6 +2480,15 @@ export const SKILL_UNITS = [
             title: 'Toca Fa# Menor (F#m) — Molde Em en Traste 2',
             instruction: 'Cejilla completa en traste 2 con dedos 3 y 4 en 5ª/4ª traste 4 (`244222`).',
             chord: 'F#m'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'spider_independence_caged',
+            title: 'Cambios cronometrados: F (forma E) ⇄ G',
+            instruction: 'Alterna Fa con cejilla en traste 1 y Sol abierto; relaja la cejilla durante el cambio.',
+            chords: ['F', 'G'],
+            durationSec: 30,
+            targetChanges: 6
           }
         ]
       },
@@ -2084,6 +2498,10 @@ export const SKILL_UNITS = [
         icon: '✨',
         xp: 50,
         summary: 'Suaviza la adoración contemporánea dejando 2 cuerdas ancladas en la parte aguda.',
+        objectives: [
+          'Tocar G, Cadd9, Em7 y Dsus4 con los dedos 3 y 4 anclados',
+          'Cambiar G ⇄ Cadd9 10 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2099,10 +2517,10 @@ export const SKILL_UNITS = [
             theoryId: 'secondary_dominants',
             question: 'Qué ventaja física y sonora brinda cambiar entre `G`, `Cadd9`, `Em7` y `Dsus4` en baladas contemporáneas:',
             options: [
-              'Hay que mover los 4 dedos en cada acorde',
-              'Los dedos 3 y 4 permanecen anclados en el traste 3 de las cuerdas 1ª y 2ª creando continuidad armónica',
-              'Elimina las cuerdas graves',
-              'Solo sirve para Merengue rápido'
+              'Solo cambia el dedo 1; los demás quedan fijos',
+              'Los dedos 3 y 4 quedan fijos en el traste 3 de la 1ª y 2ª',
+              'Todos comparten el mismo bajo en la 6ª cuerda',
+              'Son acordes sin 3ª, por eso no hay que cambiar dedos'
             ],
             correctIndex: 1,
             explanation: '¡Así es! Esas dos notas agudas fijas (Re y Sol) funcionan como un pedal campanilleante súper armónico.'
@@ -2112,7 +2530,7 @@ export const SKILL_UNITS = [
             theoryId: 'secondary_dominants',
             question: 'En `Dsus4` ("Re suspendido cuatro"), ¿qué nota reemplaza temporalmente a la 3ª Mayor (Fa#) antes de resolver a Re Mayor?',
             options: [
-              'La 4ª justa (Sol · 1ª cuerda traste 3 = cód. 13)',
+              'La 4ª justa (Sol)',
               'La 7ª menor (Do)',
               'Mi grave',
               'Si bemol'
@@ -2126,15 +2544,20 @@ export const SKILL_UNITS = [
             title: 'Práctica Moderna: Toca Do add9 (Cadd9)',
             instruction: 'Baja un paso los dedos 1 y 2 desde Sol Mayor manteniendo 3 y 4 anclados (`x32033`).',
             chord: 'Cadd9'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'secondary_dominants',
+            title: 'Cambios cronometrados: G ⇄ Cadd9 (dedos anclados)',
+            instruction: 'Alterna Sol y Cadd9 dejando fijos los dedos 3 y 4 en el traste 3 de la 1ª y 2ª cuerda.',
+            chords: ['G', 'Cadd9'],
+            durationSec: 30,
+            targetChanges: 10
           }
         ]
       }
     ]
   },
-
-  // ============================================================================
-  // UNIDAD 9: ESCALAS, IMPROVISACIÓN Y PUNTEOS COMPLETOS (4 LECCIONES)
-  // ============================================================================
   {
     id: 'unit_9',
     number: 9,
@@ -2151,6 +2574,10 @@ export const SKILL_UNITS = [
         icon: '🧭',
         xp: 50,
         summary: 'Domina el mapa maestro de 2 notas por cuerda donde ninguna nota choca con el acorde.',
+        objectives: [
+          'Tocar la caja 1 de la pentatónica de Am en el traste 5',
+          'Explicar por qué sirve sobre Do Mayor'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2166,10 +2593,10 @@ export const SKILL_UNITS = [
             theoryId: 'scales_improvisation_mixolydian',
             question: '¿Por qué las notas de la Pentatónica Menor de La (`A - C - D - E - G`) funcionan tan bien sobre una canción en DO MAYOR (`C - G - Am - F`)?',
             options: [
-              'Por casualidad acústica sin explicación',
-              'Porque Do Mayor (C) y La Menor (Am) son tonalidades relativas y sus escalas pentatónicas contienen exactamente las mismas 5 notas',
-              'Porque solo tiene notas con sostenidos',
-              'Porque la guitarra se desafina automáticamente'
+              'Porque La menor es la dominante de Do Mayor',
+              'Porque C y Am son relativas y comparten las mismas 5 notas',
+              'Porque la pentatónica evita todas las notas del acorde de Do',
+              'Porque La es la 3ª de Do y siempre consuena'
             ],
             correctIndex: 1,
             explanation: '¡Exacto! Lo único que cambia entre Pentatónica Mayor de C y Menor de Am es sobre cuál nota descansa el final de tus frases.'
@@ -2206,6 +2633,11 @@ export const SKILL_UNITS = [
         icon: '🪗',
         xp: 50,
         summary: 'Captura el sabor diatónico del acordeón de Diomedes/Escalona y la sensible de Cumbia.',
+        objectives: [
+          'Explicar la 7ª bemol del modo mixolidio',
+          'Usar el Sol# de la menor armónica sobre E7',
+          'Cambiar A ⇄ G 8 veces en 30 s'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2222,7 +2654,7 @@ export const SKILL_UNITS = [
             question: 'En comparación con la Escala Mayor clásica (`1-2-3-4-5-6-7`), ¿qué única nota cambia en el Modo Mixolidio típico del acordeón vallenato?',
             options: [
               'La 3ª se vuelve menor',
-              'La 7ª se rebaja medio tono (7ª bemol / b7)',
+              'La 7ª baja medio tono (b7)',
               'Se elimina la 5ª justa',
               'La 2ª se vuelve aumentada'
             ],
@@ -2234,7 +2666,7 @@ export const SKILL_UNITS = [
             theoryId: 'scales_improvisation_mixolydian',
             question: 'Cuando tocas "La Gota Fría" o "La Piragua" en LA MENOR (`Am`) y entra el acorde E7 (`5ª de La`), ¿qué nota clave de la Escala Menor Armónica debes pisar?',
             options: [
-              'Sol sostenido (G# · 3ª cuerda traste 1 = código 31)',
+              'Sol sostenido (G#)',
               'Do sostenido',
               'Fa natural',
               'Mi bemol'
@@ -2249,6 +2681,15 @@ export const SKILL_UNITS = [
             targetString: 3,
             targetFret: 1,
             hint: '3ª cuerda desde abajo, primer traste.'
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'scales_improvisation_mixolydian',
+            title: 'Cambios cronometrados: A ⇄ G (color mixolidio)',
+            instruction: 'Alterna La Mayor y Sol Mayor: el VII bemol que da el sabor mixolidio del acordeón.',
+            chords: ['A', 'G'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       },
@@ -2258,6 +2699,10 @@ export const SKILL_UNITS = [
         icon: '⚡',
         xp: 55,
         summary: 'Une escalas, ligados y cambios de posición en las dos intros vallenatas más queridas.',
+        objectives: [
+          'Tocar el punteo de "Los Caminos de la Vida" por frases',
+          'Aplicar un loop A–B al 50–75% para destrabar un pasaje'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2273,10 +2718,10 @@ export const SKILL_UNITS = [
             theoryId: 'tab_reading_techniques',
             question: 'En el inicio del punteo de "Los Caminos de la Vida" (`10 → 18 → 17 → 15 → 13 → 11` en 1ª cuerda), ¿qué notas recorre esa cascada descendente?',
             options: [
-              'Mi al aire → Do → Si → La → Sol → Fa (descendiendo sobre Am → Dm)',
-              'Do sostenido → Re# → Fa#',
-              'Sol → Si → Re exclusivamente',
-              'Mi grave → La grave'
+              'Mi al aire → Do → Si → La → Sol → Fa',
+              'Mi al aire → Re → Do → Si → La → Sol',
+              'Mi al aire → Do# → Si → La → Sol → Fa',
+              'Mi al aire → Si → La → Sol → Fa → Re'
             ],
             correctIndex: 0,
             explanation: '¡Exacto! Salta a la octava alta Do (tr.8 = 18) y desciende diatónicamente por toda la 1ª cuerda hasta resolver en Fa sobre Dm.'
@@ -2287,9 +2732,9 @@ export const SKILL_UNITS = [
             question: 'Cuál es la técnica más efectiva cuando un pasaje de tablatura se traba por cambio rápido de trastes:',
             options: [
               'Subir la velocidad al 125% esperando acertar por suerte',
-              'Usar un Loop A–B sobre esas 4–6 notas al 50%–75% de velocidad y el modo "Espera mi Guitarra" hasta automatizarlo',
-              'Cambiar la afinación de la 1ª cuerda',
-              'Saltarse siempre esa frase'
+              'Aislar esas notas en un Loop A–B al 50–75% de velocidad',
+              'Repetir la canción completa a tempo hasta que salga',
+              'Practicar solo la mano izquierda, sin pulsar'
             ],
             correctIndex: 1,
             explanation: '¡Metodología inteligente! La memoria muscular se graba limpia en cámara lenta y luego acelera sola.'
@@ -2310,6 +2755,10 @@ export const SKILL_UNITS = [
         icon: '🏆',
         xp: 75,
         summary: 'Demuestra tu dominio integral combinando teoría, diapasón, método Keyner y oído vivo.',
+        objectives: [
+          'Tocar una alabanza y un aire colombiano completos',
+          'Mantener 100 BPM sin metrónomo (80% de pulsos a tiempo)'
+        ],
         steps: [
           {
             type: 'theory',
@@ -2326,7 +2775,7 @@ export const SKILL_UNITS = [
             question: 'Para finalizar con broche de oro el Método Keyner: ¿qué cuerda, traste y nota exacta es el código "23"?',
             options: [
               '3ª cuerda traste 2 (La)',
-              '2ª cuerda (Si) en el espacio/traste 3 — nota Re4 (D4)',
+              '2ª cuerda traste 3 (Re)',
               '6ª cuerda traste 2 (Fa#)',
               '2ª cuerda al aire'
             ],
@@ -2338,10 +2787,10 @@ export const SKILL_UNITS = [
             theoryId: 'homonymous_modulation_dim',
             question: 'Si acompañas un Pasillo ("Oropel" o "Pueblito Viejo") que modula de Em → E (o Am → A), ¿qué cambia en tu acorde Tónica?',
             options: [
-              'Baja 5 trastes en bloque',
-              'Su 3ª menor sube 1 semitono a 3ª Mayor manteniendo la misma tónica, transformando la tristeza en luminosidad',
+              'Pasa a su relativo mayor (Em → G)',
+              'Su 3ª sube un semitono y se vuelve mayor',
               'Se vuelve acorde disminuido todo el coro',
-              'Cambia el compás de 3/4 a 4/4 siempre'
+              'Se le agrega la 7ª menor (Em → Em7)'
             ],
             correctIndex: 1,
             explanation: '¡Excelente dominio teórico y práctico!'
@@ -2365,12 +2814,39 @@ export const SKILL_UNITS = [
             title: 'Acorde Final de Concierto: Sol Mayor (G / SOL+)',
             instruction: 'Haz sonar tu guitarra con plenitud y celebra todo tu recorrido intermedio.',
             chord: 'G'
+          },
+          {
+            type: 'strum_timing',
+            theoryId: 'harmonic_circle_basic',
+            title: 'Pulso final: 100 BPM sin metrónomo',
+            instruction: 'Rasguea Sol en cada pulso a 100 BPM. Tras la cuenta de entrada mantén el tempo tú solo.',
+            chord: 'G',
+            bpm: 100,
+            beatsPerBar: 4,
+            bars: 4,
+            toleranceMs: 80,
+            minHitRate: 0.8
           }
         ]
       }
     ]
   }
 ];
+
+// ============================================================================
+// TAREAS DE CIERRE DE UNIDAD (autoevaluación con rúbrica, ver js/pedagogy.js)
+// ============================================================================
+export const UNIT_CAPSTONES = {
+  unit_1: { task: 'Alterna Em y Am durante 8 compases de 4/4, un rasgueo por pulso a 60 BPM, sin detenerte.', songId: null },
+  unit_2: { task: 'Toca "Los Pollitos Dicen" o "Alabaré" completa, cantando, con el rasgueo 4/4.', songId: 'pop_los_pollitos' },
+  unit_3: { task: 'Toca "Cumpleaños Feliz" en vals 3/4 con bajo y rasgueo (BUM · chas · chas).', songId: 'pop_cumpleanos_feliz' },
+  unit_4: { task: 'Toca la melodía de "Estrellita" en TAB o la intro de "Pueblito Viejo" en código Keyner.', songId: 'pop_estrellita' },
+  unit_5: { task: 'Acompaña 16 compases de un paseo o una cumbia con su rasgueo característico.', songId: null },
+  unit_6: { task: 'Toca "Los Peces en el Río" o un pasillo con la modulación de menor a mayor.', songId: 'pop_los_peces_en_el_rio' },
+  unit_7: { task: 'Transporta una alabanza con capotraste y tócala completa en el nuevo tono.', songId: null },
+  unit_8: { task: 'Toca una canción que incluya F y Bm con cejilla, sin cuerdas apagadas.', songId: null },
+  unit_9: { task: 'Toca un punteo completo y acompaña una canción de misa y una de parranda.', songId: null }
+};
 
 // ============================================================================
 // RETO INTERACTIVO DE 30 DÍAS (Integrado desde Bono 4 + Folclor + Keyner)

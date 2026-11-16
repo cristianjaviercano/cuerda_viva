@@ -15,6 +15,16 @@ Repositorio oficial: [https://github.com/cristianjaviercano/cuerda_viva](https:/
 * **Ciclo de Aprendizaje Completo & Remediación Obligatoria**:
   - Cada reto evalúa un concepto teórico respaldado por la biblioteca pedagógica (`THEORY_LIBRARY`).
   - Si el estudiante comete un error, el sistema bloquea el avance desordenado y activa la **fase de remediación**: se explica la teoría exacta con ilustraciones y ejemplos sonoros, permitiendo repetir y consolidar el aprendizaje antes de finalizar el módulo.
+* **Retos de Habilidad Medibles** (con micrófono/línea o, sin él, tocando la pantalla):
+  - ⏱️ **Cambios de acorde cronometrados** (`chord_change`): cambios limpios entre dos acordes en una ventana de tiempo, detectados por croma FFT.
+  - 🥁 **Precisión de pulso** (`strum_timing`): cuenta de entrada y metrónomo silencioso; mide el error medio en ms y la tendencia a adelantarse o atrasarse.
+  - 👂 **Oído Mayor / menor** (`ear_quality`): ítems con tónica aleatoria en cada intento.
+* **🧩 Diseño instruccional**: cada lección declara 1–3 objetivos observables y su duración estimada; la teoría se presenta *una idea por pantalla* (≤ 60 palabras) con **glosario emergente** (40 términos); cada unidad cierra con una **autoevaluación** por rúbrica (limpieza, pulso, cambios, postura), grabación local opcional y repaso automático de los criterios débiles.
+* **📊 Análisis de ítems (docentes y contribuidores)**: la bitácora registra tiempo de respuesta, opción elegida y sesiones abandonadas. En *Bitácora → Calidad de los retos* se calcula por reto la dificultad *p*, la discriminación punto-biserial corregida y el índice superior−inferior, los distractores que nadie elige, el abandono y la finalización por lección, con alertas (≥ 10 respuestas) y exportación CSV. El servidor ofrece el agregado anónimo en `GET /api/analytics/items`, y la duración estimada de cada lección se calibra con los tiempos reales.
+* **📅 Repaso espaciado (Leitner)**: cada teoría tiene una tarjeta que se repasa a 1, 3, 7, 14 y 30 días; solo cuenta el recuerdo en días distintos. Incluye *Repaso del día* intercalado y un calentamiento con temas pendientes al iniciar cada lección.
+* **🎄 Navidad**: 15 villancicos con su autoría acreditada. Diez tradicionales o de dominio público con letra completa (Tutaina, Vamos Pastores, Gozos de la Novena, Noche de Paz, Hacia Belén va una Burra, Arre Borriquito, Venid Fieles Todos, Riu Riu Chiu, Campana sobre Campana, Los Peces en el Río) y cinco populares con derechos vigentes (Mi Burrito Sabanero, El Tamborilero, Feliz Navidad, Blanca Navidad, Navidad Navidad) mostrados con acordes, un fragmento breve y enlace a la versión oficial. Incluye tablaturas de *Noche de Paz* y *Jingle Bells*, filtro propio y un aviso de temporada en la Ruta (15 de noviembre – 6 de enero).
+* **🎉 Canciones para todos**: Cumpleaños Feliz, Las Mañanitas, Noche de Paz, Estrellita, Arroz con Leche, Los Pollitos, Campana sobre Campana, Los Peces en el Río y Cielito Lindo (solo obras tradicionales o de dominio público), con tablaturas de melodía en primera posición y enlazadas desde las lecciones.
+* **Evaluación válida**: opciones barajadas, distractores basados en errores reales y vidas que se recuperan repasando.
 * **Registro de Estudiantes & Bitácora**:
   - Múltiples perfiles de usuario.
   - Registro pormenorizado de **Aciertos** y **No Aciertos**.
@@ -111,3 +121,15 @@ node audit_platform.mjs
 ## 📄 Licencia
 
 Licencia MIT — Desarrollado con ❤️ para la enseñanza musical de la guitarra, la alabanza y la preservación del folclor colombiano.
+
+---
+
+## 📚 Agradecimientos, libros y derechos de autor
+
+CuerdaViva! es un proyecto **meramente pedagógico, de uso libre y sin ánimo de lucro**, creado para apoyar a los coros, a los niños y jóvenes, y a toda persona que quiera aprender guitarra e incursionar en la música.
+
+- **Agradecimientos:** a los autores de los libros y métodos (Keyner Ramírez Mojica, Carlos Mario Vásquez Rojas "Camavaro", Luis Medina y Juan Caliva, Iván Becerra, Fran Cordón, entre otros) y a todos los compositores de las canciones. La lista completa está en [CREDITOS.md](CREDITOS.md) y en la pestaña **📚 Créditos** de la aplicación.
+- **© 2020–2026 Cristian Javier Cano Mogollón y colaboradores.** Código bajo licencia [MIT](LICENSE); contenido pedagógico original bajo [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.es).
+- **Obras de terceros:** las canciones, letras, melodías y libros citados pertenecen a sus autores y se citan con fines educativos. Si eres titular de derechos y quieres que una obra se retire o se cite de otra forma, abre un [issue](https://github.com/cristianjaviercano/cuerda_viva/issues).
+- **Colaboraciones:** las contribuciones son libres y voluntarias, no contractuales ni vinculantes; se reciben como donaciones para el desarrollo de trabajos académicos y pedagógicos.
+

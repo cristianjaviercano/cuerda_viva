@@ -3879,3 +3879,206 @@ button, select, input {
     padding: 6px 8px;
   }
 }
+
+/* ==================== RETOS DE HABILIDAD MEDIBLES (Parte B) ==================== */
+.drill-card { gap: 14px; }
+.drill-objective {
+  background: var(--bg-soft);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 8px 14px;
+  color: var(--ink-body);
+  font-size: 0.95rem;
+}
+.drill-chord-pair { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.drill-chord {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  border: 3px solid transparent; border-radius: var(--radius-lg); padding: 6px;
+  font-weight: 800; color: var(--ink-main); transition: border-color .15s, background .15s;
+}
+.drill-chord-on { border-color: var(--duo-green); background: rgba(88, 204, 2, 0.08); }
+.drill-arrow { font-size: 1.8rem; color: var(--ink-muted); }
+.drill-meter { width: 100%; max-width: 420px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.drill-big-count { display: flex; align-items: baseline; gap: 6px; color: var(--ink-muted); }
+.drill-big-count strong { font-size: 2.6rem; color: var(--ink-main); line-height: 1; }
+.drill-timebar { width: 100%; height: 12px; border-radius: var(--radius-pill); background: var(--border-light); overflow: hidden; }
+.drill-timebar-fill { height: 100%; width: 0; background: var(--duo-blue); }
+.drill-time-left { font-family: var(--font-mono); color: var(--ink-muted); font-size: 0.9rem; }
+.drill-mode-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.drill-status { min-height: 1.4em; color: var(--ink-body); font-weight: 700; text-align: center; margin: 0; }
+.drill-tap-pad {
+  width: 100%; max-width: 360px; min-height: 110px;
+  border: 3px solid var(--duo-blue-dark); border-bottom-width: 6px; border-radius: var(--radius-xl);
+  background: var(--duo-blue); color: #fff; font: 800 1.15rem var(--font-sans);
+  cursor: pointer; touch-action: manipulation; user-select: none;
+}
+.drill-tap-pad small { font-weight: 600; opacity: .85; }
+.drill-tap-pad:active, .drill-tap-flash { transform: translateY(3px); border-bottom-width: 3px; }
+.drill-beats { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-width: 460px; }
+.drill-beat {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--border-light); border: 2px solid var(--border-3d);
+  transition: transform .08s, background .08s;
+}
+.drill-beat-down { border-color: var(--ink-muted); }
+.drill-beat-now { transform: scale(1.35); background: var(--duo-yellow); }
+.drill-beat.beat-hit { background: var(--duo-green); border-color: var(--duo-green-dark); }
+.drill-beat.beat-near { background: var(--duo-yellow); border-color: var(--duo-yellow-dark); }
+.drill-beat.beat-off { background: var(--duo-orange); border-color: var(--duo-orange-dark); }
+.drill-beat.beat-miss { background: var(--duo-red); border-color: var(--duo-red-dark); }
+.drill-toggle { display: flex; gap: 8px; align-items: center; color: var(--ink-body); font-size: .9rem; flex-wrap: wrap; justify-content: center; }
+.drill-toggle small { color: var(--ink-muted); }
+.drill-round { font-weight: 800; color: var(--ink-muted); }
+.drill-ear-options { max-width: 520px; width: 100%; }
+
+/* ==================== REPASO ESPACIADO (Parte D) ==================== */
+.srs-review-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  background: var(--bg-soft);
+}
+.srs-review-banner strong { color: var(--ink-main); font-size: 0.98rem; display: block; }
+.srs-review-banner p { color: var(--ink-muted); font-size: 0.86rem; margin: 2px 0 0; font-weight: 700; }
+.srs-review-banner.srs-due {
+  background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+  border-color: #6EE7B7;
+  border-bottom-color: var(--duo-teal);
+}
+.srs-review-banner.srs-due strong { color: #065F46; }
+.srs-review-banner.srs-due p { color: #047857; }
+.victory-songs { margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.victory-songs strong { color: var(--ink-main); }
+.victory-songs-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+/* ==================== DISEÑO INSTRUCCIONAL (Parte E) ==================== */
+/* Una idea por pantalla */
+.idea-dots { display: flex; align-items: center; gap: 6px; margin: 4px 0 2px; }
+.idea-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border-3d); }
+.idea-dot.done { background: var(--duo-green-dark); }
+.idea-dot.on { background: var(--duo-green); transform: scale(1.3); }
+.idea-dots small { color: var(--ink-muted); font-weight: 700; margin-left: 6px; }
+
+/* Glosario emergente */
+.gloss-term {
+  position: relative;
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: help;
+  text-decoration: underline dotted var(--duo-blue-dark);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.gloss-term[data-def]:hover::after,
+.gloss-term[data-def]:focus::after {
+  content: attr(data-def);
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 8px);
+  width: max-content;
+  max-width: min(260px, 80vw);
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--ink-main);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  white-space: normal;
+  z-index: 50;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.25);
+}
+.gloss-sample { cursor: default; }
+
+/* Presentación de la lección y objetivos */
+.lesson-intro-meta { color: var(--ink-muted); font-weight: 700; margin: 0; }
+.lesson-objectives {
+  background: var(--bg-soft);
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 12px 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 560px;
+}
+.lesson-objectives strong { color: var(--ink-main); }
+.lesson-objectives ul { margin: 6px 0 0; padding-left: 20px; color: var(--ink-body); }
+.lesson-objectives li { margin: 3px 0; }
+.lesson-objectives p { margin: 6px 0; color: var(--ink-body); }
+.victory-objectives { margin: 14px auto 0; }
+.lesson-intro-tip { color: var(--ink-muted); font-size: .88rem; margin: 0; }
+.node-minutes { display: block; color: var(--ink-muted); font-weight: 700; font-size: .78rem; margin-top: 2px; }
+
+/* Autoevaluación de cierre de unidad */
+.unit-self-assess-btn { margin-top: 6px; }
+.self-assess-card { gap: 14px; }
+.sa-record { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.sa-record small { color: var(--ink-muted); text-align: center; max-width: 460px; }
+.sa-rubric { display: grid; gap: 10px; width: 100%; max-width: 640px; }
+.sa-criterion { border: 2px solid var(--border-light); border-radius: var(--radius-lg); padding: 8px 12px 10px; margin: 0; }
+.sa-criterion legend { font-weight: 800; color: var(--ink-main); padding: 0 6px; }
+.sa-level { display: flex; gap: 8px; align-items: flex-start; padding: 5px 4px; color: var(--ink-body); cursor: pointer; border-radius: var(--radius-md); }
+.sa-level:hover { background: var(--bg-soft); }
+.sa-level input { margin-top: 3px; accent-color: var(--duo-green); }
+
+/* ==================== ANÁLISIS DE ÍTEMS (Parte F) ==================== */
+.ia-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+.ia-table-wrap { overflow-x: auto; border: 2px solid var(--border-light); border-radius: var(--radius-md); }
+.ia-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.ia-table th, .ia-table td { padding: 6px 8px; border-bottom: 1px solid var(--border-light); text-align: left; vertical-align: top; }
+.ia-table th { background: var(--bg-soft); color: var(--ink-main); font-weight: 800; white-space: nowrap; }
+.ia-table td small { color: var(--ink-muted); }
+.ia-table tr.ia-flagged td { background: rgba(255, 150, 0, 0.07); }
+.ia-flag { display: inline-block; margin: 1px 0; padding: 1px 6px; border-radius: var(--radius-pill); background: #FFEDD5; color: #9A3412; font-weight: 700; font-size: .75rem; }
+.ia-ok { color: var(--duo-green-dark); font-weight: 800; }
+.ia-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
+.ia-list { margin: 6px 0; padding-left: 18px; color: var(--ink-body); font-size: .86rem; }
+
+/* ==================== AGRADECIMIENTOS Y LIBROS ==================== */
+.credits-page { display: flex; flex-direction: column; gap: 16px; }
+.credits-hero h1 { margin: 10px 0 6px; color: var(--ink-main); font-size: 1.6rem; }
+.credits-hero p { color: var(--ink-body); margin: 0; }
+.credits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.credits-card h2 { margin: 0 0 6px; color: var(--ink-main); font-size: 1.2rem; }
+.credits-card h3 { margin: 14px 0 6px; color: var(--ink-main); font-size: 1rem; }
+.credits-card p { color: var(--ink-body); line-height: 1.5; }
+.credits-card a { color: var(--duo-blue-dark); word-break: break-word; }
+.credits-card a.duo-btn { color: #fff; text-decoration: none; display: inline-block; }
+.credits-list { margin: 6px 0; padding-left: 18px; color: var(--ink-body); }
+.credits-list li { margin: 6px 0; line-height: 1.4; }
+.credits-list small { color: var(--ink-muted); }
+.credits-authors { max-height: 520px; overflow-y: auto; padding-right: 6px; }
+
+/* ==================== TEMPORADA DE NAVIDAD ==================== */
+.xmas-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #FEF2F2, #ECFDF5);
+  border-color: #FCA5A5;
+  border-bottom-color: var(--duo-red);
+}
+.xmas-banner strong { color: #991B1B; font-size: 0.98rem; display: block; }
+.xmas-banner p { color: #166534; font-size: 0.86rem; margin: 2px 0 0; font-weight: 700; }
+.rights-notice {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: #FFFBEB;
+  border: 2px solid #FCD34D;
+  color: #92400E;
+  font-size: .86rem;
+  line-height: 1.4;
+}
+.rights-notice a { color: #B45309; font-weight: 800; margin-left: 4px; }

@@ -26,8 +26,44 @@ import { SongStudio } from './song-studio.js';
 import { RhythmTrainer } from './rhythm-trainer.js';
 import { FretboardStudio } from './fretboard.js';
 import { Guitar3DStudio } from './guitar-3d.js';
-import { SKILL_UNITS, RETO_30_DIAS, THEORY_LIBRARY } from './curriculum-db.js';
+import { SKILL_UNITS, RETO_30_DIAS, THEORY_LIBRARY, UNIT_CAPSTONES } from './curriculum-db.js';
 import { userStore, createDefaultUserState } from './user-store.js';
+import {
+  MAX_HEARTS,
+  HEARTS_PER_REVIEW,
+  HEARTS_RESTORED_AFTER_FAILED_LESSON,
+  shuffledOrder,
+  neutralFeedback,
+  loseHeart,
+  gainHearts,
+  pickReviewTheory,
+  modelStepSeconds,
+  chunkTheory,
+  estimateLessonMinutes,
+  SELF_ASSESSMENT_RUBRIC,
+  scoreSelfAssessment
+} from './pedagogy.js';
+import { annotateGlossary } from './glossary.js';
+import { renderCreditsHTML } from './credits.js';
+import { MASTER_SONGS, loadAllSongs, isChristmasSong, isChristmasSeason } from './songs-db.js';
+import { TABS_DB } from './tabs-db.js';
+import {
+  analyzeItems,
+  buildItemBank,
+  observedSecondsByType,
+  itemsToCSV,
+  flagLabel,
+  MIN_N_FLAGS
+} from './item-analysis.js';
+import { DRILL_TYPES, renderDrill } from './skill-drills.js';
+import {
+  WARMUP_SIZE,
+  todayISO,
+  recordReview,
+  dueTheoryIds,
+  srsSummary,
+  pickReviewItems
+} from './spaced-repetition.js';
 
 const LEVEL_TITLES = [
   { minXp: 0,    level: 1, title: 'Semilla Musical 🌱' },
@@ -55,6 +91,19 @@ function formatRichText(raw) {
     .filter(line => line.trim().length > 0)
     .map(line => `<p>${line}</p>`)
     .join('');
+}
+
+// Texto enriquecido + glosario emergente (primera aparición de cada término).
+function richWithGlossary(raw) {
+  return annotateGlossary(formatRichText(raw));
+}
+
+function chunkDotsHtml(total, idx) {
+  if (total <= 1) return '';
+  return `<div class="idea-dots" aria-label="Idea ${idx + 1} de ${total}">
+    ${Array.from({ length: total }, (_, i) => `<span class="idea-dot ${i === idx ? 'on' : i < idx ? 'done' : ''}"></span>`).join('')}
+    <small>Idea ${idx + 1} de ${total}</small>
+  </div>`;
 }
 
 function formatDateTimeShort(isoStr) {
@@ -284,14 +333,10 @@ class CuerdaVivaApp {
     });
 
     document.getElementById('btn-refill-hearts')?.addEventListener('click', () => {
-      if (this.state.hearts < 5) {
-        this.state.hearts = 5;
-        this._saveState();
-        this.updateTopbarStats();
-        audioEngine.playSuccess();
-        this._showXPToast('❤️❤️❤️❤️❤️ ¡Vidas recargadas!', 'Sigue practicando sin límites');
+      if (this.state.hearts < MAX_HEARTS) {
+        this._startHeartRecovery();
       } else {
-        this._showXPToast('❤️ Tienes 5/5 vidas completas', '¡Listo para cualquier lección!');
+        this._showXPToast(`❤️ Tienes ${MAX_HEARTS}/${MAX_HEARTS} vidas completas`, '¡Listo para cualquier lección!');
       }
     });
 
@@ -327,12 +372,27 @@ class CuerdaVivaApp {
     if (viewId === 'learn') this.renderLearnView();
     if (viewId === 'guitar3d' && this.guitar3dStudio) this.guitar3dStudio.render();
     if (viewId === 'challenge') this.renderChallengeView();
+    if (viewId === 'credits') this.renderCreditsView();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
+  // Agradecimientos y libros: autores generados desde el cancionero completo.
+  async renderCreditsView() {
+    const container = document.getElementById('view-credits');
+    if (!container) return;
+    container.innerHTML = renderCreditsHTML({ songs: MASTER_SONGS, tabs: TABS_DB });
+    try {
+      const all = await loadAllSongs();
+      if (this.activeView === 'credits') container.innerHTML = renderCreditsHTML({ songs: all, tabs: TABS_DB });
+    } catch (_) { /* se mantiene la versión con MASTER_SONGS */ }
+  }
+
   _navigateFromActionTarget(tab, itemId) {
+    // Salir de una lección en curso hacia otra sección cuenta como abandono.
+    if (this.lessonSession?.sessionRecordId && !this.lessonSession.sessionClosed) this._recordSessionEnd('abandono');
     document.getElementById('modal-lesson')?.classList.add('hidden');
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
     this.lessonSession = null;
     this.switchView(tab);
     if (tab === 'tabs' && this.tabPlayer && itemId) this.tabPlayer.selectTab(itemId);
@@ -364,6 +424,7 @@ class CuerdaVivaApp {
     const activeUser = userStore.getActiveUser();
     const userStats = userStore.getStats();
     const pendingWeak = userStore.getWeakTheories().filter(w => w.needsReview);
+    const srsInfo = srsSummary(this.state.srs || {});
 
     let nextSuggestedId = null;
     for (const u of SKILL_UNITS) {
@@ -408,6 +469,26 @@ class CuerdaVivaApp {
             </div>
           </div>
 
+          ${isChristmasSeason() ? `
+            <div class="duo-card xmas-banner">
+              <div>
+                <strong>🎄 Temporada de Navidad: ${MASTER_SONGS.filter(isChristmasSong).length} villancicos para tocar en familia</strong>
+                <p>Tutaina, Vamos Pastores, los Gozos de la Novena (16–24 de diciembre), Noche de Paz y más, con acordes abiertos y melodías en tablatura.</p>
+              </div>
+              <button class="duo-btn btn-green btn-sm" id="btn-xmas-songs">🎶 Ver villancicos</button>
+            </div>
+          ` : ''}
+
+          <div class="duo-card srs-review-banner ${srsInfo.due > 0 ? 'srs-due' : ''}">
+            <div>
+              <strong>📅 Repaso del día: ${srsInfo.due > 0 ? `${srsInfo.due} tema(s) pendiente(s)` : 'al día'}</strong>
+              <p>${srsInfo.total > 0
+                ? `Dominados ${srsInfo.mastered} de ${srsInfo.total} temas (recordados en ≥ 3 días distintos).${srsInfo.due === 0 && srsInfo.nextDue ? ` Próximo repaso: ${escapeHTML(srsInfo.nextDue)}.` : ''}`
+                : 'Al terminar tus primeras lecciones, aquí aparecerán los temas que conviene repasar cada día.'}</p>
+            </div>
+            ${srsInfo.due > 0 ? `<button class="duo-btn btn-green btn-sm" id="btn-daily-review">▶ Repasar ahora</button>` : ''}
+          </div>
+
           ${pendingWeak.length > 0 ? `
             <div class="duo-card weak-alert-banner">
               <div>
@@ -435,6 +516,10 @@ class CuerdaVivaApp {
                     <div class="unit-progress-pill">
                       <strong>${unitDone}/${unit.lessons.length}</strong>
                       <span>Completadas</span>
+                      ${unitDone === unit.lessons.length ? `
+                        <button class="duo-btn btn-sm btn-purple unit-self-assess-btn" data-self-assess="${unit.id}">
+                          📝 ${this.state.selfAssessments?.[unit.id] ? `${this.state.selfAssessments[unit.id].total}/${this.state.selfAssessments[unit.id].max}` : 'Autoevaluar'}
+                        </button>` : ''}
                     </div>
                   </div>
 
@@ -460,6 +545,7 @@ class CuerdaVivaApp {
                           <div class="skill-node-caption">
                             <strong>${lesson.title}</strong>
                             <span>${lesson.summary}</span>
+                            <small class="node-minutes">⏱ ~${estimateLessonMinutes(lesson, this._getObservedSeconds())} min · 🎯 ${(lesson.objectives || []).length} objetivos</small>
                             <em class="node-xp-chip">${isDone ? '✓ Completada · Repasar' : `+${lesson.xp} XP · ${lesson.steps.filter(s => s.type !== 'theory').length} retos`}</em>
                           </div>
                         </div>
@@ -580,6 +666,25 @@ class CuerdaVivaApp {
       this.openAudioTunerModal();
     });
 
+    container.querySelectorAll('[data-self-assess]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const unit = SKILL_UNITS.find(u => u.id === btn.dataset.selfAssess);
+        if (unit) this.openUnitSelfAssessment(unit);
+      });
+    });
+
+    container.querySelector('#btn-xmas-songs')?.addEventListener('click', () => {
+      this.switchView('songs');
+      if (this.songStudio) {
+        this.songStudio.filterGroup = 'navidad';
+        this.songStudio.selectSong('nav_tutaina');
+      }
+    });
+
+    container.querySelector('#btn-daily-review')?.addEventListener('click', () => {
+      this.openDailyReview();
+    });
+
     container.querySelector('#btn-hero-remediate-first')?.addEventListener('click', () => {
       if (pendingWeak[0]) this.openStandaloneRemediation(pendingWeak[0].theoryId);
     });
@@ -632,16 +737,57 @@ class CuerdaVivaApp {
 
   openLessonModal(unit, lesson) {
     if (this.state.hearts <= 0) {
-      this.state.hearts = 5;
-      this._saveState();
-      this.updateTopbarStats();
+      this._showXPToast('💔 Sin vidas', 'Repasa una teoría para recuperarlas (o vuelve mañana)');
+      this._startHeartRecovery();
+      return;
     }
 
-    const questionSteps = lesson.steps.filter(s => s.type !== 'theory');
-    this.lessonSession = {
+    // Calentamiento: 1–2 retos pendientes de repaso espaciado de OTRAS lecciones (práctica intercalada).
+    const srs = this.state.srs || {};
+    const ownTheories = new Set(lesson.steps.map(st => st.theoryId).filter(Boolean));
+    const warmups = pickReviewItems(
+      dueTheoryIds(srs).filter(t => !ownTheories.has(t)),
+      SKILL_UNITS,
+      { max: WARMUP_SIZE + 2, excludeLessonId: lesson.id, srs }
+    ).filter(w => !['chord_change', 'strum_timing'].includes(w.step.type)).slice(0, WARMUP_SIZE);
+
+    this._beginSession({
       mode: 'lesson',
       unit,
+      lesson: { ...lesson, steps: [...warmups.map(w => ({ ...w.step, _reviewQid: w.questionId })), ...lesson.steps] },
+      warmupCount: warmups.length
+    });
+  }
+
+  // Sesión de "Repaso del día": una pregunta por teoría pendiente, intercaladas.
+  openDailyReview() {
+    const srs = this.state.srs || {};
+    const items = pickReviewItems(dueTheoryIds(srs), SKILL_UNITS, { srs });
+    if (!items.length) {
+      const next = srsSummary(srs).nextDue;
+      this._showXPToast('📅 Nada pendiente hoy', next ? `Próximo repaso: ${next}` : 'Completa lecciones para alimentar tu repaso');
+      return;
+    }
+    this._beginSession({
+      mode: 'review',
+      unit: { id: 'review', title: 'Repaso del día', color: '#00CD9C' },
+      lesson: {
+        id: `review_${todayISO()}`,
+        title: 'Repaso del día',
+        xp: 10 + 5 * items.length,
+        steps: items.map(i => ({ ...i.step, _reviewQid: i.questionId }))
+      },
+      warmupCount: 0
+    });
+  }
+
+  _beginSession({ mode, unit, lesson, warmupCount = 0 }) {
+    const questionSteps = lesson.steps.filter(s => s.type !== 'theory');
+    this.lessonSession = {
+      mode,
+      unit,
       lesson,
+      warmupCount,
       stepIdx: 0,
       selectedOption: null,
       stepResolved: false,
@@ -652,20 +798,238 @@ class CuerdaVivaApp {
       phase: 'initial', // 'initial' | 'remediation_theory' | 'remediation_retry'
       remediationItem: null,
       remediationCompleted: 0,
-      remediationTotalQueued: 0
+      remediationTotalQueued: 0,
+      outOfHearts: false,
+      showIntro: mode === 'lesson' && Array.isArray(lesson.objectives) && lesson.objectives.length > 0
     };
+
+    this._recordSessionStart();
 
     const modal = document.getElementById('modal-lesson');
     modal.classList.remove('hidden');
 
     document.getElementById('btn-quit-lesson').onclick = () => {
+      if (!this.lessonSession?.sessionClosed) this._recordSessionEnd('abandono');
       pitchDetector.offPitch('lesson-runner');
+      this._cleanupDrill();
       modal.classList.add('hidden');
       this.lessonSession = null;
       this.renderLearnView();
     };
 
     this._renderCurrentLessonStep();
+  }
+
+  // Registro de sesiones para la analítica (finalización y abandono por reto).
+  _recordSessionStart() {
+    const sess = this.lessonSession;
+    sess.sessionRecordId = `ses_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    const rec = { id: sess.sessionRecordId, mode: sess.mode, lessonId: sess.lesson.id, startedAt: new Date().toISOString(), outcome: null };
+    this.state.sessions = [...(this.state.sessions || []), rec].slice(-300);
+    this._saveState();
+  }
+
+  _recordSessionEnd(outcome) {
+    const sess = this.lessonSession;
+    if (!sess?.sessionRecordId || sess.sessionClosed) return;
+    sess.sessionClosed = true;
+    this.state.sessions = (this.state.sessions || []).map(r => (r.id === sess.sessionRecordId
+      ? { ...r, outcome, completed: outcome === 'victoria' || outcome === 'repaso', endedAt: new Date().toISOString(), lastQuestionId: outcome === 'abandono' ? (sess.currentQid || null) : null }
+      : r));
+    this._saveState();
+  }
+
+  // Presentación de la lección: objetivos observables y duración estimada.
+  _renderLessonIntro() {
+    const sess = this.lessonSession;
+    const lesson = sess.lesson;
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+    this._updateLessonHeaderChrome(4, '');
+    footer.className = 'lesson-footer-bar';
+    feedbackEl.innerHTML = '';
+    body.innerHTML = `
+      <div class="lesson-card-step lesson-intro-card">
+        <span class="badge-vivid" style="background:${sess.unit.color};color:#fff">${escapeHTML(sess.unit.title || '')}</span>
+        <h2 class="lesson-step-title">${lesson.icon || '🎸'} ${escapeHTML(lesson.title)}</h2>
+        <p class="lesson-intro-meta">⏱ ~${estimateLessonMinutes(lesson, this._getObservedSeconds())} min · ${lesson.steps.filter(st => st.type !== 'theory').length} retos${sess.warmupCount ? ` · incluye ${sess.warmupCount} de calentamiento` : ''}</p>
+        <div class="lesson-objectives">
+          <strong>🎯 Al terminar podrás:</strong>
+          <ul>${lesson.objectives.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ul>
+        </div>
+        <p class="lesson-intro-tip">Toca los términos <span class="gloss-term gloss-sample">subrayados</span> para ver su definición.</p>
+      </div>`;
+    primaryBtn.textContent = '¡EMPEZAR!';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      sess.showIntro = false;
+      this._renderCurrentLessonStep();
+    };
+  }
+
+  // ==================== AUTOEVALUACIÓN DE CIERRE DE UNIDAD ====================
+  openUnitSelfAssessment(unit) {
+    const cap = UNIT_CAPSTONES[unit.id] || { task: 'Toca una canción completa con lo aprendido en la unidad.' };
+    const modal = document.getElementById('modal-lesson');
+    modal.classList.remove('hidden');
+    pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
+    this.lessonSession = { mode: 'self_assessment', unit, lesson: { id: `self_${unit.id}`, title: 'Autoevaluación' } };
+
+    let recorder = null;
+    let recStream = null;
+    let recTimer = null;
+    let recUrl = null;
+    const stopRecording = () => {
+      clearTimeout(recTimer);
+      if (recorder && recorder.state !== 'inactive') recorder.stop();
+      recStream?.getTracks().forEach(t => t.stop());
+      recStream = null;
+    };
+    this._drillCleanup = () => { stopRecording(); if (recUrl) URL.revokeObjectURL(recUrl); };
+
+    document.getElementById('btn-quit-lesson').onclick = () => {
+      this._cleanupDrill();
+      modal.classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
+
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+    this._updateLessonHeaderChrome(100, `📝 Cierre de la Unidad ${unit.number}`);
+    footer.className = 'lesson-footer-bar';
+    feedbackEl.innerHTML = '';
+    const canRecord = Boolean(navigator.mediaDevices?.getUserMedia && window.MediaRecorder);
+    const prev = this.state.selfAssessments?.[unit.id];
+
+    body.innerHTML = `
+      <div class="lesson-card-step self-assess-card">
+        <span class="badge-vivid" style="background:${unit.color};color:#fff">Unidad ${unit.number} · ${escapeHTML(unit.title)}</span>
+        <h2 class="lesson-step-title">📝 Autoevaluación de la unidad</h2>
+        <div class="lesson-objectives">
+          <strong>🎸 Tarea de cierre:</strong>
+          <p>${escapeHTML(cap.task)}</p>
+          ${cap.songId ? `<button class="duo-btn btn-blue btn-sm" id="sa-open-song">🎶 Abrir la canción</button>` : ''}
+        </div>
+        ${canRecord ? `
+          <div class="sa-record">
+            <button class="duo-btn btn-orange btn-sm" id="sa-rec-btn">🎙️ Grabarme (máx. 60 s)</button>
+            <audio id="sa-audio" controls class="hidden"></audio>
+            <small>Escúchate antes de puntuar. La grabación queda solo en este dispositivo: no se sube a ningún servidor.</small>
+          </div>` : ''}
+        <div class="sa-rubric">
+          ${SELF_ASSESSMENT_RUBRIC.map(c => `
+            <fieldset class="sa-criterion">
+              <legend>${escapeHTML(c.label)}</legend>
+              ${c.levels.map((desc, i) => `
+                <label class="sa-level">
+                  <input type="radio" name="sa-${c.id}" value="${i + 1}" ${prev?.scores?.[c.id] === i + 1 ? 'checked' : ''}>
+                  <span><strong>${i + 1}</strong> ${escapeHTML(desc)}</span>
+                </label>`).join('')}
+            </fieldset>`).join('')}
+        </div>
+      </div>`;
+
+    body.querySelector('#sa-open-song')?.addEventListener('click', () => this._navigateFromActionTarget('songs', cap.songId));
+
+    const recBtn = body.querySelector('#sa-rec-btn');
+    recBtn?.addEventListener('click', async () => {
+      if (recorder && recorder.state === 'recording') { stopRecording(); return; }
+      try {
+        recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const chunks = [];
+        recorder = new MediaRecorder(recStream);
+        recorder.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+        recorder.onstop = () => {
+          if (recUrl) URL.revokeObjectURL(recUrl);
+          recUrl = URL.createObjectURL(new Blob(chunks, { type: recorder.mimeType || 'audio/webm' }));
+          const audio = body.querySelector('#sa-audio');
+          audio.src = recUrl;
+          audio.classList.remove('hidden');
+          recBtn.textContent = '🎙️ Volver a grabar';
+        };
+        recorder.start();
+        recBtn.textContent = '⏹ Detener grabación';
+        recTimer = setTimeout(stopRecording, 60000);
+      } catch (_) {
+        recBtn.textContent = '⚠️ Micrófono no disponible';
+        recBtn.disabled = true;
+      }
+    });
+
+    const readScores = () => Object.fromEntries(SELF_ASSESSMENT_RUBRIC.map(c => {
+      const v = body.querySelector(`input[name="sa-${c.id}"]:checked`);
+      return [c.id, v ? Number(v.value) : null];
+    }));
+    const refresh = () => {
+      const filled = Object.values(readScores()).every(v => v !== null);
+      primaryBtn.disabled = !filled;
+    };
+    body.querySelectorAll('.sa-rubric input').forEach(inp => inp.addEventListener('change', refresh));
+
+    primaryBtn.textContent = 'GUARDAR AUTOEVALUACIÓN';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    refresh();
+    primaryBtn.onclick = () => {
+      const scores = readScores();
+      const result = scoreSelfAssessment(scores);
+      this.state.selfAssessments = {
+        ...(this.state.selfAssessments || {}),
+        [unit.id]: { date: todayISO(), scores, total: result.total, max: result.max, level: result.level }
+      };
+      // Los criterios en nivel 1 alimentan el repaso espaciado (vuelven mañana).
+      result.reviewTheories.forEach(tid => { this.state.srs = recordReview(this.state.srs, tid, false); });
+      this._saveState();
+      stopRecording();
+      this._renderSelfAssessmentResult(unit, result);
+    };
+  }
+
+  _renderSelfAssessmentResult(unit, result) {
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+    audioEngine.playSuccess();
+    const names = result.reviewTheories.map(t => this._getTheoryMeta(t).title);
+    body.innerHTML = `
+      <div class="lesson-victory-box">
+        <div class="victory-trophy-bounce">📝</div>
+        <h2>Autoevaluación guardada</h2>
+        <p class="victory-sub">Unidad ${unit.number} · ${escapeHTML(unit.title)}</p>
+        <div class="victory-stats-cards">
+          <div class="v-stat-card card-green"><span>PUNTAJE</span><strong>${result.total}/${result.max}</strong></div>
+          <div class="v-stat-card card-gold"><span>NIVEL</span><strong>${escapeHTML(result.level)}</strong></div>
+        </div>
+        ${names.length ? `<div class="rem-victory-chip">Programamos para mañana el repaso de: <strong>${names.map(escapeHTML).join(', ')}</strong>.</div>` : ''}
+      </div>`;
+    footer.className = 'lesson-footer-bar state-correct';
+    feedbackEl.innerHTML = '<strong>🔁 Vuelve a autoevaluarte</strong> <span>cuando practiques más: verás tu progreso en la ruta.</span>';
+    primaryBtn.textContent = 'VOLVER A LA RUTA';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      this._cleanupDrill();
+      document.getElementById('modal-lesson').classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
+  }
+
+  _renderSessionEnd() {
+    const sess = this.lessonSession;
+    if (!sess) return;
+    this._recordSessionEnd(sess.mode === 'review' ? 'repaso' : sess.mode === 'standalone_remediation' ? 'remediacion' : sess.outOfHearts ? 'sin_vidas' : 'victoria');
+    if (sess.mode === 'standalone_remediation') this._renderStandaloneRemediationComplete();
+    else if (sess.mode === 'review') this._renderReviewCompleteScreen();
+    else if (sess.outOfHearts) this._renderLessonOutOfHeartsScreen();
+    else this._renderLessonVictoryScreen();
   }
 
   openStandaloneRemediation(theoryId) {
@@ -751,6 +1115,7 @@ class CuerdaVivaApp {
 
     document.getElementById('btn-quit-lesson').onclick = () => {
       pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
       modal.classList.add('hidden');
       this.lessonSession = null;
       this.renderLearnView();
@@ -768,6 +1133,212 @@ class CuerdaVivaApp {
       theoryId: step.theoryId || 'general_music'
     });
     sess.remediationTotalQueued++;
+  }
+
+  // ==================== ECONOMÍA DE VIDAS ====================
+  // Las vidas se pierden solo en la ronda inicial. Al llegar a 0 termina la ronda
+  // y se pasa al repaso obligatorio; la lección no se marca como completada.
+  _applyHeartLoss(isRemediation) {
+    const sess = this.lessonSession;
+    // Solo las lecciones cuestan vidas; repasar nunca penaliza.
+    const protectedPhase = isRemediation || !sess || sess.mode !== 'lesson';
+    const { hearts, depleted } = loseHeart(this.state.hearts, { isRemediation: protectedPhase });
+    this.state.hearts = hearts;
+    this._saveState();
+    this.updateTopbarStats();
+    const el = document.getElementById('lesson-hearts-count');
+    if (el) el.textContent = String(hearts);
+    if (depleted && !isRemediation && sess && sess.mode === 'lesson') {
+      sess.outOfHearts = true;
+    }
+  }
+
+  // Recuperar vidas exige practicar: se abre un repaso de una teoría débil
+  // (o de una lección ya superada). Completarlo otorga HEARTS_PER_REVIEW vidas.
+  _startHeartRecovery() {
+    if (dueTheoryIds(this.state.srs || {}).length) {
+      this.openDailyReview();
+      return;
+    }
+    const theoryId = pickReviewTheory(
+      userStore.getWeakTheories(),
+      SKILL_UNITS,
+      this.state.completedLessons
+    );
+    if (!theoryId) {
+      this._showXPToast('❤️ Aún no hay teorías para repasar', 'Las vidas se recargan cada día');
+      return;
+    }
+    this.openStandaloneRemediation(theoryId);
+  }
+
+  _renderReviewCompleteScreen() {
+    const sess = this.lessonSession;
+    if (!sess) return;
+    pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
+    this._updateLessonHeaderChrome(100, '');
+    audioEngine.playLessonFanfare();
+
+    const heartsBefore = this.state.hearts;
+    this.state.hearts = gainHearts(this.state.hearts, HEARTS_PER_REVIEW);
+    const heartsGained = this.state.hearts - heartsBefore;
+    this._saveState();
+    this.awardXP(sess.lesson.xp || 15, 'Repaso del día');
+
+    const sum = srsSummary(this.state.srs || {});
+    const totalQ = Math.max(1, sess.initialQuestionsTotal || 1);
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+
+    body.innerHTML = `
+      <div class="lesson-victory-box">
+        <div class="victory-trophy-bounce">📅</div>
+        <h2>¡Repaso del día completado!</h2>
+        <p class="victory-sub">Recordar con días de separación es lo que fija el aprendizaje a largo plazo.</p>
+        <div class="victory-stats-cards">
+          <div class="v-stat-card card-green"><span>RECORDASTE</span><strong>${sess.initialHits}/${totalQ}</strong></div>
+          <div class="v-stat-card card-gold"><span>TEMAS DOMINADOS</span><strong>${sum.mastered}/${sum.total}</strong></div>
+          <div class="v-stat-card card-orange"><span>VIDAS</span><strong>${heartsGained > 0 ? `+${heartsGained} ❤️` : `${this.state.hearts} ❤️`}</strong></div>
+        </div>
+        ${sum.nextDue ? `<div class="rem-victory-chip">Próximo repaso programado: <strong>${escapeHTML(sum.nextDue)}</strong></div>` : ''}
+      </div>
+    `;
+
+    footer.className = 'lesson-footer-bar state-correct';
+    feedbackEl.innerHTML = '<strong>🧠 Repaso espaciado al día.</strong> <span>Los temas que fallaste volverán mañana; los que recordaste, más adelante.</span>';
+    primaryBtn.textContent = 'VOLVER A LA RUTA';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      document.getElementById('modal-lesson').classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
+  }
+
+  _renderLessonOutOfHeartsScreen() {
+    const sess = this.lessonSession;
+    if (!sess) return;
+    pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
+    this._updateLessonHeaderChrome(100, '');
+
+    this.state.hearts = gainHearts(this.state.hearts, HEARTS_RESTORED_AFTER_FAILED_LESSON);
+    this._saveState();
+    this.updateTopbarStats();
+
+    const totalQ = Math.max(1, sess.initialQuestionsTotal || 1);
+    const answered = sess.initialHits + sess.mistakes;
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+
+    body.innerHTML = `
+      <div class="lesson-victory-box">
+        <div class="victory-trophy-bounce">💪</div>
+        <h2>Lección aún no superada</h2>
+        <p class="victory-sub">${escapeHTML(sess.lesson.title)}</p>
+        <div class="rem-victory-chip">
+          Repasaste <strong>${sess.remediationCompleted}</strong> teoría(s) y recuperaste
+          <strong>${HEARTS_RESTORED_AFTER_FAILED_LESSON} ❤️</strong>. Vuelve a intentarlo con calma.
+        </div>
+        <div class="victory-stats-cards">
+          <div class="v-stat-card card-green"><span>ACIERTOS 1ª RONDA</span><strong>${sess.initialHits}/${totalQ}</strong></div>
+          <div class="v-stat-card card-orange"><span>RESPONDIDAS</span><strong>${answered}/${totalQ}</strong></div>
+        </div>
+      </div>
+    `;
+
+    footer.className = 'lesson-footer-bar state-remediation';
+    feedbackEl.innerHTML = '<strong>📈 Equivocarse es parte del aprendizaje.</strong> <span>Tus errores quedaron en la Bitácora para repasarlos.</span>';
+    primaryBtn.textContent = 'VOLVER A LA RUTA';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      document.getElementById('modal-lesson').classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
+  }
+
+  _cleanupDrill() {
+    if (typeof this._drillCleanup === 'function') {
+      try { this._drillCleanup(); } catch (_) {}
+    }
+    this._drillCleanup = null;
+  }
+
+  // ---- RETOS DE HABILIDAD MEDIBLES (cambios de acorde, pulso, oído) ----
+  _renderSkillDrillStep(step, questionId, isRemediation, ui) {
+    const sess = this.lessonSession;
+    const { body, footer, feedbackEl, primaryBtn, theory, remediationBannerHtml } = ui;
+    const kindLabel = {
+      chord_change: '⏱️ Cambios de Acorde Cronometrados',
+      strum_timing: '🥁 Precisión de Pulso (ms)',
+      ear_quality: '👂 Entrenamiento Auditivo'
+    }[step.type];
+    let outcome = false;
+
+    primaryBtn.textContent = 'COMPLETA EL EJERCICIO';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = true;
+
+    this._drillCleanup = renderDrill(step, {
+      body,
+      headerHtml: `
+        ${remediationBannerHtml}
+        <div class="step-meta-line" style="justify-content:center;">
+          <span class="badge-vivid badge-orange">${kindLabel}</span>
+          <span class="badge-vivid badge-purple">📖 ${escapeHTML(theory.title)}</span>
+        </div>`,
+      onResult: ({ success, userAnswer, expectedAnswer, summaryHtml }) => {
+        if (sess.stepResolved) return;
+        sess.stepResolved = true;
+        outcome = success;
+        this._logChallengeOutcome({
+          step,
+          questionId,
+          outcome: success ? 'acierto' : 'no_acierto',
+          isRemediation,
+          userAnswer,
+          expectedAnswer
+        });
+
+        const summary = escapeHTML(summaryHtml);
+        if (success) {
+          if (!isRemediation) sess.initialHits++;
+          audioEngine.playSuccess();
+          footer.className = 'lesson-footer-bar state-correct';
+          feedbackEl.innerHTML = `<strong>✅ ¡Meta cumplida!</strong> <span>${summary}</span>`;
+          primaryBtn.textContent = 'CONTINUAR';
+          primaryBtn.className = 'duo-btn btn-green btn-lg';
+        } else {
+          audioEngine.playError();
+          sess.mistakes++;
+          this._applyHeartLoss(isRemediation);
+          if (!isRemediation) this._queueRemediation(sess, step, questionId);
+          footer.className = 'lesson-footer-bar state-wrong';
+          feedbackEl.innerHTML = isRemediation
+            ? `<strong>📈 Aún no alcanzas la meta.</strong> <span>${summary} Repasa la técnica y vuelve a intentarlo.</span>`
+            : sess.outOfHearts
+              ? `<strong>💔 Te quedaste sin vidas.</strong> <span>${summary} Ahora repasarás la técnica.</span>`
+              : `<strong>📈 Aún no alcanzas la meta.</strong> <span>${summary} Lo repetiremos tras repasar la técnica.</span>`;
+          primaryBtn.textContent = isRemediation ? '📖 VOLVER A REPASAR TEORÍA' : 'CONTINUAR';
+          primaryBtn.className = 'duo-btn btn-orange btn-lg';
+        }
+        primaryBtn.disabled = false;
+      }
+    });
+
+    primaryBtn.onclick = () => {
+      if (!sess.stepResolved) return;
+      this._cleanupDrill();
+      this._finishQuestionAndProceed(outcome);
+    };
   }
 
   _getTheoryMeta(theoryId) {
@@ -805,6 +1376,7 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     if (sess.phase === 'remediation_theory') {
       this._renderRemediationTheoryStep();
@@ -816,29 +1388,38 @@ class CuerdaVivaApp {
       return;
     }
 
+    if (sess.showIntro) {
+      this._renderLessonIntro();
+      return;
+    }
+
     const total = sess.lesson.steps.length;
-    if (sess.stepIdx >= total) {
+    if (sess.stepIdx >= total || sess.outOfHearts) {
       if (sess.remediationQueue.length > 0) {
         sess.phase = 'remediation_theory';
         sess.remediationItem = sess.remediationQueue[0];
         this._renderRemediationTheoryStep();
       } else {
-        this._renderLessonVictoryScreen();
+        this._renderSessionEnd();
       }
       return;
     }
 
     const step = sess.lesson.steps[sess.stepIdx];
     const pct = Math.max(8, Math.round((sess.stepIdx / total) * 100));
-    const remNote = sess.remediationQueue.length > 0
-      ? `🔄 ${sess.remediationQueue.length} repaso(s) al final`
-      : '';
+    const remNote = sess.mode === 'review'
+      ? `📅 Repaso del día (${sess.stepIdx + 1} de ${total})`
+      : step._reviewQid
+        ? '🔁 Calentamiento: repaso espaciado'
+        : sess.remediationQueue.length > 0
+          ? `🔄 ${sess.remediationQueue.length} repaso(s) al final`
+          : '';
     this._updateLessonHeaderChrome(pct, remNote);
 
     if (step.type === 'theory') {
       this._renderTheoryStep(step);
     } else {
-      const qId = step.id || `${sess.lesson.id}_s${sess.stepIdx}`;
+      const qId = step._reviewQid || step.id || `${sess.lesson.id}_s${sess.stepIdx - (sess.warmupCount || 0)}`;
       this._renderInteractiveQuestionStep(step, qId, false);
     }
   }
@@ -861,12 +1442,13 @@ class CuerdaVivaApp {
         <span class="badge-vivid" style="background:${sess.unit.color};color:#fff">${escapeHTML(step.badge || sess.unit.title)}</span>
         <h2 class="lesson-step-title">${escapeHTML(step.title)}</h2>
         ${step.image ? `
-          <div class="lesson-theory-img-box">
+          <div class="lesson-theory-img-box" data-first-only>
             <img src="${step.image}" alt="${escapeHTML(step.title)}" loading="lazy" />
           </div>
         ` : ''}
-        <div class="lesson-rich-prose">${formatRichText(step.body)}</div>
-        ${step.highlightBox ? `<div class="lesson-tip-callout">💡 <strong>Clave Práctica:</strong> ${escapeHTML(step.highlightBox)}</div>` : ''}
+        <div data-idea-dots></div>
+        <div class="lesson-rich-prose" data-idea-prose></div>
+        ${step.highlightBox ? `<div class="lesson-tip-callout hidden" data-last-only>💡 <strong>Clave Práctica:</strong> ${escapeHTML(step.highlightBox)}</div>` : ''}
         <div class="lesson-demo-row">
           ${step.demoChord ? `
             <div class="lesson-mini-chord-box">
@@ -897,20 +1479,38 @@ class CuerdaVivaApp {
       this._navigateFromActionTarget(tab, itemId);
     });
 
-    primaryBtn.textContent = '¡ENTENDIDO, CONTINUAR!';
     primaryBtn.className = 'duo-btn btn-green btn-lg';
-    primaryBtn.disabled = false;
-    primaryBtn.onclick = () => {
+    // Una idea por pantalla (≤ 60 palabras), con glosario emergente.
+    this._pageTheoryChunks(body, chunkTheory(step.body), primaryBtn, '¡ENTENDIDO, CONTINUAR!', () => {
       audioEngine.playSuccess();
       sess.stepIdx++;
       this._renderCurrentLessonStep();
+    });
+  }
+
+  _pageTheoryChunks(body, chunks, primaryBtn, finalLabel, onDone) {
+    let idx = 0;
+    const show = () => {
+      const last = idx === chunks.length - 1;
+      body.querySelector('[data-idea-prose]').innerHTML = richWithGlossary(chunks[idx]);
+      body.querySelector('[data-idea-dots]').innerHTML = chunkDotsHtml(chunks.length, idx);
+      body.querySelectorAll('[data-first-only]').forEach(el => el.classList.toggle('hidden', idx !== 0));
+      body.querySelectorAll('[data-last-only]').forEach(el => el.classList.toggle('hidden', !last));
+      primaryBtn.disabled = false;
+      primaryBtn.textContent = last ? finalLabel : 'SIGUIENTE IDEA →';
+      primaryBtn.onclick = () => {
+        if (!last) { idx++; show(); return; }
+        onDone();
+      };
     };
+    show();
   }
 
   _renderRemediationTheoryStep() {
     const sess = this.lessonSession;
     if (!sess || !sess.remediationItem) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     const item = sess.remediationItem;
     const theory = this._getTheoryMeta(item.theoryId);
@@ -946,15 +1546,16 @@ class CuerdaVivaApp {
         ${theory.summary ? `<p class="rem-summary-line">${escapeHTML(theory.summary)}</p>` : ''}
 
         ${theory.image ? `
-          <div class="lesson-theory-img-box">
+          <div class="lesson-theory-img-box" data-first-only>
             <img src="${theory.image}" alt="${escapeHTML(theory.title)}" />
           </div>
         ` : ''}
 
-        <div class="lesson-rich-prose">${formatRichText(theory.explanation)}</div>
+        <div data-idea-dots></div>
+        <div class="lesson-rich-prose" data-idea-prose></div>
 
         ${theory.exampleTip ? `
-          <div class="lesson-tip-callout">💡 <strong>Regla Clave para el Reintento:</strong> ${escapeHTML(theory.exampleTip)}</div>
+          <div class="lesson-tip-callout hidden" data-last-only>💡 <strong>Regla Clave para el Reintento:</strong> ${escapeHTML(theory.exampleTip)}</div>
         ` : ''}
 
         <div class="lesson-demo-row">
@@ -980,14 +1581,12 @@ class CuerdaVivaApp {
       });
     });
 
-    primaryBtn.textContent = '✅ TEORÍA REPASADA — RESOLVER PREGUNTA';
     primaryBtn.className = 'duo-btn btn-orange btn-lg';
-    primaryBtn.disabled = false;
-    primaryBtn.onclick = () => {
+    this._pageTheoryChunks(body, chunkTheory(theory.explanation), primaryBtn, '✅ TEORÍA REPASADA — RESOLVER PREGUNTA', () => {
       userStore.markTheoryReviewed(item.theoryId, false);
       sess.phase = 'remediation_retry';
       this._renderInteractiveQuestionStep(item.step, item.questionId, true);
-    };
+    });
   }
 
   _finishQuestionAndProceed(wasCorrectInRemediation) {
@@ -1002,10 +1601,8 @@ class CuerdaVivaApp {
           sess.phase = 'remediation_theory';
           sess.remediationItem = sess.remediationQueue[0];
           this._renderRemediationTheoryStep();
-        } else if (sess.mode === 'standalone_remediation') {
-          this._renderStandaloneRemediationComplete();
         } else {
-          this._renderLessonVictoryScreen();
+          this._renderSessionEnd();
         }
       } else {
         // No superó en remediación -> regresa al repaso de esa misma teoría
@@ -1020,8 +1617,14 @@ class CuerdaVivaApp {
     this._renderCurrentLessonStep();
   }
 
-  _logChallengeOutcome({ step, questionId, outcome, isRemediation, userAnswer, expectedAnswer }) {
+  _logChallengeOutcome({ step, questionId, outcome, isRemediation, userAnswer, expectedAnswer, optionIndex = null }) {
     const sess = this.lessonSession;
+    const durationMs = sess?.stepStartedAt ? Date.now() - sess.stepStartedAt : null;
+    // Repaso espaciado: solo la recuperación en la ronda inicial (no la remediación inmediata) mueve la tarjeta.
+    if (!isRemediation && step.theoryId && sess && (sess.mode === 'lesson' || sess.mode === 'review')) {
+      this.state.srs = recordReview(this.state.srs, step.theoryId, outcome === 'acierto');
+      this._saveState();
+    }
     const theory = this._getTheoryMeta(step.theoryId);
     const qText = step.question || step.title || step.instruction || questionId;
     return userStore.recordAttempt({
@@ -1036,12 +1639,17 @@ class CuerdaVivaApp {
       outcome,
       phase: isRemediation ? 'remediation' : 'initial',
       userAnswer,
-      expectedAnswer
+      expectedAnswer,
+      durationMs,
+      optionIndex,
+      sessionMode: sess?.mode || 'lesson'
     });
   }
 
   _renderInteractiveQuestionStep(step, questionId, isRemediation) {
     const sess = this.lessonSession;
+    sess.stepStartedAt = Date.now();
+    sess.currentQid = questionId;
     sess.selectedOption = null;
     sess.stepResolved = false;
 
@@ -1082,12 +1690,12 @@ class CuerdaVivaApp {
             <span class="badge-vivid badge-blue">🧠 Pregunta Teórico-Práctica</span>
             <span class="badge-vivid badge-purple">📖 ${escapeHTML(theory.title)}</span>
           </div>
-          <h2 class="lesson-step-title">${escapeHTML(step.question)}</h2>
+          <h2 class="lesson-step-title">${annotateGlossary(escapeHTML(step.question))}</h2>
           <div class="quiz-options-grid">
-            ${step.options.map((opt, idx) => `
+            ${shuffledOrder(step.options.length).map((idx, pos) => `
               <button class="quiz-3d-option" data-optidx="${idx}">
-                <span class="opt-num-badge">${idx + 1}</span>
-                <span class="opt-label-txt">${escapeHTML(opt)}</span>
+                <span class="opt-num-badge">${pos + 1}</span>
+                <span class="opt-label-txt">${escapeHTML(step.options[idx])}</span>
               </button>
             `).join('')}
           </div>
@@ -1115,8 +1723,8 @@ class CuerdaVivaApp {
           sess.stepResolved = true;
           const isCorrect = sess.selectedOption === step.correctIndex;
           lastOutcome = isCorrect;
-          const allOpts = body.querySelectorAll('.quiz-3d-option');
-          allOpts[step.correctIndex]?.classList.add('correct');
+          const optBtn = idx => body.querySelector(`.quiz-3d-option[data-optidx="${idx}"]`);
+          optBtn(step.correctIndex)?.classList.add('correct');
 
           this._logChallengeOutcome({
             step,
@@ -1124,33 +1732,35 @@ class CuerdaVivaApp {
             outcome: isCorrect ? 'acierto' : 'no_acierto',
             isRemediation,
             userAnswer: step.options[sess.selectedOption] || '',
-            expectedAnswer: step.options[step.correctIndex] || ''
+            expectedAnswer: step.options[step.correctIndex] || '',
+            optionIndex: sess.selectedOption
           });
 
           if (isCorrect) {
             if (!isRemediation) sess.initialHits++;
             audioEngine.playSuccess();
             footer.className = 'lesson-footer-bar state-correct';
-            feedbackEl.innerHTML = `<strong>✅ ¡Excelente!</strong> <span>${escapeHTML(step.explanation)}</span>`;
+            feedbackEl.innerHTML = `<strong>✅ ¡Excelente!</strong> <span>${escapeHTML(neutralFeedback(step.explanation))}</span>`;
             primaryBtn.textContent = 'CONTINUAR';
             primaryBtn.className = 'duo-btn btn-green btn-lg';
           } else {
-            allOpts[sess.selectedOption]?.classList.add('wrong');
+            optBtn(sess.selectedOption)?.classList.add('wrong');
             audioEngine.playError();
             sess.mistakes++;
-            this.state.hearts = Math.max(1, this.state.hearts - 1);
-            this._saveState();
-            this.updateTopbarStats();
-            document.getElementById('lesson-hearts-count').textContent = String(this.state.hearts);
+            this._applyHeartLoss(isRemediation);
 
             if (!isRemediation) {
               this._queueRemediation(sess, step, questionId);
             }
 
             footer.className = 'lesson-footer-bar state-wrong';
+            const correctTxt = escapeHTML(step.options[step.correctIndex] || '');
+            const why = escapeHTML(neutralFeedback(step.explanation));
             feedbackEl.innerHTML = isRemediation
-              ? `<strong>⚠️ Aún requiere refuerzo:</strong> <span>${escapeHTML(step.explanation)}</span>`
-              : `<strong>💡 Queda anotado para repasar la teoría antes de cerrar el módulo:</strong> <span>${escapeHTML(step.explanation)}</span>`;
+              ? `<strong>⚠️ Aún requiere refuerzo.</strong> <span>Respuesta correcta: «${correctTxt}». ${why}</span>`
+              : sess.outOfHearts
+                ? `<strong>💔 Te quedaste sin vidas.</strong> <span>Respuesta correcta: «${correctTxt}». Ahora repasarás la teoría de tus errores.</span>`
+                : `<strong>💡 Respuesta correcta: «${correctTxt}».</strong> <span>${why} Lo repasaremos antes de cerrar el módulo.</span>`;
             primaryBtn.textContent = isRemediation ? '📖 VOLVER A REPASAR TEORÍA' : 'CONTINUAR';
             primaryBtn.className = 'duo-btn btn-orange btn-lg';
           }
@@ -1158,6 +1768,14 @@ class CuerdaVivaApp {
           this._finishQuestionAndProceed(lastOutcome);
         }
       };
+      return;
+    }
+
+    // ---- TIPO D: RETOS DE HABILIDAD MEDIBLES ----
+    if (DRILL_TYPES.includes(step.type)) {
+      this._renderSkillDrillStep(step, questionId, isRemediation, {
+        body, footer, feedbackEl, primaryBtn, theory, remediationBannerHtml
+      });
       return;
     }
 
@@ -1176,7 +1794,7 @@ class CuerdaVivaApp {
             <span class="badge-vivid badge-purple">🎯 Desafío en el Diapasón</span>
             <span class="badge-vivid badge-blue">📖 ${escapeHTML(theory.title)}</span>
           </div>
-          <h2 class="lesson-step-title">${escapeHTML(step.question)}</h2>
+          <h2 class="lesson-step-title">${annotateGlossary(escapeHTML(step.question))}</h2>
           <p class="muted-hint">💡 Pista: ${escapeHTML(step.hint)}</p>
 
           <div class="lesson-mini-fretboard">
@@ -1252,10 +1870,7 @@ class CuerdaVivaApp {
             if (!missedThisAttempt) {
               missedThisAttempt = true;
               sess.mistakes++;
-              this.state.hearts = Math.max(1, this.state.hearts - 1);
-              this._saveState();
-              this.updateTopbarStats();
-              document.getElementById('lesson-hearts-count').textContent = String(this.state.hearts);
+              this._applyHeartLoss(isRemediation);
 
               this._logChallengeOutcome({
                 step,
@@ -1460,11 +2075,14 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     this._updateLessonHeaderChrome(100, '');
     audioEngine.playLessonFanfare();
 
     const alreadyDone = this.state.completedLessons.includes(sess.lesson.id);
+    const unitJustCompleted = !alreadyDone && Array.isArray(sess.unit.lessons)
+      && sess.unit.lessons.every(l => l.id === sess.lesson.id || this.state.completedLessons.includes(l.id));
     const earnedXp = alreadyDone ? Math.round(sess.lesson.xp / 2) : sess.lesson.xp;
     if (!alreadyDone) {
       this.state.completedLessons.push(sess.lesson.id);
@@ -1505,11 +2123,42 @@ class CuerdaVivaApp {
             <strong>${this.state.streak} 🔥</strong>
           </div>
         </div>
+        ${(sess.lesson.objectives || []).length ? `
+          <div class="lesson-objectives victory-objectives">
+            <strong>✅ Ahora puedes:</strong>
+            <ul>${sess.lesson.objectives.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ul>
+          </div>
+        ` : ''}
+        ${unitJustCompleted ? `
+          <div class="victory-songs">
+            <strong>🏁 ¡Completaste la Unidad ${sess.unit.number}!</strong>
+            <button class="duo-btn btn-purple" id="btn-victory-self-assess">📝 Cierra la unidad con tu autoevaluación</button>
+          </div>
+        ` : ''}
+        ${(sess.lesson.practiceSongs || []).length ? `
+          <div class="victory-songs">
+            <strong>🎶 Aplícalo en una canción para todos:</strong>
+            <div class="victory-songs-row">
+              ${sess.lesson.practiceSongs.map((ps, k) => `
+                <button class="duo-btn btn-blue btn-sm" data-practice-song="${k}">${ps.tab === 'tabs' ? '🎯' : '🎶'} ${escapeHTML(ps.label)}</button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
 
     footer.className = 'lesson-footer-bar state-correct';
     feedbackEl.innerHTML = '<strong>🎉 ¡Gran constancia!</strong> <span>Todos los aciertos y repasos quedaron guardados en tu Bitácora.</span>';
+    body.querySelector('#btn-victory-self-assess')?.addEventListener('click', () => {
+      this.openUnitSelfAssessment(sess.unit);
+    });
+    body.querySelectorAll('[data-practice-song]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ps = sess.lesson.practiceSongs[Number(btn.dataset.practiceSong)];
+        if (ps) this._navigateFromActionTarget(ps.tab, ps.itemId);
+      });
+    });
     primaryBtn.textContent = 'VOLVER A LA RUTA';
     primaryBtn.className = 'duo-btn btn-green btn-lg';
     primaryBtn.disabled = false;
@@ -1524,10 +2173,16 @@ class CuerdaVivaApp {
     const sess = this.lessonSession;
     if (!sess) return;
     pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
 
     this._updateLessonHeaderChrome(100, '✅ Consolidado');
     audioEngine.playLessonFanfare();
     this.awardXP(sess.lesson.xp || 20, sess.lesson.title);
+    const heartsBefore = this.state.hearts;
+    this.state.hearts = gainHearts(this.state.hearts, HEARTS_PER_REVIEW);
+    const heartsGained = this.state.hearts - heartsBefore;
+    this._saveState();
+    this.updateTopbarStats();
 
     const body = document.getElementById('lesson-step-body');
     const footer = document.getElementById('lesson-footer-bar');
@@ -1545,7 +2200,7 @@ class CuerdaVivaApp {
         <div class="victory-stats-cards">
           <div class="v-stat-card card-gold"><span>BONO REPASO</span><strong>+20 XP ⚡</strong></div>
           <div class="v-stat-card card-green"><span>DOMINIO</span><strong>100% ✓</strong></div>
-          <div class="v-stat-card card-orange"><span>BITÁCORA</span><strong>Actualizada</strong></div>
+          <div class="v-stat-card card-orange"><span>VIDAS</span><strong>${heartsGained > 0 ? `+${heartsGained} ❤️` : `${this.state.hearts} ❤️`}</strong></div>
         </div>
       </div>
     `;
@@ -1750,6 +2405,9 @@ class CuerdaVivaApp {
           </div>
         `}
       </div>
+
+      <!-- E. CALIDAD DE LOS RETOS (ANÁLISIS DE ÍTEMS) -->
+      <div class="user-section-card" id="item-analysis-card"></div>
     `;
 
     // Eventos del modal de perfil
@@ -1815,6 +2473,8 @@ class CuerdaVivaApp {
       this._triggerDownload(json, `cuerdaviva_respaldo_${(active?.name || 'estudiante').replace(/\s+/g, '_')}.json`, 'application/json;charset=utf-8;');
     });
 
+    this._renderItemAnalysisCard(body.querySelector('#item-analysis-card'));
+
     body.querySelector('#btn-clear-logs')?.addEventListener('click', async () => {
       if (!this.confirmClearPending) {
         this.confirmClearPending = true;
@@ -1828,6 +2488,102 @@ class CuerdaVivaApp {
       this.renderUserModal();
       this._showXPToast('🧹 Bitácora limpiada', 'Listo para nuevos registros');
     });
+  }
+
+  // ==================== ANÁLISIS DE ÍTEMS (PARTE F) ====================
+  // Fuente 'local': todos los perfiles de este dispositivo (p. ej. un aula).
+  // Fuente 'server': todos los perfiles del servidor, anonimizados.
+  async _renderItemAnalysisCard(card, source = 'local') {
+    if (!card) return;
+    let analysis;
+    let observed;
+    if (source === 'server') {
+      try {
+        const res = await fetch('/api/analytics/items', { cache: 'no-store' });
+        const data = await res.json();
+        analysis = data;
+        observed = data.observedSecondsByType || {};
+      } catch (_) {
+        source = 'local';
+      }
+    }
+    if (source === 'local') {
+      const users = userStore.registry?.users || [];
+      analysis = analyzeItems(users, buildItemBank(SKILL_UNITS));
+      observed = observedSecondsByType(users);
+    }
+    const withData = analysis.items.filter(i => i.n > 0);
+    const shown = analysis.items.filter(i => i.n > 0 || i.abandons > 0).slice(0, 15);
+    const fmt = (v, d = 2) => (v === null || v === undefined ? '—' : Number(v).toFixed(d).replace('.', ','));
+    const pct = v => (v === null || v === undefined ? '—' : `${Math.round(v * 100)}%`);
+    const sampleTypes = ['quiz', 'fretboard_find', 'ear_quality', 'chord_change', 'strum_timing'];
+    const lessonsWithData = analysis.lessons.filter(l => l.started > 0).sort((a, b) => a.completionRate - b.completionRate).slice(0, 8);
+
+    card.innerHTML = `
+      <div class="us-head-row">
+        <div>
+          <h4>📊 Calidad de los retos (análisis de ítems)</h4>
+          <p class="muted-hint">Primera respuesta de cada estudiante en ronda inicial · fuente: ${source === 'server' ? 'servidor (perfiles anonimizados)' : 'perfiles de este dispositivo'} ·
+            ${analysis.respondents} estudiante(s), ${withData.length} reto(s) con datos, <strong>${analysis.flagged}</strong> con alertas.
+            Las alertas requieren ≥ ${MIN_N_FLAGS} respuestas por reto.</p>
+        </div>
+      </div>
+      <div class="ia-actions">
+        <button class="duo-btn btn-blue btn-sm" id="btn-ia-csv">⬇️ Exportar análisis (CSV)</button>
+        ${userStore.serverAvailable ? `<button class="duo-btn btn-outline btn-sm" id="btn-ia-source">${source === 'server' ? '💻 Ver este dispositivo' : '🌐 Ver datos del servidor'}</button>` : ''}
+      </div>
+      ${shown.length ? `
+        <div class="ia-table-wrap">
+          <table class="ia-table">
+            <thead><tr><th>Reto</th><th>n</th><th title="Dificultad: proporción de aciertos">p</th><th title="Discriminación punto-biserial corregida">r<sub>pb</sub></th><th title="Índice superior − inferior (27%)">D</th><th>Tiempo</th><th>Abandono</th><th>Alertas</th></tr></thead>
+            <tbody>
+              ${shown.map(i => `
+                <tr class="${i.flags.length ? 'ia-flagged' : ''}">
+                  <td><code>${escapeHTML(i.questionId)}</code><br><small>${escapeHTML(String(i.text).slice(0, 70))}</small></td>
+                  <td>${i.n}</td>
+                  <td>${fmt(i.p)}</td>
+                  <td>${fmt(i.rpb)}</td>
+                  <td>${fmt(i.D)}</td>
+                  <td>${i.medianSec === null ? '—' : `${Math.round(i.medianSec)} s`}</td>
+                  <td>${i.abandons ? `${i.abandons} (${pct(i.abandonRate)})` : '—'}</td>
+                  <td>${i.flags.length ? i.flags.map(f => `<span class="ia-flag" title="${escapeHTML(flagLabel(f))}">${escapeHTML(flagLabel(f).split(' (')[0].split(':')[0])}</span>`).join(' ') : '<span class="ia-ok">OK</span>'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : '<p class="muted-hint">Aún no hay respuestas registradas. Completa lecciones (o pide a tus estudiantes que lo hagan) para ver la calidad de cada reto.</p>'}
+      <div class="ia-grid">
+        <div>
+          <strong>⏱ Calibración de tiempos (mediana real vs. modelo)</strong>
+          <ul class="ia-list">
+            ${sampleTypes.map(t => `<li>${escapeHTML(t)}: ${observed[t] ? `<strong>${observed[t]} s</strong>` : 'sin datos suficientes'} · modelo ${Math.round(modelStepSeconds({ type: t }))} s</li>`).join('')}
+          </ul>
+          <small class="muted-hint">Con ≥ 15 respuestas cronometradas por tipo, la duración estimada de cada lección usa la mediana real.</small>
+        </div>
+        <div>
+          <strong>🚪 Lecciones con menor finalización</strong>
+          <ul class="ia-list">
+            ${lessonsWithData.length ? lessonsWithData.map(l => `<li><code>${escapeHTML(l.lessonId)}</code>: ${l.completed}/${l.started} completadas (${pct(l.completionRate)})${l.abandoned ? ` · ${l.abandoned} abandono(s)` : ''}</li>`).join('') : '<li>Sin sesiones registradas.</li>'}
+          </ul>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('#btn-ia-csv')?.addEventListener('click', () => {
+      this._triggerDownload(itemsToCSV(analysis), `cuerdaviva_analisis_items_${todayISO()}.csv`, 'text/csv;charset=utf-8;');
+    });
+    card.querySelector('#btn-ia-source')?.addEventListener('click', () => {
+      this._renderItemAnalysisCard(card, source === 'server' ? 'local' : 'server');
+    });
+  }
+
+  _getObservedSeconds() {
+    // Se recalcula como máximo una vez por minuto: la ruta se renderiza a menudo.
+    const now = Date.now();
+    if (!this._observedCache || now - this._observedCache.at > 60000) {
+      this._observedCache = { at: now, value: observedSecondsByType(userStore.registry?.users || []) };
+    }
+    return this._observedCache.value;
   }
 
   _triggerDownload(content, filename, mimeType) {

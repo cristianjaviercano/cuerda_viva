@@ -997,6 +997,566 @@ suegra, ay, me dejó una chi[E7]vita, una burra muy negrita,
 una yegua muy blanquita y una buena [Am]suegra.
 Me dejó una [E7]chiva, una burra negra, una yegua blanca y una buena [Am]suegra;
 me dejó cosa muy [E7]buena, cosa muy bo[Am]nita.`
+  },
+  // ==========================================================================
+  // CANCIONES PARA TODOS (DOMINIO PÚBLICO / TRADICIONALES)
+  // Repertorio que todo guitarrista debería saber tocar en una reunión.
+  // Solo se incluyen obras tradicionales o de dominio público.
+  // ==========================================================================
+  {
+    id: 'pop_cumpleanos_feliz',
+    title: 'Cumpleaños Feliz',
+    author: 'Mildred J. Hill y Patty S. Hill (1893, melodía "Good Morning to All") · letra en español tradicional',
+    category: 'popular',
+    occasion: 'Cumpleaños',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 100,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_cumpleanos_feliz',
+    youtubeQuery: 'cumpleaños feliz guitarra acordes fácil vals',
+    theoryNote: 'Vals en 3/4 que empieza en anacrusa: "Cum-ple" suena ANTES del primer tiempo fuerte. Solo usa tónica (G), dominante (D7) y subdominante (C), con G7 como puente hacia C.',
+    progressionLoop: ['G', 'D7', 'D7', 'G', 'G7', 'C', 'D7', 'G'],
+    content: `Cumple[G]años fe[D7]liz,
+te de[D7]seamos a [G]ti,
+cumple[G7]años, que[C]rido (nombre),
+cumple[G]años fe[D7]li[G]z.`
+  },
+
+  {
+    id: 'pop_las_mananitas',
+    title: 'Las Mañanitas',
+    author: 'Tradicional mexicana',
+    category: 'popular',
+    occasion: 'Cumpleaños',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 96,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'las mañanitas guitarra acordes fácil',
+    theoryNote: 'Mismas tres funciones que "Cumpleaños Feliz" (G, C, D7) y el puente G7 → C: si dominas una, ya casi tienes la otra.',
+    progressionLoop: ['G', 'D7', 'G', 'G7', 'C', 'D7', 'G'],
+    content: `ESTROFA 1
+[G]Estas son las maña[D7]nitas
+que cantaba el rey Da[G]vid;
+hoy por ser día de tu [G7]santo
+te las [C]cantamos a [D7]ti. [G]
+
+ESTROFA 2
+[G]Despierta, mi bien, des[D7]pierta,
+mira que ya ama[G]neció;
+ya los pajarillos [G7]cantan,
+la [C]luna ya se [D7]me[G]tió.`
+  },
+
+  {
+    id: 'pop_noche_de_paz',
+    title: 'Noche de Paz',
+    author: 'Franz X. Gruber (música, 1818) y Joseph Mohr (letra, 1816) · traducción tradicional al español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'vals',
+    bpm: 72,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_noche_de_paz',
+    youtubeQuery: 'noche de paz guitarra acordes fácil arpegio',
+    theoryNote: 'Ideal para arpegiar p-i-m-a en 3/4. Usa I (C), IV (F) y V7 (G7): la columna vertebral de miles de canciones.',
+    progressionLoop: ['C', 'G7', 'C', 'F', 'C', 'F', 'C', 'G7', 'C'],
+    content: `[C]Noche de paz, noche de amor,
+[G7]todo duerme en de[C]rredor.
+[F]Entre los astros que es[C]parcen su luz,
+[F]bella anunciando al ni[C]ñito Jesús,
+[G7]brilla la estrella de [C]paz,
+[C]brilla la [G7]estrella de [C]paz.`
+  },
+
+  {
+    id: 'pop_arroz_con_leche',
+    title: 'Arroz con Leche',
+    author: 'Tradicional infantil',
+    category: 'popular',
+    occasion: 'Infantil',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 100,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'arroz con leche guitarra acordes',
+    theoryNote: 'Solo dos acordes: C (reposo) y G7 (tensión). Perfecta para practicar el cambio C ⇄ G7 sin detener la mano derecha.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `[C]Arroz con leche, me quiero ca[G7]sar
+con una señorita de San Nico[C]lás,
+que sepa co[C]ser, que sepa bor[G7]dar,
+que sepa abrir la puerta para ir a ju[C]gar.`
+  },
+
+  {
+    id: 'pop_los_pollitos',
+    title: 'Los Pollitos Dicen',
+    author: 'Tradicional infantil',
+    category: 'popular',
+    occasion: 'Infantil',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 92,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'los pollitos dicen guitarra acordes',
+    theoryNote: 'Dos acordes (C y G7) y frases cortas: excelente primera canción para cantar mientras tocas.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `Los po[C]llitos dicen
+pío, pío, [G7]pío,
+cuando tienen [G7]hambre,
+cuando tienen [C]frío.
+
+La ga[C]llina busca
+el maíz y el [G7]trigo,
+les da la co[G7]mida
+y les presta a[C]brigo.`
+  },
+
+  {
+    id: 'pop_estrellita',
+    title: 'Estrellita, ¿Dónde Estás?',
+    author: 'Melodía tradicional francesa (s. XVIII)',
+    category: 'popular',
+    occasion: 'Infantil',
+    key: 'C',
+    rhythmId: 'negras',
+    bpm: 90,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_estrellita',
+    youtubeQuery: 'estrellita donde estas guitarra acordes melodía',
+    theoryNote: 'I (C), IV (F) y V7 (G7) con un acorde por cada dos sílabas. Toca la melodía en la TAB vinculada: solo usa las cuerdas 3ª, 4ª y 5ª en primera posición.',
+    progressionLoop: ['C', 'F', 'C', 'F', 'C', 'G7', 'C'],
+    content: `[C]Estrellita, [F]¿dónde es[C]tás?
+[F]Me pre[C]gunto [G7]qué se[C]rás.
+[C]En el [F]cielo [C]y en el [G7]mar,
+[C]un dia[F]mante [C]de ver[G7]dad.
+[C]Estrellita, [F]¿dónde es[C]tás?
+[F]Me pre[C]gunto [G7]qué se[C]rás.`
+  },
+
+  {
+    id: 'pop_campana_sobre_campana',
+    title: 'Campana sobre Campana',
+    author: 'Villancico tradicional andaluz',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'Am',
+    rhythmId: 'marcha',
+    bpm: 104,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'campana sobre campana guitarra acordes',
+    theoryNote: 'La estrofa vive en La menor (Am ⇄ E7) y el coro pasa a su relativo mayor (G → C): escucha cómo cambia el color sin cambiar de armadura.',
+    progressionLoop: ['Am', 'E7', 'E7', 'Am', 'G', 'C', 'G', 'C', 'E7'],
+    content: `ESTROFA
+[Am]Campana sobre campana,
+y sobre campana [E7]una,
+asómate a la ven[E7]tana,
+verás al Niño en la [Am]cuna.
+
+CORO
+[G]Belén, campanas de Be[C]lén,
+que los [G]ángeles tocan,
+¿qué nuevas me tra[C]éis? [E7]`
+  },
+
+  {
+    id: 'pop_los_peces_en_el_rio',
+    title: 'Los Peces en el Río',
+    author: 'Villancico tradicional español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'Am',
+    rhythmId: 'marcha',
+    bpm: 110,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'los peces en el rio guitarra acordes',
+    theoryNote: 'Estrofa en La menor con su dominante E7; el coro visita G y C (relativo mayor) y vuelve con E7 → Am.',
+    progressionLoop: ['Am', 'E7', 'E7', 'Am', 'G', 'C', 'G', 'C', 'E7', 'Am'],
+    content: `ESTROFA
+La [Am]Virgen se está peinando
+entre cortina y cor[E7]tina,
+los cabellos son de [E7]oro
+y el peine de plata [Am]fina.
+
+CORO
+Pero [G]mira cómo beben
+los peces en el [C]río,
+pero [G]mira cómo beben
+por ver al Dios na[C]cido.
+[E7]Beben y beben y vuelven a be[Am]ber,
+los [E7]peces en el río por ver a Dios na[Am]cer.`
+  },
+
+  {
+    id: 'pop_cielito_lindo',
+    title: 'Cielito Lindo',
+    author: 'Quirino Mendoza y Cortés (1882)',
+    category: 'popular',
+    occasion: 'Serenata',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 108,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'cielito lindo guitarra acordes vals',
+    theoryNote: 'Vals de serenata con G, D7 y el puente G7 → C en el coro "¡Ay, ay, ay, ay!".',
+    progressionLoop: ['G', 'D7', 'D7', 'G', 'G7', 'C', 'G', 'D7', 'G'],
+    content: `ESTROFA
+De la Sierra [G]Morena,
+cielito lindo, vienen ba[D7]jando
+un par de ojitos [D7]negros,
+cielito lindo, de contra[G]bando.
+
+CORO
+[G7]¡Ay, ay, ay, [C]ay!
+Canta y no [G]llores,
+porque cantando se a[D7]legran,
+cielito lindo, los cora[G]zones.`
+  },
+  // ==========================================================================
+  // VILLANCICOS DE NAVIDAD (TRADICIONALES / DOMINIO PÚBLICO)
+  // Novena de Aguinaldos y villancicos populares de tradición oral.
+  // ==========================================================================
+  {
+    id: 'nav_tutaina',
+    title: 'Tutaina',
+    author: 'Villancico tradicional colombiano',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'G',
+    rhythmId: 'marcha',
+    bpm: 112,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'tutaina villancico guitarra acordes',
+    theoryNote: 'El villancico más cantado en la Novena de Aguinaldos: solo G y D7, en marcha alegre de 2/4. Ideal para acompañar a los niños con un rasgueo ↓ ↑ por pulso.',
+    progressionLoop: ['G', 'D7', 'D7', 'G'],
+    content: `ESTROFA 1
+Los pas[G]tores de Belén
+vienen a adorar al [D7]Niño;
+la Virgen y San Jo[D7]sé
+los reciben con ca[G]riño.
+
+CORO
+Tu[G]taina, tuturumá,
+tutaina, tuturu[D7]maina,
+tutaina, tuturu[D7]má, turumá,
+tutaina, tuturu[G]maina.
+
+ESTROFA 2
+Tres [G]reyes vienen también
+con incienso, mirra y [D7]oro,
+a ofrendar a Dios su [D7]bien
+como el más grande te[G]soro.`
+  },
+
+  {
+    id: 'nav_vamos_pastores',
+    title: 'Vamos, Pastores, Vamos',
+    author: 'Villancico tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'vals',
+    bpm: 104,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'vamos pastores vamos villancico guitarra acordes',
+    theoryNote: 'Vals de Novena con dos acordes (C y G7): practica el BUM · chas · chas mientras cantas.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `CORO
+[C]Vamos, pastores, vamos,
+vamos a Be[G7]lén,
+a ver en aquel [G7]Niño
+la gloria del E[C]dén,
+a ver en aquel [G7]Niño
+la gloria del E[C]dén.
+
+ESTROFA
+[C]Ese precioso Niño,
+yo me muero por [G7]él;
+sus ojitos me en[G7]cantan,
+su boquita tam[C]bién.`
+  },
+
+  {
+    id: 'nav_dulce_jesus_mio',
+    title: 'Dulce Jesús Mío (Gozos de la Novena)',
+    author: 'Novena de Aguinaldos: Fray Fernando de Jesús Larrea (s. XVIII) y Madre María Ignacia Samper (s. XIX) · tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 96,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'dulce jesus mio gozos novena aguinaldos guitarra acordes',
+    theoryNote: 'Los gozos se cantan cada noche de la Novena (16 al 24 de diciembre): una persona canta la estrofa y todos responden con el estribillo. Solo G, C y D7.',
+    progressionLoop: ['G', 'C', 'D7', 'G'],
+    content: `ESTRIBILLO
+[G]Dulce Jesús mío,
+mi [C]Niño ado[G]rado,
+¡ven a nuestras [D7]almas!
+¡Ven, no tardes [G]tanto!
+
+GOZO 1
+[G]¡Oh, Sapiencia suma
+del [C]Dios sobe[G]rano,
+que a nivel de un [D7]niño
+te hayas reba[G]jado!
+[G]¡Oh, divino Niño,
+ven para ense[C]ñarnos
+la prudencia que [D7]hace
+verdaderos [G]sabios!`
+  },
+
+  {
+    id: 'nav_hacia_belen_burra',
+    title: 'Hacia Belén Va una Burra',
+    author: 'Villancico tradicional español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 116,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'hacia belen va una burra villancico guitarra acordes',
+    theoryNote: 'Marcha con C, F y G7: el coro "María, María" introduce F (subdominante) antes de volver a C.',
+    progressionLoop: ['C', 'G7', 'C', 'F', 'C', 'G7', 'C'],
+    content: `ESTROFA 1
+[C]Hacia Belén va una burra, rin, rin,
+yo me remendaba, yo me remendé,
+yo me eché un remiendo, yo me lo qui[G7]té,
+cargada de choco[C]late.
+
+ESTROFA 2
+[C]Lleva su chocolatera, rin, rin,
+yo me remendaba, yo me remendé,
+yo me eché un remiendo, yo me lo qui[G7]té,
+su molinillo y su a[C]nafe.
+
+CORO
+[F]María, María,
+ven acá co[C]rriendo,
+que el chocola[G7]tillo
+se lo están co[C]miendo.`
+  },
+
+  {
+    id: 'nav_arre_borriquito',
+    title: 'Arre Borriquito',
+    author: 'Villancico tradicional español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 120,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'arre borriquito villancico guitarra acordes',
+    theoryNote: 'Solo C y G7 a paso de marcha: perfecto para la primera Navidad con guitarra.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `[C]Arre, borriquito,
+arre, burro, [G7]arre,
+anda más de[G7]prisa,
+que llegamos [C]tarde.
+[C]Arre, borriquito,
+vamos a Be[G7]lén,
+que mañana es [G7]fiesta
+y al otro tam[C]bién.`
+  },
+
+  {
+    id: 'nav_venid_fieles',
+    title: 'Venid, Fieles Todos (Adeste Fideles)',
+    author: 'John Francis Wade (s. XVIII) · traducción tradicional al español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'G',
+    rhythmId: 'negras',
+    bpm: 88,
+    difficulty: 2,
+    featured: true,
+    youtubeQuery: 'venid fieles todos adeste fideles guitarra acordes',
+    theoryNote: 'Himno solemne en 4/4: cambio de acorde casi en cada palabra. Practica G, C, D y Em lento antes de cantarlo.',
+    progressionLoop: ['G', 'D', 'G', 'C', 'G', 'D', 'Em', 'D', 'A7', 'D'],
+    content: `[G]Venid, fieles [D]todos,
+[G]a Be[C]lén va[G]ya[D]mos,
+de [Em]gozo triun[D]fantes,
+[A7]henchidos de a[D]mor,
+y al [G]Rey de los cielos
+[D]contemplar po[G]dremos.
+
+[G]Venid, adoremos,
+venid, adoremos,
+venid, ado[C]remos
+a [G]Cristo el [D7]Se[G]ñor.`
+  },
+
+  {
+    id: 'nav_riu_riu_chiu',
+    title: 'Riu, Riu, Chiu',
+    author: 'Cancionero de Upsala (1556) · anónimo, atribuido a Mateo Flecha el Viejo',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'Am',
+    rhythmId: 'marcha',
+    bpm: 108,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'riu riu chiu villancico guitarra acordes',
+    theoryNote: 'Villancico renacentista en La menor con Am, G y E7: un estribillo coral que todos repiten tras cada estrofa.',
+    progressionLoop: ['Am', 'G', 'Am', 'E7', 'Am'],
+    content: `ESTRIBILLO
+[Am]Riu, riu, chiu,
+la guarda ri[G]bera;
+Dios guardó el [Am]lobo
+de nuestra cor[E7]dera,
+Dios guardó el [Am]lobo
+de nuestra cor[E7]de[Am]ra.
+
+ESTROFA
+[Am]El lobo rabioso
+la quiso mor[G]der,
+mas Dios pode[Am]roso
+la supo defen[E7]der;
+quísola ha[Am]cer
+que no pudiese pe[G]car,
+ni aun origi[Am]nal
+esta Virgen no tu[E7]vie[Am]ra.`
+  },
+  // ==========================================================================
+  // VILLANCICOS MODERNOS CON DERECHOS VIGENTES (SOLO ACORDES + FRAGMENTO)
+  // Se reconoce su autoría y se remite a la versión oficial para la letra.
+  // ==========================================================================
+  {
+    id: 'nav_mi_burrito_sabanero',
+    title: 'Mi Burrito Sabanero',
+    author: 'Hugo Blanco (1972) · popularizado por el Coro Infantil Venezolano',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'G',
+    rhythmId: 'marcha',
+    bpm: 120,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'mi burrito sabanero coro infantil venezolano oficial',
+    theoryNote: 'Aguinaldo venezolano en G con solo G, C y D7. El coro "tuki tuki" es ideal para que los niños canten mientras la guitarra marca el paso del burrito.',
+    progressionLoop: ['G', 'D7', 'D7', 'G', 'G', 'C', 'D7', 'G'],
+    content: `FRAGMENTO (cita)
+Con mi bu[G]rrito sabanero
+voy camino de Be[D7]lén...
+
+ACORDES DEL CORO
+[G]Tuki tuki... [C]tuki tuki... [D7]tuki tuki... [G]tuki ta`
+  },
+
+  {
+    id: 'nav_el_tamborilero',
+    title: 'El Tamborilero',
+    author: 'Katherine K. Davis, Henry Onorati y Harry Simeone (1958, «The Little Drummer Boy») · versión en español popularizada por Raphael',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'G',
+    rhythmId: 'marcha',
+    bpm: 100,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'el tamborilero raphael oficial',
+    theoryNote: 'Marcha en G (G, C, D): el "ro-po-pom-pom" imita el tambor; practica el rasgueo apagado (✕) en los tiempos 2 y 4.',
+    progressionLoop: ['G', 'C', 'G', 'D', 'G'],
+    content: `FRAGMENTO (cita)
+[G]El camino que lleva a Be[C]lén
+baja hasta el [G]valle que la nieve cu[D]brió...
+
+ACORDES DEL ESTRIBILLO
+[G]Ro-po-pom-pom, [C]ro-po-pom-pom, [D]ro-po-pom-[G]pom`
+  },
+
+  {
+    id: 'nav_feliz_navidad',
+    title: 'Feliz Navidad',
+    author: 'José Feliciano (1970)',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'D',
+    rhythmId: 'pop_folk',
+    bpm: 148,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'feliz navidad jose feliciano oficial',
+    theoryNote: 'Progresión cíclica IV – V – I – VIm (G – A – D – Bm) en Re Mayor: la misma en toda la canción, ideal para afianzar el rasgueo 4/4.',
+    progressionLoop: ['G', 'A', 'D', 'Bm'],
+    content: `FRAGMENTO (cita)
+[G]Feliz Navi[A]dad... [D] [Bm]
+
+ACORDES DEL CICLO COMPLETO
+[G] [A] [D] [Bm]`
+  },
+
+  {
+    id: 'nav_blanca_navidad',
+    title: 'Blanca Navidad',
+    author: 'Irving Berlin (1942, «White Christmas») · versión en español popular',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'Obra con derechos de autor vigentes: se muestran los acordes y un fragmento breve de la letra con fines educativos (derecho de cita, art. 31 Ley 23 de 1982), citando autor y título. Aprende la letra completa con la versión oficial.',
+    key: 'C',
+    rhythmId: 'balada_pop',
+    bpm: 76,
+    difficulty: 2,
+    featured: true,
+    youtubeQuery: 'blanca navidad version en español oficial',
+    theoryNote: 'Balada lenta en Do con C, Dm, G7 y F: buen ejercicio de cambios suaves y arpegio p-i-m-a.',
+    progressionLoop: ['C', 'Dm', 'G7', 'C', 'F', 'G7', 'C'],
+    content: `FRAGMENTO (cita)
+[C]Oh, blanca Navi[Dm]dad... [G7] [C]
+
+ACORDES DE LA ESTROFA
+[C] [Dm] [G7] [C] [F] [G7] [C]`
+  },
+
+  {
+    id: 'nav_navidad_jingle_bells',
+    title: 'Navidad, Navidad (Jingle Bells)',
+    author: 'James Lord Pierpont (1857, «Jingle Bells») · adaptación popular en español',
+    category: 'popular',
+    occasion: 'Navidad',
+    excerptOnly: true,
+    rightsNote: 'La melodía (1857) es de dominio público y está completa en la tablatura vinculada. La adaptación en español es de autoría popular no confirmada: se muestra solo un fragmento con fines educativos.',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 120,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_jingle_bells',
+    youtubeQuery: 'navidad navidad hoy es navidad villancico',
+    theoryNote: 'C, F, G7 y D7 (dominante secundario V7/V antes de G7). Toca la melodía completa en la TAB vinculada.',
+    progressionLoop: ['C', 'C', 'F', 'C', 'D7', 'G7', 'C'],
+    content: `FRAGMENTO (cita)
+[C]Navidad, Navidad,
+hoy es Navi[C]dad...
+
+ACORDES DEL CORO
+[C] [C] [F] [C] [D7] [G7] [C]`
   }
 ];
 
@@ -1037,4 +1597,19 @@ export async function loadAllSongs() {
 
   cachedAllSongs = merged;
   return merged;
+}
+
+// ==========================================================================
+// TEMPORADA DE NAVIDAD
+// ==========================================================================
+/** Villancicos y cantos de Navidad/Adviento (incluye el cancionero importado). */
+export function isChristmasSong(song) {
+  return song?.occasion === 'Navidad' || /navidad|adviento/i.test(song?.liturgicalType || '');
+}
+
+/** Temporada navideña: del 15 de noviembre al 6 de enero (Novena: 16–24 dic; Reyes: 6 ene). */
+export function isChristmasSeason(date = new Date()) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  return (m === 11 && d >= 15) || m === 12 || (m === 1 && d <= 6);
 }

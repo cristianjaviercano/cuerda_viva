@@ -45,7 +45,7 @@ import {
 } from './pedagogy.js';
 import { annotateGlossary } from './glossary.js';
 import { renderCreditsHTML } from './credits.js';
-import { MASTER_SONGS, loadAllSongs } from './songs-db.js';
+import { MASTER_SONGS, loadAllSongs, isChristmasSong, isChristmasSeason } from './songs-db.js';
 import { TABS_DB } from './tabs-db.js';
 import {
   analyzeItems,
@@ -469,6 +469,16 @@ class CuerdaVivaApp {
             </div>
           </div>
 
+          ${isChristmasSeason() ? `
+            <div class="duo-card xmas-banner">
+              <div>
+                <strong>🎄 Temporada de Navidad: ${MASTER_SONGS.filter(isChristmasSong).length} villancicos para tocar en familia</strong>
+                <p>Tutaina, Vamos Pastores, los Gozos de la Novena (16–24 de diciembre), Noche de Paz y más, con acordes abiertos y melodías en tablatura.</p>
+              </div>
+              <button class="duo-btn btn-green btn-sm" id="btn-xmas-songs">🎶 Ver villancicos</button>
+            </div>
+          ` : ''}
+
           <div class="duo-card srs-review-banner ${srsInfo.due > 0 ? 'srs-due' : ''}">
             <div>
               <strong>📅 Repaso del día: ${srsInfo.due > 0 ? `${srsInfo.due} tema(s) pendiente(s)` : 'al día'}</strong>
@@ -661,6 +671,14 @@ class CuerdaVivaApp {
         const unit = SKILL_UNITS.find(u => u.id === btn.dataset.selfAssess);
         if (unit) this.openUnitSelfAssessment(unit);
       });
+    });
+
+    container.querySelector('#btn-xmas-songs')?.addEventListener('click', () => {
+      this.switchView('songs');
+      if (this.songStudio) {
+        this.songStudio.filterGroup = 'navidad';
+        this.songStudio.selectSong('nav_tutaina');
+      }
     });
 
     container.querySelector('#btn-daily-review')?.addEventListener('click', () => {

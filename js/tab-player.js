@@ -203,7 +203,7 @@ export class TabPlayer {
       ? TABS_DB
       : (this.currentCategory === 'keyner'
           ? TABS_DB.filter(t => t.sourceMethod === 'keyner')
-          : TABS_DB.filter(t => t.category === this.currentCategory));
+          : (this.currentCategory === 'navidad' ? TABS_DB.filter(t => t.occasion === 'Navidad') : TABS_DB.filter(t => t.category === this.currentCategory)));
     const keynerCount = TABS_DB.filter(t => t.sourceMethod === 'keyner').length;
 
     const tab = this.currentTab;
@@ -219,6 +219,7 @@ export class TabPlayer {
             <button class="duo-pill ${this.currentCategory === 'all' ? 'active' : ''}" data-cat="all">🌟 Todas (${TABS_DB.length})</button>
             <button class="duo-pill pill-orange ${this.currentCategory === 'vallenato' ? 'active' : ''}" data-cat="vallenato">🪗 Vallenatos y Folclor</button>
             <button class="duo-pill pill-green ${this.currentCategory === 'popular' ? 'active' : ''}" data-cat="popular">🎉 Para Todos</button>
+            <button class="duo-pill pill-green ${this.currentCategory === 'navidad' ? 'active' : ''}" data-cat="navidad">🎄 Navidad</button>
             <button class="duo-pill pill-blue ${this.currentCategory === 'catolica' ? 'active' : ''}" data-cat="catolica">🕊️ Alabanzas Católicas</button>
             <button class="duo-pill pill-purple ${this.currentCategory === 'metodo' ? 'active' : ''}" data-cat="metodo">🎓 Ejercicios de Métodos</button>
             <button class="duo-pill pill-teal ${this.currentCategory === 'keyner' ? 'active' : ''}" data-cat="keyner">📕 Método Keyner 10-60 (${keynerCount})</button>
@@ -227,7 +228,7 @@ export class TabPlayer {
           <div class="tab-song-strip">
             ${filteredTabs.map(t => `
               <button class="tab-select-chip ${t.id === tab.id ? 'selected' : ''}" data-tabid="${t.id}">
-                <span class="chip-icon">${t.category === 'vallenato' ? '🪗' : t.category === 'catolica' ? '🕊️' : t.category === 'popular' ? '🎉' : '🎓'}</span>
+                <span class="chip-icon">${t.occasion === 'Navidad' ? '🎄' : t.category === 'vallenato' ? '🪗' : t.category === 'catolica' ? '🕊️' : t.category === 'popular' ? '🎉' : '🎓'}</span>
                 <span class="chip-texts">
                   <strong>${t.title}</strong>
                   <small>${t.subgenre} · Tono ${t.key} · ${'⭐'.repeat(t.difficulty)}</small>
@@ -474,7 +475,7 @@ export class TabPlayer {
           ? TABS_DB
           : (this.currentCategory === 'keyner'
               ? TABS_DB.filter(t => t.sourceMethod === 'keyner')
-              : TABS_DB.filter(t => t.category === this.currentCategory));
+              : (this.currentCategory === 'navidad' ? TABS_DB.filter(t => t.occasion === 'Navidad') : TABS_DB.filter(t => t.category === this.currentCategory)));
         if (list.length && !list.some(t => t.id === this.currentTab.id)) {
           this.selectTab(list[0].id);
         } else {

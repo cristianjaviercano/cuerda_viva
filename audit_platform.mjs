@@ -29,7 +29,7 @@ import {
 } from './js/music-theory.js';
 import { CHORDS_DB, getChordData } from './js/chords-db.js';
 import { TABS_DB } from './js/tabs-db.js';
-import { MASTER_SONGS } from './js/songs-db.js';
+import { MASTER_SONGS, isChristmasSong, isChristmasSeason } from './js/songs-db.js';
 import { RHYTHM_PATTERNS } from './js/rhythm-trainer.js';
 import {
   SKILL_UNITS,
@@ -999,6 +999,37 @@ async function runAudit() {
   assert(!renderCreditsHTML({ songs: [{ title: '<img src=x onerror=alert(1)>', author: '<b>x</b>' }] }).includes('<img src=x'), 'La vista de créditos escapa el HTML de los datos');
   assert(fs.existsSync(path.join(__dirname, 'LICENSE')) && fs.existsSync(path.join(__dirname, 'CREDITOS.md')), 'El repositorio incluye LICENSE y CREDITOS.md');
   assert(/data-nav="credits"/.test(fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8')) && /renderCreditsView\(\)/.test(appSrc), 'La pestaña 📚 Créditos está en la navegación');
+
+  // ==================== 16. NAVIDAD: VILLANCICOS ====================
+  console.log('\n🎄 16. Sección de Navidad (villancicos tradicionales y de dominio público)');
+  const carols = MASTER_SONGS.filter(isChristmasSong);
+  assert(carols.length >= 10, `Hay ${carols.length} villancicos (≥ 10)`);
+  assert(['Tutaina', 'Vamos, Pastores, Vamos', 'Dulce Jesús Mío'].every(t => carols.some(c => c.title.startsWith(t))),
+    'Incluye los villancicos de la Novena de Aguinaldos (Tutaina, Vamos Pastores, Gozos)');
+  for (const c of carols) {
+    const chords = [...c.content.matchAll(/\[([^\]]+)\]/g)].map(m => m[1]);
+    assert(chords.every(ch => getChordData(ch)) && c.progressionLoop.every(ch => getChordData(ch)),
+      `Villancico "${c.title}": todos sus acordes existen en la biblioteca`);
+  }
+  const PROTECTED = /burrito sabanero|tamborilero|ni[ñn]o del tambor|feliz navidad|blanca navidad|navidad sin ti|rodolfo el reno/i;
+  assert(!MASTER_SONGS.some(sg => PROTECTED.test(sg.title)), 'No incluye villancicos modernos con derechos vigentes (Mi Burrito Sabanero, El Tamborilero, Feliz Navidad…)');
+  assert(carols.filter(c => c.category === 'popular').every(c => /tradicional|dominio público|\((1[0-8]\d\d|19[01]\d)\)|s\. XVIII/i.test(c.author)),
+    'Cada villancico nuevo declara origen tradicional o de dominio público');
+  assert(isChristmasSeason(new Date(2026, 10, 15)) && isChristmasSeason(new Date(2026, 11, 24)) && isChristmasSeason(new Date(2027, 0, 6)),
+    'La temporada navideña va del 15 de noviembre al 6 de enero');
+  assert(!isChristmasSeason(new Date(2026, 10, 14)) && !isChristmasSeason(new Date(2027, 0, 7)) && !isChristmasSeason(new Date(2026, 6, 1)),
+    'Fuera de temporada no se muestra el aviso de Navidad');
+  const nochePaz = TABS_DB.find(t => t.id === 'tab_noche_de_paz');
+  const npMidis = nochePaz.steps.map(e => getFretMidi(e.s, e.f));
+  // Noche de Paz (Gruber, 1818) en Do: G A G E · G A G E · D D B · C C G · A A C B A · G A G E · A A C B A · G A G E · D D F D B · C E · C G E · G F D · C
+  const npExpected = [55,57,55,52, 55,57,55,52, 62,62,59, 60,60,55, 57,57,60,59,57, 55,57,55,52, 57,57,60,59,57, 55,57,55,52, 62,62,65,62,59, 60,64, 60,55,52, 55,53,50, 48];
+  assert(npMidis.join(',') === npExpected.join(','), 'La melodía de "Noche de Paz" es correcta nota a nota');
+  assert(nochePaz.steps.reduce((a, e) => a + e.dur, 0) === 23 * 3 && nochePaz.steps.every(e => e.f <= 4), 'Noche de Paz: 23 compases de 3/4 en primera posición');
+  assert(MASTER_SONGS.find(sg => sg.id === 'pop_noche_de_paz').linkedTabId === 'tab_noche_de_paz', 'La canción Noche de Paz enlaza su tablatura');
+  const ssSrc = fs.readFileSync(path.join(__dirname, 'js', 'song-studio.js'), 'utf8');
+  const tpSrc = fs.readFileSync(path.join(__dirname, 'js', 'tab-player.js'), 'utf8');
+  assert(/data-sgrp="navidad"/.test(ssSrc) && /data-cat="navidad"/.test(tpSrc) && /isChristmasSeason\(\)/.test(appSrc),
+    'Filtros "🎄 Navidad" en Canciones y Tablaturas, y aviso de temporada en la Ruta');
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

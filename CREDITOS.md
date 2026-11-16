@@ -40,7 +40,7 @@ Si eres titular de derechos y deseas que una obra se retire o se cite de otra fo
 
 ## 🎶 Autores de las canciones y tablaturas
 
-Gracias a los 61 compositores, comunidades y tradiciones de las obras citadas. ¿Conoces el autor de una obra marcada «autoría por confirmar»? Ayúdanos a completarlo en [https://github.com/cristianjaviercano/cuerda_viva/issues](https://github.com/cristianjaviercano/cuerda_viva/issues).
+Gracias a los 65 compositores, comunidades y tradiciones de las obras citadas. ¿Conoces el autor de una obra marcada «autoría por confirmar»? Ayúdanos a completarlo en [https://github.com/cristianjaviercano/cuerda_viva/issues](https://github.com/cristianjaviercano/cuerda_viva/issues).
 
 - **Alabanza Católica Clásica**: Dios Está Aquí
 - **Alabanza Católica Popular**: El Alfarero (Gracias Quiero Darte)
@@ -48,7 +48,7 @@ Gracias a los 61 compositores, comunidades y tradiciones de las obras citadas. �
 - **Alabanza Popular**: A Edificar la Iglesia
 - **Athenas / Cristobal Fones**: Cinco Panes y Dos Peces
 - **Cancionero Católico Misionero**: Alma Misionera
-- **Cancionero Digital Católico (autoría por confirmar)**: (s. 120) la Ayuda Viene del Señor · (s. 17) Yo te Amo Señor mi Fortaleza · (s. 22) el Señor es mi Pastor · (s. 24) Señor, ¿quién Entrará? · (s. 26) el Señor es mi Luz · (s. 29) Rendid a Yahvé · (s. 33) Quien Busca a Dios (a) · (s. 95) Aclamad al Señor · A casa de Zacarías · A veces (Siempre nuestro amigo) · Abre tus brazos · Adorador · Al altar del Señor · Al despertar · Alabado sea el Santísimo · Aleluya II (Busca primero el Reino de Dios) · Alma de Cristo · Alma misionera · Alma Misionera · Bendita sea tu pureza · Callemos hermanos · Canción de la Alianza · Canción del grano de trigo · Canción del Sí · Cantemos al amor de los amores · Canten todos · Cinco Panes y Dos Peces · Como Cristo nos amó · Consolad · Coplas de Yaraví · Cordero de Dios · Cristianos vayamos · Cristo joven (Ven hermano) · Den gloria a Dios · Despertemos, llega Cristo · Dios Trino de Amor (En Nombre del Padre) · Dulce Doncella · El Dios de la vida · El Señor es mi fortaleza · En el nombre de Dios · Eran Cien Ovejas · Gloria II (Correntino) · Hambre de Dios · Hoy la Iglesia victoriosa · Hoy tu Espíritu, Señor · Iglesia peregrina · Jesucristo, danos de este Pan · Jesús te seguiré · Junto a Ti, María · Junto al Señor · La Virgen María nos reúne · Llegamos a Ti · Magnificat · María de Nazaret · Nueva creación · Pueblo de Dios · Pueblo Mío, Respóndeme · Recibe el Poder · Recíbeme · Renace la Vida y el Corazón · Resucitó el Señor · Sabemos que Vendrás · Sagrado Corazón · Salmo 17 (Yo te amo...) · Salmo 28 (Rendid a Yahvé) · Salmo 33 (Bendeciré al Señor) · Santa María del camino · Santo “canonesa” · Santo “digno Trote” · Santo “digno” · Santo “eres Señor” · Santo “folclórico” · Santo “fones” · Santo “lento” · Santo “nortino” · Santo “padre Nuestro” · Santo “sal y Luz” · Santo II · Santo, Santo, Santo · Seamos un Solo Corazón · Secuencia Pascual I (Ofrezcan los cristianos...) · Señor, Señor · Señor, ten piedad (Rítmico) · Señora Doña María · Si Alguno Tiene Sed · Sígueme, Soy Camino · Somos un pueblo que camina · Sondéame · Soneto a Jesús Crucificado · Sopla (Fruto nuevo de tu cielo) · Sufres, Lloras, Mueres · Te Ofrecemos, Oh Señor · Te Presentamos Todos Juntos Hoy · Ten Piedad de Mí · Ten Piedad de Mí, Señor · Tenemos Tanto · Tiempo de Vivir · Toda la Tierra Levante Su Voz · Tu Espíritu de Amor · Tu Misericordia · Tú que Siempre Nos Perdonas · Un Pueblo que Camina · Ven y danos vida · Vive el Señor · Zamba para quedarnos juntos
+- **Cancionero Digital Católico (autoría por confirmar)**: (s. 120) la Ayuda Viene del Señor · (s. 17) Yo te Amo Señor mi Fortaleza · (s. 22) el Señor es mi Pastor · (s. 24) Señor, ¿quién Entrará? · (s. 26) el Señor es mi Luz · (s. 29) Rendid a Yahvé · (s. 33) Quien Busca a Dios (a) · (s. 95) Aclamad al Señor · A casa de Zacarías · A veces (Siempre nuestro amigo) · Abre tus brazos · Adorador · Al altar del Señor · Al despertar · Alabado sea el Santísimo · Aleluya II (Busca primero el Reino de Dios) · Alma de Cristo · Alma misionera · Alma Misionera · Bendita sea tu pureza · Callemos hermanos · Canción de la Alianza · Canción del grano de trigo · Canción del Sí · Cantemos al amor de los amores · Canten todos · Cinco Panes y Dos Peces · Como Cristo nos amó · Consolad · Coplas de Yaraví · Cordero de Dios · Cristianos vayamos · Cristo joven (Ven hermano) · Den gloria a Dios · Despertemos, llega Cristo · Dios Trino de Amor (En Nombre del Padre) · Dulce Doncella · Dulce Jesús Mío (Gozos de la Novena) · El Dios de la vida · El Señor es mi fortaleza · En el nombre de Dios · Eran Cien Ovejas · Gloria II (Correntino) · Hambre de Dios · Hoy la Iglesia victoriosa · Hoy tu Espíritu, Señor · Iglesia peregrina · Jesucristo, danos de este Pan · Jesús te seguiré · Junto a Ti, María · Junto al Señor · La Virgen María nos reúne · Llegamos a Ti · Magnificat · María de Nazaret · Nueva creación · Pueblo de Dios · Pueblo Mío, Respóndeme · Recibe el Poder · Recíbeme · Renace la Vida y el Corazón · Resucitó el Señor · Riu, Riu, Chiu · Sabemos que Vendrás · Sagrado Corazón · Salmo 17 (Yo te amo...) · Salmo 28 (Rendid a Yahvé) · Salmo 33 (Bendeciré al Señor) · Santa María del camino · Santo “canonesa” · Santo “digno Trote” · Santo “digno” · Santo “eres Señor” · Santo “folclórico” · Santo “fones” · Santo “lento” · Santo “nortino” · Santo “padre Nuestro” · Santo “sal y Luz” · Santo II · Santo, Santo, Santo · Seamos un Solo Corazón · Secuencia Pascual I (Ofrezcan los cristianos...) · Señor, Señor · Señor, ten piedad (Rítmico) · Señora Doña María · Si Alguno Tiene Sed · Sígueme, Soy Camino · Somos un pueblo que camina · Sondéame · Soneto a Jesús Crucificado · Sopla (Fruto nuevo de tu cielo) · Sufres, Lloras, Mueres · Te Ofrecemos, Oh Señor · Te Presentamos Todos Juntos Hoy · Ten Piedad de Mí · Ten Piedad de Mí, Señor · Tenemos Tanto · Tiempo de Vivir · Toda la Tierra Levante Su Voz · Tu Espíritu de Amor · Tu Misericordia · Tú que Siempre Nos Perdonas · Un Pueblo que Camina · Ven y danos vida · Vive el Señor · Zamba para quedarnos juntos
 - **Cancionero Juvenil**: A Dónde Estás
 - **Carlos Mario Vásquez**: Método Entre Cuerdas: Notas en 1ª y 2ª Cuerda
 - **Carmelo Erdozáin**: Tengan Encendida la Lámpara
@@ -58,12 +58,14 @@ Gracias a los 61 compositores, comunidades y tradiciones de las obras citadas. �
 - **Cristóbal Fones SJ.**: Un Salto a la Luz · Venga tu reino
 - **Emiliano Zuleta Baquero / Carlos Vives**: La Gota Fría
 - **Ferdinando Carulli**: Estudio de Arpegio en Do Mayor (Carulli)
+- **Franz X. Gruber**: Noche de Paz
 - **Franz X. Gruber · letra en español tradicional**: Noche de Paz
 - **Gen Roso**: Santo “ecj”
 - **Grupo Betsaida**: Tomad Señor y Recibid
 - **Grupo Brotes de Olivo**: Renacer en Libertad
 - **Gustavo Gutiérrez / Diomedes Díaz**: Sin Medir Distancias
 - **Himno Pascual Litúrgico**: A la Cena del Cordero
+- **John F. Wade · letra en español tradicional**: Venid, Fieles Todos (Adeste Fideles)
 - **Jorge Méndez SJ. y Cristóbal Fones SJ.**: Canción al corazón de Jesús
 - **Jorge Villamil**: Al Sur (Canto del Tolima Grande) · Espumas · Oropel
 - **José A. Morales**: Pescador, Lucero y Río · Pueblito Viejo
@@ -101,8 +103,10 @@ Gracias a los 61 compositores, comunidades y tradiciones de las obras citadas. �
 - **Tradicional Cristiano**: Eran Cien Ovejas
 - **Tradicional infantil**: Arroz con Leche · Los Pollitos Dicen
 - **Tradicional mexicana**: Las Mañanitas
-- **Villancico tradicional**: Los Peces en el Río
+- **Villancico tradicional**: Los Peces en el Río · Vamos, Pastores, Vamos
 - **Villancico tradicional andaluz**: Campana sobre Campana
+- **Villancico tradicional colombiano**: Tutaina
+- **Villancico tradicional español**: Arre Borriquito · Hacia Belén Va una Burra
 
 ## 🤝 Colaboraciones
 

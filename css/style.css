@@ -4056,3 +4056,18 @@ button, select, input {
 .credits-list li { margin: 6px 0; line-height: 1.4; }
 .credits-list small { color: var(--ink-muted); }
 .credits-authors { max-height: 520px; overflow-y: auto; padding-right: 6px; }
+
+/* ==================== TEMPORADA DE NAVIDAD ==================== */
+.xmas-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #FEF2F2, #ECFDF5);
+  border-color: #FCA5A5;
+  border-bottom-color: var(--duo-red);
+}
+.xmas-banner strong { color: #991B1B; font-size: 0.98rem; display: block; }
+.xmas-banner p { color: #166534; font-size: 0.86rem; margin: 2px 0 0; font-weight: 700; }

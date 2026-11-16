@@ -1062,6 +1062,7 @@ la [C]luna ya se [D7]me[G]tió.`
     bpm: 72,
     difficulty: 1,
     featured: true,
+    linkedTabId: 'tab_noche_de_paz',
     youtubeQuery: 'noche de paz guitarra acordes fácil arpegio',
     theoryNote: 'Ideal para arpegiar p-i-m-a en 3/4. Usa I (C), IV (F) y V7 (G7): la columna vertebral de miles de canciones.',
     progressionLoop: ['C', 'G7', 'C', 'F', 'C', 'F', 'C', 'G7', 'C'],
@@ -1221,6 +1222,219 @@ CORO
 Canta y no [G]llores,
 porque cantando se a[D7]legran,
 cielito lindo, los cora[G]zones.`
+  },
+  // ==========================================================================
+  // VILLANCICOS DE NAVIDAD (TRADICIONALES / DOMINIO PÚBLICO)
+  // Novena de Aguinaldos y villancicos populares de tradición oral.
+  // ==========================================================================
+  {
+    id: 'nav_tutaina',
+    title: 'Tutaina',
+    author: 'Villancico tradicional colombiano',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'G',
+    rhythmId: 'marcha',
+    bpm: 112,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'tutaina villancico guitarra acordes',
+    theoryNote: 'El villancico más cantado en la Novena de Aguinaldos: solo G y D7, en marcha alegre de 2/4. Ideal para acompañar a los niños con un rasgueo ↓ ↑ por pulso.',
+    progressionLoop: ['G', 'D7', 'D7', 'G'],
+    content: `ESTROFA 1
+Los pas[G]tores de Belén
+vienen a adorar al [D7]Niño;
+la Virgen y San Jo[D7]sé
+los reciben con ca[G]riño.
+
+CORO
+Tu[G]taina, tuturumá,
+tutaina, tuturu[D7]maina,
+tutaina, tuturu[D7]má, turumá,
+tutaina, tuturu[G]maina.
+
+ESTROFA 2
+Tres [G]reyes vienen también
+con incienso, mirra y [D7]oro,
+a ofrendar a Dios su [D7]bien
+como el más grande te[G]soro.`
+  },
+
+  {
+    id: 'nav_vamos_pastores',
+    title: 'Vamos, Pastores, Vamos',
+    author: 'Villancico tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'vals',
+    bpm: 104,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'vamos pastores vamos villancico guitarra acordes',
+    theoryNote: 'Vals de Novena con dos acordes (C y G7): practica el BUM · chas · chas mientras cantas.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `CORO
+[C]Vamos, pastores, vamos,
+vamos a Be[G7]lén,
+a ver en aquel [G7]Niño
+la gloria del E[C]dén,
+a ver en aquel [G7]Niño
+la gloria del E[C]dén.
+
+ESTROFA
+[C]Ese precioso Niño,
+yo me muero por [G7]él;
+sus ojitos me en[G7]cantan,
+su boquita tam[C]bién.`
+  },
+
+  {
+    id: 'nav_dulce_jesus_mio',
+    title: 'Dulce Jesús Mío (Gozos de la Novena)',
+    author: 'Novena de Aguinaldos — Fray Fernando de Jesús Larrea (s. XVIII), tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 96,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'dulce jesus mio gozos novena aguinaldos guitarra acordes',
+    theoryNote: 'Los gozos se cantan cada noche de la Novena (16 al 24 de diciembre): una persona canta la estrofa y todos responden con el estribillo. Solo G, C y D7.',
+    progressionLoop: ['G', 'C', 'D7', 'G'],
+    content: `ESTRIBILLO
+[G]Dulce Jesús mío,
+mi [C]Niño ado[G]rado,
+¡ven a nuestras [D7]almas!
+¡Ven, no tardes [G]tanto!
+
+GOZO 1
+[G]¡Oh, Sapiencia suma
+del [C]Dios sobe[G]rano,
+que a nivel de un [D7]niño
+te hayas reba[G]jado!
+[G]¡Oh, divino Niño,
+ven para ense[C]ñarnos
+la prudencia que [D7]hace
+verdaderos [G]sabios!`
+  },
+
+  {
+    id: 'nav_hacia_belen_burra',
+    title: 'Hacia Belén Va una Burra',
+    author: 'Villancico tradicional español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 116,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'hacia belen va una burra villancico guitarra acordes',
+    theoryNote: 'Marcha con C, F y G7: el coro "María, María" introduce F (subdominante) antes de volver a C.',
+    progressionLoop: ['C', 'G7', 'C', 'F', 'C', 'G7', 'C'],
+    content: `ESTROFA 1
+[C]Hacia Belén va una burra, rin, rin,
+yo me remendaba, yo me remendé,
+yo me eché un remiendo, yo me lo qui[G7]té,
+cargada de choco[C]late.
+
+ESTROFA 2
+[C]Lleva su chocolatera, rin, rin,
+yo me remendaba, yo me remendé,
+yo me eché un remiendo, yo me lo qui[G7]té,
+su molinillo y su a[C]nafe.
+
+CORO
+[F]María, María,
+ven acá co[C]rriendo,
+que el chocola[G7]tillo
+se lo están co[C]miendo.`
+  },
+
+  {
+    id: 'nav_arre_borriquito',
+    title: 'Arre Borriquito',
+    author: 'Villancico tradicional español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 120,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'arre borriquito villancico guitarra acordes',
+    theoryNote: 'Solo C y G7 a paso de marcha: perfecto para la primera Navidad con guitarra.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `[C]Arre, borriquito,
+arre, burro, [G7]arre,
+anda más de[G7]prisa,
+que llegamos [C]tarde.
+[C]Arre, borriquito,
+vamos a Be[G7]lén,
+que mañana es [G7]fiesta
+y al otro tam[C]bién.`
+  },
+
+  {
+    id: 'nav_venid_fieles',
+    title: 'Venid, Fieles Todos (Adeste Fideles)',
+    author: 'John F. Wade (s. XVIII) · letra en español tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'G',
+    rhythmId: 'negras',
+    bpm: 88,
+    difficulty: 2,
+    featured: true,
+    youtubeQuery: 'venid fieles todos adeste fideles guitarra acordes',
+    theoryNote: 'Himno solemne en 4/4: cambio de acorde casi en cada palabra. Practica G, C, D y Em lento antes de cantarlo.',
+    progressionLoop: ['G', 'D', 'G', 'C', 'G', 'D', 'Em', 'D', 'A7', 'D'],
+    content: `[G]Venid, fieles [D]todos,
+[G]a Be[C]lén va[G]ya[D]mos,
+de [Em]gozo triun[D]fantes,
+[A7]henchidos de a[D]mor,
+y al [G]Rey de los cielos
+[D]contemplar po[G]dremos.
+
+[G]Venid, adoremos,
+venid, adoremos,
+venid, ado[C]remos
+a [G]Cristo el [D7]Se[G]ñor.`
+  },
+
+  {
+    id: 'nav_riu_riu_chiu',
+    title: 'Riu, Riu, Chiu',
+    author: 'Cancionero de Upsala (1556), anónimo español',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'Am',
+    rhythmId: 'marcha',
+    bpm: 108,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'riu riu chiu villancico guitarra acordes',
+    theoryNote: 'Villancico renacentista en La menor con Am, G y E7: un estribillo coral que todos repiten tras cada estrofa.',
+    progressionLoop: ['Am', 'G', 'Am', 'E7', 'Am'],
+    content: `ESTRIBILLO
+[Am]Riu, riu, chiu,
+la guarda ri[G]bera;
+Dios guardó el [Am]lobo
+de nuestra cor[E7]dera,
+Dios guardó el [Am]lobo
+de nuestra cor[E7]de[Am]ra.
+
+ESTROFA
+[Am]El lobo rabioso
+la quiso mor[G]der,
+mas Dios pode[Am]roso
+la supo defen[E7]der;
+quísola ha[Am]cer
+que no pudiese pe[G]car,
+ni aun origi[Am]nal
+esta Virgen no tu[E7]vie[Am]ra.`
   }
 ];
 
@@ -1261,4 +1475,19 @@ export async function loadAllSongs() {
 
   cachedAllSongs = merged;
   return merged;
+}
+
+// ==========================================================================
+// TEMPORADA DE NAVIDAD
+// ==========================================================================
+/** Villancicos y cantos de Navidad/Adviento (incluye el cancionero importado). */
+export function isChristmasSong(song) {
+  return song?.occasion === 'Navidad' || /navidad|adviento/i.test(song?.liturgicalType || '');
+}
+
+/** Temporada navideña: del 15 de noviembre al 6 de enero (Novena: 16–24 dic; Reyes: 6 ene). */
+export function isChristmasSeason(date = new Date()) {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  return (m === 11 && d >= 15) || m === 12 || (m === 1 && d <= 6);
 }

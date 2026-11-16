@@ -230,7 +230,7 @@ function renderStrumTiming(step, ctx) {
       ${ctx.headerHtml}
       <h2 class="lesson-step-title">${esc(step.title)}</h2>
       <p class="lesson-instruction-p">${esc(step.instruction)}</p>
-      <div class="drill-objective">🎯 Meta: <strong>${Math.round(minHitRate * 100)}% de los ${totalBeats} pulsos</strong> dentro de ±${tol} ms · ${bpm} BPM · ${beatsPerBar}/4</div>
+      <div class="drill-objective">🎯 Meta: <strong>${Math.round(minHitRate * 100)}% de los ${totalBeats} pulsos</strong> dentro de ±${tol} ms · ${bpm} BPM · ${esc(step.meter || `${beatsPerBar}/4`)}</div>
       ${step.chord ? `<div class="drill-chord-pair"><div class="drill-chord">${renderChordSVG(step.chord, { width: 120, showBasses: true })}</div></div>` : ''}
       <div class="drill-beats" data-drill-beats>
         ${Array.from({ length: totalBeats }, (_, i) => `<span class="drill-beat ${i % beatsPerBar === 0 ? 'drill-beat-down' : ''}" data-beat="${i}"></span>`).join('')}

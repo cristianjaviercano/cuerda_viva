@@ -668,6 +668,62 @@ async function runAudit() {
   }
   assert(/DRILL_TYPES\.includes\(step\.type\)/.test(appSrc), 'El ejecutor de lecciones despacha los retos de habilidad');
 
+  // ==================== 10. SECUENCIA DIDÁCTICA (PARTE C) ====================
+  console.log('\n🧭 10. Secuencia didáctica: prerrequisitos, práctica intercalada y compatibilidad');
+
+  const orderedLessons = SKILL_UNITS.flatMap((u, ui) => u.lessons.map(l => ({ unit: ui + 1, lesson: l })));
+
+  // 10.1 Compatibilidad del progreso guardado: los 36 IDs originales se conservan
+  const expectedIds = [];
+  for (let u = 1; u <= 9; u++) for (let l = 1; l <= 4; l++) expectedIds.push(`u${u}_l${l}`);
+  const actualIds = orderedLessons.map(o => o.lesson.id);
+  assert(expectedIds.every(id => actualIds.includes(id)) && new Set(actualIds).size === 36,
+    'Se conservan los 36 IDs de lección (el progreso guardado sigue siendo válido)');
+
+  // 10.2 Sin referencias adelantadas: cada reto evalúa una teoría ya presentada
+  const introducedAt = {};
+  const forwardRefs = [];
+  orderedLessons.forEach(({ lesson }, idx) => {
+    lesson.steps.forEach(st => {
+      if (st.type === 'theory' && st.theoryId && !(st.theoryId in introducedAt)) introducedAt[st.theoryId] = idx;
+    });
+    lesson.steps.forEach((st, i) => {
+      if (st.type !== 'theory' && st.theoryId && !(st.theoryId in introducedAt)) forwardRefs.push(`${lesson.id}_s${i}→${st.theoryId}`);
+    });
+  });
+  assert(forwardRefs.length === 0, `Ningún reto evalúa una teoría aún no presentada${forwardRefs.length ? ': ' + forwardRefs.join(', ') : ''}`);
+
+  // 10.3 Hitos de secuencia
+  const unitOf = theoryId => orderedLessons[introducedAt[theoryId]]?.unit;
+  const firstLesson = orderedLessons[0].lesson;
+  assert(firstLesson.steps.some(st => st.type === 'play_guitar_chord'), 'La primera lección ya hace sonar un acorde (sonido en los primeros minutos)');
+  assert(SKILL_UNITS[0].lessons.some(l => l.steps.some(st => st.type === 'strum_timing')), 'El pulso rítmico se entrena desde la Unidad 1');
+  assert(SKILL_UNITS[0].lessons.some(l => l.steps.some(st => st.type === 'chord_change')), 'Los cambios de acorde se entrenan desde la Unidad 1');
+  assert(unitOf('strumming_44_engine') <= 2, `El rasgueo 4/4 se presenta en la Unidad ${unitOf('strumming_44_engine')} (≤ 2)`);
+  assert(unitOf('harmonic_circle_basic') >= 5, `Las funciones armónicas se presentan en la Unidad ${unitOf('harmonic_circle_basic')} (≥ 5)`);
+  assert(introducedAt.keyner_numeric_grid < introducedAt.tab_reading_techniques, 'La matriz Keyner se presenta antes que la lectura TAB que la usa');
+  assert(introducedAt.minor_open_chords < introducedAt.harmonic_circle_basic && introducedAt.major_open_chords < introducedAt.harmonic_circle_basic,
+    'Los acordes mayores y menores se presentan antes que el círculo armónico');
+
+  // 10.4 Los códigos numéricos Keyner no aparecen antes de presentarse el método
+  const keynerIdx = introducedAt.keyner_numeric_grid;
+  const codeLeaks = [];
+  orderedLessons.slice(0, keynerIdx).forEach(({ lesson }) => {
+    lesson.steps.forEach((st, i) => {
+      const txt = [st.body, st.question, st.instruction, st.explanation, st.hint, st.highlightBox, ...(st.options || [])].filter(Boolean).join(' ');
+      if (/cód\.\s*\d|código Keyner|`[1-6]\d`|"[1-6]\d"/.test(txt)) codeLeaks.push(`${lesson.id}_s${i}`);
+    });
+  });
+  assert(codeLeaks.length === 0, `Sin códigos Keyner antes de la Unidad ${orderedLessons[keynerIdx].unit}${codeLeaks.length ? ': ' + codeLeaks.join(', ') : ''}`);
+
+  // 10.5 Práctica intercalada
+  const PRACTICE = ['play_guitar_chord', 'play_guitar_note', 'fretboard_find', 'chord_change', 'strum_timing', 'ear_quality'];
+  const lessonsWithoutPractice = orderedLessons.filter(({ lesson }) => !lesson.steps.some(st => PRACTICE.includes(st.type))).map(o => o.lesson.id);
+  assert(lessonsWithoutPractice.length === 0, 'Cada lección incluye al menos un reto práctico');
+  const allEval = orderedLessons.flatMap(o => o.lesson.steps).filter(st => st.type !== 'theory');
+  const practiceShare = allEval.filter(st => PRACTICE.includes(st.type)).length / allEval.length;
+  assert(practiceShare >= 0.5, `Los retos prácticos son ≥ 50% de lo evaluado (${(practiceShare * 100).toFixed(1)}%)`);
+
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);
   console.log('='.repeat(72));

@@ -997,6 +997,230 @@ suegra, ay, me dejó una chi[E7]vita, una burra muy negrita,
 una yegua muy blanquita y una buena [Am]suegra.
 Me dejó una [E7]chiva, una burra negra, una yegua blanca y una buena [Am]suegra;
 me dejó cosa muy [E7]buena, cosa muy bo[Am]nita.`
+  },
+  // ==========================================================================
+  // CANCIONES PARA TODOS (DOMINIO PÚBLICO / TRADICIONALES)
+  // Repertorio que todo guitarrista debería saber tocar en una reunión.
+  // Solo se incluyen obras tradicionales o de dominio público.
+  // ==========================================================================
+  {
+    id: 'pop_cumpleanos_feliz',
+    title: 'Cumpleaños Feliz',
+    author: 'Tradicional (melodía de dominio público)',
+    category: 'popular',
+    occasion: 'Cumpleaños',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 100,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_cumpleanos_feliz',
+    youtubeQuery: 'cumpleaños feliz guitarra acordes fácil vals',
+    theoryNote: 'Vals en 3/4 que empieza en anacrusa: "Cum-ple" suena ANTES del primer tiempo fuerte. Solo usa tónica (G), dominante (D7) y subdominante (C), con G7 como puente hacia C.',
+    progressionLoop: ['G', 'D7', 'D7', 'G', 'G7', 'C', 'D7', 'G'],
+    content: `Cumple[G]años fe[D7]liz,
+te de[D7]seamos a [G]ti,
+cumple[G7]años, que[C]rido (nombre),
+cumple[G]años fe[D7]li[G]z.`
+  },
+
+  {
+    id: 'pop_las_mananitas',
+    title: 'Las Mañanitas',
+    author: 'Tradicional mexicana',
+    category: 'popular',
+    occasion: 'Cumpleaños',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 96,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'las mañanitas guitarra acordes fácil',
+    theoryNote: 'Mismas tres funciones que "Cumpleaños Feliz" (G, C, D7) y el puente G7 → C: si dominas una, ya casi tienes la otra.',
+    progressionLoop: ['G', 'D7', 'G', 'G7', 'C', 'D7', 'G'],
+    content: `ESTROFA 1
+[G]Estas son las maña[D7]nitas
+que cantaba el rey Da[G]vid;
+hoy por ser día de tu [G7]santo
+te las [C]cantamos a [D7]ti. [G]
+
+ESTROFA 2
+[G]Despierta, mi bien, des[D7]pierta,
+mira que ya ama[G]neció;
+ya los pajarillos [G7]cantan,
+la [C]luna ya se [D7]me[G]tió.`
+  },
+
+  {
+    id: 'pop_noche_de_paz',
+    title: 'Noche de Paz',
+    author: 'Franz X. Gruber (1818) · letra en español tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'C',
+    rhythmId: 'vals',
+    bpm: 72,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'noche de paz guitarra acordes fácil arpegio',
+    theoryNote: 'Ideal para arpegiar p-i-m-a en 3/4. Usa I (C), IV (F) y V7 (G7): la columna vertebral de miles de canciones.',
+    progressionLoop: ['C', 'G7', 'C', 'F', 'C', 'F', 'C', 'G7', 'C'],
+    content: `[C]Noche de paz, noche de amor,
+[G7]todo duerme en de[C]rredor.
+[F]Entre los astros que es[C]parcen su luz,
+[F]bella anunciando al ni[C]ñito Jesús,
+[G7]brilla la estrella de [C]paz,
+[C]brilla la [G7]estrella de [C]paz.`
+  },
+
+  {
+    id: 'pop_arroz_con_leche',
+    title: 'Arroz con Leche',
+    author: 'Tradicional infantil',
+    category: 'popular',
+    occasion: 'Infantil',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 100,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'arroz con leche guitarra acordes',
+    theoryNote: 'Solo dos acordes: C (reposo) y G7 (tensión). Perfecta para practicar el cambio C ⇄ G7 sin detener la mano derecha.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `[C]Arroz con leche, me quiero ca[G7]sar
+con una señorita de San Nico[C]lás,
+que sepa co[C]ser, que sepa bor[G7]dar,
+que sepa abrir la puerta para ir a ju[C]gar.`
+  },
+
+  {
+    id: 'pop_los_pollitos',
+    title: 'Los Pollitos Dicen',
+    author: 'Tradicional infantil',
+    category: 'popular',
+    occasion: 'Infantil',
+    key: 'C',
+    rhythmId: 'marcha',
+    bpm: 92,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'los pollitos dicen guitarra acordes',
+    theoryNote: 'Dos acordes (C y G7) y frases cortas: excelente primera canción para cantar mientras tocas.',
+    progressionLoop: ['C', 'G7', 'G7', 'C'],
+    content: `Los po[C]llitos dicen
+pío, pío, [G7]pío,
+cuando tienen [G7]hambre,
+cuando tienen [C]frío.
+
+La ga[C]llina busca
+el maíz y el [G7]trigo,
+les da la co[G7]mida
+y les presta a[C]brigo.`
+  },
+
+  {
+    id: 'pop_estrellita',
+    title: 'Estrellita, ¿Dónde Estás?',
+    author: 'Melodía tradicional francesa (s. XVIII)',
+    category: 'popular',
+    occasion: 'Infantil',
+    key: 'C',
+    rhythmId: 'negras',
+    bpm: 90,
+    difficulty: 1,
+    featured: true,
+    linkedTabId: 'tab_estrellita',
+    youtubeQuery: 'estrellita donde estas guitarra acordes melodía',
+    theoryNote: 'I (C), IV (F) y V7 (G7) con un acorde por cada dos sílabas. Toca la melodía en la TAB vinculada: solo usa las cuerdas 3ª, 4ª y 5ª en primera posición.',
+    progressionLoop: ['C', 'F', 'C', 'F', 'C', 'G7', 'C'],
+    content: `[C]Estrellita, [F]¿dónde es[C]tás?
+[F]Me pre[C]gunto [G7]qué se[C]rás.
+[C]En el [F]cielo [C]y en el [G7]mar,
+[C]un dia[F]mante [C]de ver[G7]dad.
+[C]Estrellita, [F]¿dónde es[C]tás?
+[F]Me pre[C]gunto [G7]qué se[C]rás.`
+  },
+
+  {
+    id: 'pop_campana_sobre_campana',
+    title: 'Campana sobre Campana',
+    author: 'Villancico tradicional andaluz',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'Am',
+    rhythmId: 'marcha',
+    bpm: 104,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'campana sobre campana guitarra acordes',
+    theoryNote: 'La estrofa vive en La menor (Am ⇄ E7) y el coro pasa a su relativo mayor (G → C): escucha cómo cambia el color sin cambiar de armadura.',
+    progressionLoop: ['Am', 'E7', 'E7', 'Am', 'G', 'C', 'G', 'C', 'E7'],
+    content: `ESTROFA
+[Am]Campana sobre campana,
+y sobre campana [E7]una,
+asómate a la ven[E7]tana,
+verás al Niño en la [Am]cuna.
+
+CORO
+[G]Belén, campanas de Be[C]lén,
+que los [G]ángeles tocan,
+¿qué nuevas me tra[C]éis? [E7]`
+  },
+
+  {
+    id: 'pop_los_peces_en_el_rio',
+    title: 'Los Peces en el Río',
+    author: 'Villancico tradicional',
+    category: 'popular',
+    occasion: 'Navidad',
+    key: 'Am',
+    rhythmId: 'marcha',
+    bpm: 110,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'los peces en el rio guitarra acordes',
+    theoryNote: 'Estrofa en La menor con su dominante E7; el coro visita G y C (relativo mayor) y vuelve con E7 → Am.',
+    progressionLoop: ['Am', 'E7', 'E7', 'Am', 'G', 'C', 'G', 'C', 'E7', 'Am'],
+    content: `ESTROFA
+La [Am]Virgen se está peinando
+entre cortina y cor[E7]tina,
+los cabellos son de [E7]oro
+y el peine de plata [Am]fina.
+
+CORO
+Pero [G]mira cómo beben
+los peces en el [C]río,
+pero [G]mira cómo beben
+por ver al Dios na[C]cido.
+[E7]Beben y beben y vuelven a be[Am]ber,
+los [E7]peces en el río por ver a Dios na[Am]cer.`
+  },
+
+  {
+    id: 'pop_cielito_lindo',
+    title: 'Cielito Lindo',
+    author: 'Quirino Mendoza y Cortés (1882)',
+    category: 'popular',
+    occasion: 'Serenata',
+    key: 'G',
+    rhythmId: 'vals',
+    bpm: 108,
+    difficulty: 1,
+    featured: true,
+    youtubeQuery: 'cielito lindo guitarra acordes vals',
+    theoryNote: 'Vals de serenata con G, D7 y el puente G7 → C en el coro "¡Ay, ay, ay, ay!".',
+    progressionLoop: ['G', 'D7', 'D7', 'G', 'G7', 'C', 'G', 'D7', 'G'],
+    content: `ESTROFA
+De la Sierra [G]Morena,
+cielito lindo, vienen ba[D7]jando
+un par de ojitos [D7]negros,
+cielito lindo, de contra[G]bando.
+
+CORO
+[G7]¡Ay, ay, ay, [C]ay!
+Canta y no [G]llores,
+porque cantando se a[D7]legran,
+cielito lindo, los cora[G]zones.`
   }
 ];
 

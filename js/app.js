@@ -39,6 +39,14 @@ import {
   pickReviewTheory
 } from './pedagogy.js';
 import { DRILL_TYPES, renderDrill } from './skill-drills.js';
+import {
+  WARMUP_SIZE,
+  todayISO,
+  recordReview,
+  dueTheoryIds,
+  srsSummary,
+  pickReviewItems
+} from './spaced-repetition.js';
 
 const LEVEL_TITLES = [
   { minXp: 0,    level: 1, title: 'Semilla Musical 🌱' },
@@ -372,6 +380,7 @@ class CuerdaVivaApp {
     const activeUser = userStore.getActiveUser();
     const userStats = userStore.getStats();
     const pendingWeak = userStore.getWeakTheories().filter(w => w.needsReview);
+    const srsInfo = srsSummary(this.state.srs || {});
 
     let nextSuggestedId = null;
     for (const u of SKILL_UNITS) {
@@ -414,6 +423,16 @@ class CuerdaVivaApp {
                 <small>${next ? `Próximo nivel a ${next.minXp} XP` : '¡Nivel Máximo Alcanzado!'}</small>
               </div>
             </div>
+          </div>
+
+          <div class="duo-card srs-review-banner ${srsInfo.due > 0 ? 'srs-due' : ''}">
+            <div>
+              <strong>📅 Repaso del día: ${srsInfo.due > 0 ? `${srsInfo.due} tema(s) pendiente(s)` : 'al día'}</strong>
+              <p>${srsInfo.total > 0
+                ? `Dominados ${srsInfo.mastered} de ${srsInfo.total} temas (recordados en ≥ 3 días distintos).${srsInfo.due === 0 && srsInfo.nextDue ? ` Próximo repaso: ${escapeHTML(srsInfo.nextDue)}.` : ''}`
+                : 'Al terminar tus primeras lecciones, aquí aparecerán los temas que conviene repasar cada día.'}</p>
+            </div>
+            ${srsInfo.due > 0 ? `<button class="duo-btn btn-green btn-sm" id="btn-daily-review">▶ Repasar ahora</button>` : ''}
           </div>
 
           ${pendingWeak.length > 0 ? `
@@ -588,6 +607,10 @@ class CuerdaVivaApp {
       this.openAudioTunerModal();
     });
 
+    container.querySelector('#btn-daily-review')?.addEventListener('click', () => {
+      this.openDailyReview();
+    });
+
     container.querySelector('#btn-hero-remediate-first')?.addEventListener('click', () => {
       if (pendingWeak[0]) this.openStandaloneRemediation(pendingWeak[0].theoryId);
     });
@@ -645,11 +668,52 @@ class CuerdaVivaApp {
       return;
     }
 
-    const questionSteps = lesson.steps.filter(s => s.type !== 'theory');
-    this.lessonSession = {
+    // Calentamiento: 1–2 retos pendientes de repaso espaciado de OTRAS lecciones (práctica intercalada).
+    const srs = this.state.srs || {};
+    const ownTheories = new Set(lesson.steps.map(st => st.theoryId).filter(Boolean));
+    const warmups = pickReviewItems(
+      dueTheoryIds(srs).filter(t => !ownTheories.has(t)),
+      SKILL_UNITS,
+      { max: WARMUP_SIZE + 2, excludeLessonId: lesson.id, srs }
+    ).filter(w => !['chord_change', 'strum_timing'].includes(w.step.type)).slice(0, WARMUP_SIZE);
+
+    this._beginSession({
       mode: 'lesson',
       unit,
+      lesson: { ...lesson, steps: [...warmups.map(w => ({ ...w.step, _reviewQid: w.questionId })), ...lesson.steps] },
+      warmupCount: warmups.length
+    });
+  }
+
+  // Sesión de "Repaso del día": una pregunta por teoría pendiente, intercaladas.
+  openDailyReview() {
+    const srs = this.state.srs || {};
+    const items = pickReviewItems(dueTheoryIds(srs), SKILL_UNITS, { srs });
+    if (!items.length) {
+      const next = srsSummary(srs).nextDue;
+      this._showXPToast('📅 Nada pendiente hoy', next ? `Próximo repaso: ${next}` : 'Completa lecciones para alimentar tu repaso');
+      return;
+    }
+    this._beginSession({
+      mode: 'review',
+      unit: { id: 'review', title: 'Repaso del día', color: '#00CD9C' },
+      lesson: {
+        id: `review_${todayISO()}`,
+        title: 'Repaso del día',
+        xp: 10 + 5 * items.length,
+        steps: items.map(i => ({ ...i.step, _reviewQid: i.questionId }))
+      },
+      warmupCount: 0
+    });
+  }
+
+  _beginSession({ mode, unit, lesson, warmupCount = 0 }) {
+    const questionSteps = lesson.steps.filter(s => s.type !== 'theory');
+    this.lessonSession = {
+      mode,
+      unit,
       lesson,
+      warmupCount,
       stepIdx: 0,
       selectedOption: null,
       stepResolved: false,
@@ -669,13 +733,22 @@ class CuerdaVivaApp {
 
     document.getElementById('btn-quit-lesson').onclick = () => {
       pitchDetector.offPitch('lesson-runner');
-    this._cleanupDrill();
+      this._cleanupDrill();
       modal.classList.add('hidden');
       this.lessonSession = null;
       this.renderLearnView();
     };
 
     this._renderCurrentLessonStep();
+  }
+
+  _renderSessionEnd() {
+    const sess = this.lessonSession;
+    if (!sess) return;
+    if (sess.mode === 'standalone_remediation') this._renderStandaloneRemediationComplete();
+    else if (sess.mode === 'review') this._renderReviewCompleteScreen();
+    else if (sess.outOfHearts) this._renderLessonOutOfHeartsScreen();
+    else this._renderLessonVictoryScreen();
   }
 
   openStandaloneRemediation(theoryId) {
@@ -786,7 +859,9 @@ class CuerdaVivaApp {
   // y se pasa al repaso obligatorio; la lección no se marca como completada.
   _applyHeartLoss(isRemediation) {
     const sess = this.lessonSession;
-    const { hearts, depleted } = loseHeart(this.state.hearts, { isRemediation });
+    // Solo las lecciones cuestan vidas; repasar nunca penaliza.
+    const protectedPhase = isRemediation || !sess || sess.mode !== 'lesson';
+    const { hearts, depleted } = loseHeart(this.state.hearts, { isRemediation: protectedPhase });
     this.state.hearts = hearts;
     this._saveState();
     this.updateTopbarStats();
@@ -800,6 +875,10 @@ class CuerdaVivaApp {
   // Recuperar vidas exige practicar: se abre un repaso de una teoría débil
   // (o de una lección ya superada). Completarlo otorga HEARTS_PER_REVIEW vidas.
   _startHeartRecovery() {
+    if (dueTheoryIds(this.state.srs || {}).length) {
+      this.openDailyReview();
+      return;
+    }
     const theoryId = pickReviewTheory(
       userStore.getWeakTheories(),
       SKILL_UNITS,
@@ -810,6 +889,53 @@ class CuerdaVivaApp {
       return;
     }
     this.openStandaloneRemediation(theoryId);
+  }
+
+  _renderReviewCompleteScreen() {
+    const sess = this.lessonSession;
+    if (!sess) return;
+    pitchDetector.offPitch('lesson-runner');
+    this._cleanupDrill();
+    this._updateLessonHeaderChrome(100, '');
+    audioEngine.playLessonFanfare();
+
+    const heartsBefore = this.state.hearts;
+    this.state.hearts = gainHearts(this.state.hearts, HEARTS_PER_REVIEW);
+    const heartsGained = this.state.hearts - heartsBefore;
+    this._saveState();
+    this.awardXP(sess.lesson.xp || 15, 'Repaso del día');
+
+    const sum = srsSummary(this.state.srs || {});
+    const totalQ = Math.max(1, sess.initialQuestionsTotal || 1);
+    const body = document.getElementById('lesson-step-body');
+    const footer = document.getElementById('lesson-footer-bar');
+    const feedbackEl = document.getElementById('lesson-feedback-msg');
+    const primaryBtn = document.getElementById('btn-lesson-primary');
+
+    body.innerHTML = `
+      <div class="lesson-victory-box">
+        <div class="victory-trophy-bounce">📅</div>
+        <h2>¡Repaso del día completado!</h2>
+        <p class="victory-sub">Recordar con días de separación es lo que fija el aprendizaje a largo plazo.</p>
+        <div class="victory-stats-cards">
+          <div class="v-stat-card card-green"><span>RECORDASTE</span><strong>${sess.initialHits}/${totalQ}</strong></div>
+          <div class="v-stat-card card-gold"><span>TEMAS DOMINADOS</span><strong>${sum.mastered}/${sum.total}</strong></div>
+          <div class="v-stat-card card-orange"><span>VIDAS</span><strong>${heartsGained > 0 ? `+${heartsGained} ❤️` : `${this.state.hearts} ❤️`}</strong></div>
+        </div>
+        ${sum.nextDue ? `<div class="rem-victory-chip">Próximo repaso programado: <strong>${escapeHTML(sum.nextDue)}</strong></div>` : ''}
+      </div>
+    `;
+
+    footer.className = 'lesson-footer-bar state-correct';
+    feedbackEl.innerHTML = '<strong>🧠 Repaso espaciado al día.</strong> <span>Los temas que fallaste volverán mañana; los que recordaste, más adelante.</span>';
+    primaryBtn.textContent = 'VOLVER A LA RUTA';
+    primaryBtn.className = 'duo-btn btn-green btn-lg';
+    primaryBtn.disabled = false;
+    primaryBtn.onclick = () => {
+      document.getElementById('modal-lesson').classList.add('hidden');
+      this.lessonSession = null;
+      this.renderLearnView();
+    };
   }
 
   _renderLessonOutOfHeartsScreen() {
@@ -988,22 +1114,26 @@ class CuerdaVivaApp {
         sess.remediationItem = sess.remediationQueue[0];
         this._renderRemediationTheoryStep();
       } else {
-        this._renderLessonVictoryScreen();
+        this._renderSessionEnd();
       }
       return;
     }
 
     const step = sess.lesson.steps[sess.stepIdx];
     const pct = Math.max(8, Math.round((sess.stepIdx / total) * 100));
-    const remNote = sess.remediationQueue.length > 0
-      ? `🔄 ${sess.remediationQueue.length} repaso(s) al final`
-      : '';
+    const remNote = sess.mode === 'review'
+      ? `📅 Repaso del día (${sess.stepIdx + 1} de ${total})`
+      : step._reviewQid
+        ? '🔁 Calentamiento: repaso espaciado'
+        : sess.remediationQueue.length > 0
+          ? `🔄 ${sess.remediationQueue.length} repaso(s) al final`
+          : '';
     this._updateLessonHeaderChrome(pct, remNote);
 
     if (step.type === 'theory') {
       this._renderTheoryStep(step);
     } else {
-      const qId = step.id || `${sess.lesson.id}_s${sess.stepIdx}`;
+      const qId = step._reviewQid || step.id || `${sess.lesson.id}_s${sess.stepIdx - (sess.warmupCount || 0)}`;
       this._renderInteractiveQuestionStep(step, qId, false);
     }
   }
@@ -1168,12 +1298,8 @@ class CuerdaVivaApp {
           sess.phase = 'remediation_theory';
           sess.remediationItem = sess.remediationQueue[0];
           this._renderRemediationTheoryStep();
-        } else if (sess.mode === 'standalone_remediation') {
-          this._renderStandaloneRemediationComplete();
-        } else if (sess.outOfHearts) {
-          this._renderLessonOutOfHeartsScreen();
         } else {
-          this._renderLessonVictoryScreen();
+          this._renderSessionEnd();
         }
       } else {
         // No superó en remediación -> regresa al repaso de esa misma teoría
@@ -1190,6 +1316,11 @@ class CuerdaVivaApp {
 
   _logChallengeOutcome({ step, questionId, outcome, isRemediation, userAnswer, expectedAnswer }) {
     const sess = this.lessonSession;
+    // Repaso espaciado: solo la recuperación en la ronda inicial (no la remediación inmediata) mueve la tarjeta.
+    if (!isRemediation && step.theoryId && sess && (sess.mode === 'lesson' || sess.mode === 'review')) {
+      this.state.srs = recordReview(this.state.srs, step.theoryId, outcome === 'acierto');
+      this._saveState();
+    }
     const theory = this._getTheoryMeta(step.theoryId);
     const qText = step.question || step.title || step.instruction || questionId;
     return userStore.recordAttempt({
@@ -1680,11 +1811,27 @@ class CuerdaVivaApp {
             <strong>${this.state.streak} 🔥</strong>
           </div>
         </div>
+        ${(sess.lesson.practiceSongs || []).length ? `
+          <div class="victory-songs">
+            <strong>🎶 Aplícalo en una canción para todos:</strong>
+            <div class="victory-songs-row">
+              ${sess.lesson.practiceSongs.map((ps, k) => `
+                <button class="duo-btn btn-blue btn-sm" data-practice-song="${k}">${ps.tab === 'tabs' ? '🎯' : '🎶'} ${escapeHTML(ps.label)}</button>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
       </div>
     `;
 
     footer.className = 'lesson-footer-bar state-correct';
     feedbackEl.innerHTML = '<strong>🎉 ¡Gran constancia!</strong> <span>Todos los aciertos y repasos quedaron guardados en tu Bitácora.</span>';
+    body.querySelectorAll('[data-practice-song]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const ps = sess.lesson.practiceSongs[Number(btn.dataset.practiceSong)];
+        if (ps) this._navigateFromActionTarget(ps.tab, ps.itemId);
+      });
+    });
     primaryBtn.textContent = 'VOLVER A LA RUTA';
     primaryBtn.className = 'duo-btn btn-green btn-lg';
     primaryBtn.disabled = false;

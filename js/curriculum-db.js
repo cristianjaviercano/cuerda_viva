@@ -414,6 +414,9 @@ export const SKILL_UNITS = [
         icon: '🌈',
         xp: 30,
         summary: 'Memoriza los nombres, colores cromáticos y la ley física de los trastes (Mi-Fa / Si-Do).',
+        practiceSongs: [
+          { tab: 'tabs', itemId: 'tab_estrellita', label: 'Estrellita, ¿Dónde Estás? (TAB · tu primera melodía)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -634,6 +637,10 @@ export const SKILL_UNITS = [
         icon: '🌊',
         xp: 35,
         summary: 'Interioriza el vaivén sin frenos "VOY PIE-DRA TA-PIE-DRA" de todo canto contemporáneo.',
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_los_pollitos', label: 'Los Pollitos Dicen (C ⇄ G7)' },
+          { tab: 'songs', itemId: 'pop_arroz_con_leche', label: 'Arroz con Leche (C ⇄ G7)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -688,6 +695,15 @@ export const SKILL_UNITS = [
             bars: 4,
             toleranceMs: 90,
             minHitRate: 0.75
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'strumming_44_engine',
+            title: 'Cambios cronometrados: C ⇄ G7 ("Los Pollitos")',
+            instruction: 'Alterna Do y Sol séptima manteniendo el rasgueo. En G7 el dedo 1 va en la 1ª cuerda traste 1.',
+            chords: ['C', 'G7'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       },
@@ -894,6 +910,11 @@ export const SKILL_UNITS = [
         icon: '🕊️',
         xp: 40,
         summary: 'Domina el balanceo solemne de Comunión en 6/8, el Vals mariano y el Bolero.',
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_cumpleanos_feliz', label: 'Cumpleaños Feliz (vals en G)' },
+          { tab: 'songs', itemId: 'pop_las_mananitas', label: 'Las Mañanitas (vals en G)' },
+          { tab: 'tabs', itemId: 'tab_cumpleanos_feliz', label: 'Cumpleaños Feliz (TAB · melodía)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -961,6 +982,15 @@ export const SKILL_UNITS = [
             bars: 4,
             toleranceMs: 90,
             minHitRate: 0.75
+          },
+          {
+            type: 'chord_change',
+            theoryId: 'meters_34_68_bolero',
+            title: 'Cambios cronometrados: G ⇄ D7 ("Cumpleaños Feliz")',
+            instruction: 'Alterna Sol y Re séptima: son los dos acordes de la primera mitad de "Cumpleaños Feliz".',
+            chords: ['G', 'D7'],
+            durationSec: 30,
+            targetChanges: 8
           }
         ]
       },
@@ -1041,6 +1071,10 @@ export const SKILL_UNITS = [
         icon: '🕯️',
         xp: 40,
         summary: 'Aprende el estudio clásico de Medina & Caliva para Hora Santa, Comunión y baladas.',
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_noche_de_paz', label: 'Noche de Paz (arpegio en 3/4)' },
+          { tab: 'songs', itemId: 'pop_cielito_lindo', label: 'Cielito Lindo (vals de serenata)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -1238,6 +1272,9 @@ export const SKILL_UNITS = [
         icon: '🎯',
         xp: 35,
         summary: 'Conecta las 6 líneas horizontales de cualquier tablatura de internet con los números Keyner.',
+        practiceSongs: [
+          { tab: 'tabs', itemId: 'tab_himno_alegria', label: 'Himno a la Alegría (TAB · Beethoven)' }
+        ],
         steps: [
           {
             type: 'theory',
@@ -1825,6 +1862,10 @@ export const SKILL_UNITS = [
         icon: '💎',
         xp: 45,
         summary: 'Usa el acorde D#dim7 ("DIS." en Keyner) para enlazar tensiones dramáticas de pasillo.',
+        practiceSongs: [
+          { tab: 'songs', itemId: 'pop_los_peces_en_el_rio', label: 'Los Peces en el Río (Am ⇄ E7)' },
+          { tab: 'songs', itemId: 'pop_campana_sobre_campana', label: 'Campana sobre Campana (Am ⇄ E7)' }
+        ],
         steps: [
           {
             type: 'theory',

@@ -3930,3 +3930,26 @@ button, select, input {
 .drill-toggle small { color: var(--ink-muted); }
 .drill-round { font-weight: 800; color: var(--ink-muted); }
 .drill-ear-options { max-width: 520px; width: 100%; }
+
+/* ==================== REPASO ESPACIADO (Parte D) ==================== */
+.srs-review-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  background: var(--bg-soft);
+}
+.srs-review-banner strong { color: var(--ink-main); font-size: 0.98rem; display: block; }
+.srs-review-banner p { color: var(--ink-muted); font-size: 0.86rem; margin: 2px 0 0; font-weight: 700; }
+.srs-review-banner.srs-due {
+  background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+  border-color: #6EE7B7;
+  border-bottom-color: var(--duo-teal);
+}
+.srs-review-banner.srs-due strong { color: #065F46; }
+.srs-review-banner.srs-due p { color: #047857; }
+.victory-songs { margin-top: 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.victory-songs strong { color: var(--ink-main); }
+.victory-songs-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }

@@ -24,7 +24,8 @@ import {
   formatKeynerChordSymbol,
   formatChordLabel,
   NOTES_ES,
-  NOTE_COLORS
+  NOTE_COLORS,
+  getFretMidi
 } from './js/music-theory.js';
 import { CHORDS_DB, getChordData } from './js/chords-db.js';
 import { TABS_DB } from './js/tabs-db.js';
@@ -65,6 +66,16 @@ import {
   ChordChangeCounter,
   makeEarRounds
 } from './js/practice-metrics.js';
+import {
+  INTERVALS_DAYS,
+  MASTERY_BOX,
+  addDays,
+  reviewCard,
+  recordReview,
+  dueTheoryIds,
+  srsSummary,
+  pickReviewItems
+} from './js/spaced-repetition.js';
 
 let passedChecks = 0;
 let totalChecks = 0;
@@ -723,6 +734,91 @@ async function runAudit() {
   const allEval = orderedLessons.flatMap(o => o.lesson.steps).filter(st => st.type !== 'theory');
   const practiceShare = allEval.filter(st => PRACTICE.includes(st.type)).length / allEval.length;
   assert(practiceShare >= 0.5, `Los retos prácticos son ≥ 50% de lo evaluado (${(practiceShare * 100).toFixed(1)}%)`);
+
+  // ==================== 11. REPASO ESPACIADO (PARTE D) ====================
+  console.log('\n📅 11. Repaso espaciado (Leitner) y sesiones de repaso');
+
+  assert(addDays('2026-01-31', 1) === '2026-02-01' && addDays('2026-12-31', 1) === '2027-01-01', 'addDays cruza meses y años correctamente');
+
+  const D0 = '2026-03-01';
+  let card = reviewCard(null, true, D0);
+  assert(card.box === 1 && card.due === addDays(D0, INTERVALS_DAYS[1]), 'Primer acierto → caja 1, repaso al día siguiente');
+  const sameDay = reviewCard(card, true, D0);
+  assert(sameDay.box === 1, 'Un segundo acierto el MISMO día no sube de caja (solo cuenta lo espaciado)');
+  card = reviewCard(card, true, addDays(D0, 1));
+  assert(card.box === 2 && card.due === addDays(D0, 1 + INTERVALS_DAYS[2]), 'Acierto al día siguiente → caja 2, intervalo de 3 días');
+  card = reviewCard(card, true, addDays(D0, 4));
+  assert(card.box === MASTERY_BOX, `Aciertos en 3 días distintos → caja ${MASTERY_BOX} (dominada)`);
+  const lapsed = reviewCard(card, false, addDays(D0, 11));
+  assert(lapsed.box === 0 && lapsed.lapses === 1 && lapsed.due === addDays(D0, 12), 'Un fallo devuelve la tarjeta a la caja 0 y la programa para mañana');
+  let capped = null;
+  for (let d = 0; d < 20; d++) capped = reviewCard(capped, true, addDays(D0, d * 40));
+  assert(capped.box === INTERVALS_DAYS.length - 1, 'La caja nunca supera el máximo');
+
+  let srs = {};
+  srs = recordReview(srs, 'a', true, '2026-03-01');   // due 03-02
+  srs = recordReview(srs, 'b', false, '2026-03-01');  // due 03-02, caja 0
+  srs = recordReview(srs, 'c', true, '2026-03-05');   // due 03-06
+  assert(dueTheoryIds(srs, '2026-03-02').join(',') === 'b,a', 'dueTheoryIds devuelve las pendientes, primero las de caja más baja');
+  assert(dueTheoryIds(srs, '2026-03-01').length === 0, 'Nada pendiente el mismo día del primer estudio');
+  const sum = srsSummary(srs, '2026-03-02');
+  assert(sum.total === 3 && sum.due === 2 && sum.mastered === 0 && sum.nextDue === '2026-03-06', 'srsSummary resume pendientes, dominadas y próximo repaso');
+
+  const allTheories = Object.keys(THEORY_LIBRARY);
+  const reviewSet = pickReviewItems(allTheories, SKILL_UNITS, { max: 6 });
+  assert(reviewSet.length === 6, 'pickReviewItems respeta el tamaño máximo de la sesión');
+  assert(new Set(reviewSet.map(r => r.theoryId)).size === reviewSet.length, 'Una pregunta por teoría: la sesión intercala temas distintos');
+  const allReview = pickReviewItems(allTheories, SKILL_UNITS, { max: 99 });
+  assert(allReview.every(r => !['theory', 'play_guitar_chord', 'play_guitar_note'].includes(r.step.type)),
+    'El repaso excluye pasos teóricos y retos validables sin tocar');
+  assert(allReview.filter(r => ['chord_change', 'strum_timing'].includes(r.step.type)).length <= 1, 'Como máximo un reto largo (≥ 20 s) por sesión');
+  const tId = 'minor_open_chords';
+  const r0 = pickReviewItems([tId], SKILL_UNITS, { srs: { [tId]: { reps: 0 } } })[0];
+  const r1 = pickReviewItems([tId], SKILL_UNITS, { srs: { [tId]: { reps: 1 } } })[0];
+  assert(r0 && r1 && r0.questionId !== r1.questionId, 'El ítem rota entre repasos: no siempre la misma pregunta');
+  const excl = pickReviewItems([tId], SKILL_UNITS, { excludeLessonId: r0.lessonId });
+  assert(excl.every(r => r.lessonId !== r0.lessonId), 'El calentamiento excluye retos de la lección que se va a estudiar');
+
+  assert(/recordReview\(this\.state\.srs/.test(appSrc) && /openDailyReview\(\)/.test(appSrc) && /_reviewQid/.test(appSrc),
+    'La app registra el repaso espaciado, ofrece el Repaso del día y el calentamiento');
+  assert(/protectedPhase = isRemediation \|\| !sess \|\| sess\.mode !== 'lesson'/.test(appSrc), 'Repasar nunca resta vidas');
+
+  // ==================== 12. CANCIONES PARA TODOS ====================
+  console.log('\n🎉 12. Canciones para todos (dominio público / tradicionales)');
+  const popular = MASTER_SONGS.filter(sg => sg.category === 'popular');
+  assert(popular.length >= 8, `Hay ${popular.length} canciones para todos (≥ 8)`);
+  assert(popular.some(sg => /cumplea/i.test(sg.title)), 'Incluye "Cumpleaños Feliz"');
+  for (const sg of popular) {
+    const chords = [...sg.content.matchAll(/\[([^\]]+)\]/g)].map(m => m[1]);
+    const ok = chords.length >= 3
+      && chords.every(c => getChordData(c))
+      && sg.progressionLoop.every(c => getChordData(c))
+      && Boolean(RHYTHM_PATTERNS[sg.rhythmId])
+      && Boolean(sg.occasion)
+      && (!sg.linkedTabId || TABS_DB.some(t => t.id === sg.linkedTabId));
+    assert(ok, `Canción "${sg.title}": acordes existentes, ritmo válido, ocasión y TAB vinculada coherentes`);
+    assert(/Tradicional|tradicional|dominio público|\((1[0-8]\d\d|19[01]\d)\)|s\. XVIII/.test(sg.author),
+      `Canción "${sg.title}" declara origen tradicional o de dominio público (${sg.author})`);
+  }
+  const popTabs = TABS_DB.filter(t => t.category === 'popular');
+  assert(popTabs.length >= 3, `Hay ${popTabs.length} tablaturas de melodías para todos (≥ 3)`);
+  for (const t of popTabs) {
+    const firstPos = t.steps.every(e => e.s >= 1 && e.s <= 6 && e.f >= 0 && e.f <= 4 && e.dur > 0);
+    assert(firstPos, `TAB "${t.title}" está en primera posición (trastes 0–4)`);
+  }
+  const cumpleTab = TABS_DB.find(t => t.id === 'tab_cumpleanos_feliz');
+  const cumpleMidis = cumpleTab.steps.map(e => getFretMidi(e.s, e.f)).join(',');
+  assert(cumpleMidis === '50,50,52,50,55,54,50,50,52,50,57,55,50,50,62,59,55,54,52,60,60,59,55,57,55',
+    'La melodía de "Cumpleaños Feliz" es correcta nota a nota (D D E D G F# · D D E D A G · D D D\' B G F# E · C C B G A G)');
+  const pulses = cumpleTab.steps.reduce((a, e) => a + e.dur, 0);
+  assert(pulses === 1 + 8 * 3, 'Cumpleaños Feliz: anacrusa de 1 pulso + 8 compases de 3/4');
+
+  const practiceRefs = orderedLessons.flatMap(o => (o.lesson.practiceSongs || []).map(ps => ({ lesson: o.lesson.id, ...ps })));
+  assert(practiceRefs.length >= 8, `Las lecciones recomiendan ${practiceRefs.length} canciones para aplicar lo aprendido`);
+  for (const ps of practiceRefs) {
+    const exists = ps.tab === 'songs' ? MASTER_SONGS.some(sg => sg.id === ps.itemId) : TABS_DB.some(t => t.id === ps.itemId);
+    assert(exists, `Lección ${ps.lesson} enlaza "${ps.itemId}" existente`);
+  }
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

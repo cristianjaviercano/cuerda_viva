@@ -4028,3 +4028,16 @@ button, select, input {
 .sa-level { display: flex; gap: 8px; align-items: flex-start; padding: 5px 4px; color: var(--ink-body); cursor: pointer; border-radius: var(--radius-md); }
 .sa-level:hover { background: var(--bg-soft); }
 .sa-level input { margin-top: 3px; accent-color: var(--duo-green); }
+
+/* ==================== ANÁLISIS DE ÍTEMS (Parte F) ==================== */
+.ia-actions { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 12px; }
+.ia-table-wrap { overflow-x: auto; border: 2px solid var(--border-light); border-radius: var(--radius-md); }
+.ia-table { width: 100%; border-collapse: collapse; font-size: .84rem; }
+.ia-table th, .ia-table td { padding: 6px 8px; border-bottom: 1px solid var(--border-light); text-align: left; vertical-align: top; }
+.ia-table th { background: var(--bg-soft); color: var(--ink-main); font-weight: 800; white-space: nowrap; }
+.ia-table td small { color: var(--ink-muted); }
+.ia-table tr.ia-flagged td { background: rgba(255, 150, 0, 0.07); }
+.ia-flag { display: inline-block; margin: 1px 0; padding: 1px 6px; border-radius: var(--radius-pill); background: #FFEDD5; color: #9A3412; font-weight: 700; font-size: .75rem; }
+.ia-ok { color: var(--duo-green-dark); font-weight: 800; }
+.ia-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; margin-top: 14px; }
+.ia-list { margin: 6px 0; padding-left: 18px; color: var(--ink-body); font-size: .86rem; }

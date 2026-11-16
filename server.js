@@ -2,6 +2,8 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { analyzeItems, buildItemBank, observedSecondsByType } from './js/item-analysis.js';
+import { SKILL_UNITS } from './js/curriculum-db.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -212,6 +214,15 @@ export function createUserDatabase(dbFile = DEFAULT_DB_FILE) {
       save();
       return { user: target, activeUserId: target.id, users: db.users.map(summarizeUser) };
     },
+    // Solo bitácora y sesiones, sin nombres: suficiente para el análisis de ítems.
+    allUsersForAnalytics() {
+      const db = load();
+      return db.users.map((u, i) => ({
+        id: `anon_${i}`,
+        logs: Array.isArray(u.logs) ? u.logs : [],
+        state: { sessions: Array.isArray(u.state?.sessions) ? u.state.sessions : [] }
+      }));
+    },
     updateUserState(userId, statePatch = {}) {
       const db = load();
       const target = db.users.find(u => u.id === userId);
@@ -247,7 +258,13 @@ export function createUserDatabase(dbFile = DEFAULT_DB_FILE) {
         outcome,
         phase,
         userAnswer: String(logEntry.userAnswer || ''),
-        expectedAnswer: String(logEntry.expectedAnswer || '')
+        expectedAnswer: String(logEntry.expectedAnswer || ''),
+        // Analítica de ítems: tiempo de respuesta, opción elegida y tipo de sesión.
+        durationMs: Number.isFinite(Number(logEntry.durationMs)) && logEntry.durationMs !== null
+          ? Math.max(0, Math.min(1800000, Math.round(Number(logEntry.durationMs))))
+          : null,
+        optionIndex: Number.isInteger(logEntry.optionIndex) ? logEntry.optionIndex : null,
+        sessionMode: ['lesson', 'review', 'standalone_remediation'].includes(logEntry.sessionMode) ? logEntry.sessionMode : 'lesson'
       };
 
       if (!Array.isArray(target.logs)) target.logs = [];
@@ -351,6 +368,13 @@ export function createRequestHandler({ rootDir = __dirname, dbFile = DEFAULT_DB_
         if (method === 'GET' && (cleanPath === '/health' || cleanPath === '' || cleanPath === '/')) {
           const list = userDb.listUsers();
           return sendJson(res, 200, { ok: true, usersCount: list.users.length, activeUserId: list.activeUserId });
+        }
+
+        // Analítica de ítems agregada de todos los perfiles del servidor (sin datos personales).
+        if (method === 'GET' && cleanPath === '/analytics/items') {
+          const users = userDb.allUsersForAnalytics();
+          const analysis = analyzeItems(users, buildItemBank(SKILL_UNITS));
+          return sendJson(res, 200, { ...analysis, observedSecondsByType: observedSecondsByType(users) });
         }
 
         if (method === 'GET' && cleanPath === '/users') {

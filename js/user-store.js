@@ -360,7 +360,13 @@ export class UserStore {
       outcome: attempt.outcome === 'no_acierto' ? 'no_acierto' : 'acierto',
       phase: attempt.phase === 'remediation' ? 'remediation' : 'initial',
       userAnswer: String(attempt.userAnswer || ''),
-      expectedAnswer: String(attempt.expectedAnswer || '')
+      expectedAnswer: String(attempt.expectedAnswer || ''),
+      // Analítica de ítems: tiempo de respuesta, opción elegida y tipo de sesión.
+      durationMs: Number.isFinite(Number(attempt.durationMs)) && attempt.durationMs !== null
+        ? Math.max(0, Math.min(1800000, Math.round(Number(attempt.durationMs))))
+        : null,
+      optionIndex: Number.isInteger(attempt.optionIndex) ? attempt.optionIndex : null,
+      sessionMode: ['lesson', 'review', 'standalone_remediation'].includes(attempt.sessionMode) ? attempt.sessionMode : 'lesson'
     };
 
     if (!Array.isArray(active.logs)) active.logs = [];

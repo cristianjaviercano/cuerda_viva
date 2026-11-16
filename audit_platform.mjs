@@ -60,6 +60,7 @@ import {
   chunkTheory,
   countWords,
   estimateLessonMinutes,
+  modelStepSeconds,
   SELF_ASSESSMENT_RUBRIC,
   scoreSelfAssessment
 } from './js/pedagogy.js';
@@ -83,6 +84,14 @@ import {
   srsSummary,
   pickReviewItems
 } from './js/spaced-repetition.js';
+import {
+  analyzeItems,
+  buildItemBank,
+  observedSecondsByType,
+  itemsToCSV,
+  pearson,
+  median as medianOf
+} from './js/item-analysis.js';
 
 let passedChecks = 0;
 let totalChecks = 0;
@@ -469,6 +478,20 @@ async function runAudit() {
     // Test GET archivo estático existente index.html
     const staticRes = await mockRequest('GET', '/index.html');
     assert(staticRes.status === 200 && staticRes.text().includes('CuerdaViva!'), 'Manejador sirve estáticos (index.html)');
+
+    // Analítica: el servidor conserva tiempo y opción, y agrega sin exponer nombres
+    const anaUser = regApiRes.json().user;
+    const logRes = await mockRequest('POST', `/api/users/${encodeURIComponent(anaUser.id)}/log`, {
+      lessonId: 'u1_l1', questionId: 'u1_l1_s2', questionType: 'quiz', outcome: 'acierto', phase: 'initial', durationMs: 12345.6, optionIndex: 1, sessionMode: 'lesson'
+    });
+    const savedEntry = logRes.json().entry;
+    assert(savedEntry.durationMs === 12346 && savedEntry.optionIndex === 1 && savedEntry.sessionMode === 'lesson',
+      'POST /log conserva durationMs, optionIndex y sessionMode para la analítica');
+    const anaRes = await mockRequest('GET', '/api/analytics/items');
+    const anaBody = anaRes.json();
+    const anaItem = (anaBody.items || []).find(i => i.questionId === 'u1_l1_s2');
+    assert(anaRes.status === 200 && anaItem && anaItem.n === 1 && anaItem.medianSec > 12, 'GET /api/analytics/items agrega las respuestas por reto');
+    assert(!anaRes.text().includes('Mariana'), 'La analítica del servidor no expone nombres de estudiantes');
 
   } finally {
     if (fs.existsSync(tempDbFile)) {
@@ -884,6 +907,80 @@ async function runAudit() {
     'Los criterios en nivel 1 programan el repaso de su teoría');
   assert(/openUnitSelfAssessment\(/.test(appSrc) && /recordReview\(this\.state\.srs, tid, false\)/.test(appSrc) && /no se sube a ningún servidor/.test(appSrc),
     'La app ofrece la autoevaluación, la conecta con el repaso espaciado y la grabación es solo local');
+
+  // ==================== 14. ANÁLISIS DE ÍTEMS (PARTE F) ====================
+  console.log('\n📊 14. Análisis de ítems con una población sintética de habilidad conocida');
+
+  assert(pearson([0, 0, 1, 1], [0.1, 0.2, 0.8, 0.9]) > 0.9 && pearson([1, 1], [0.5, 0.5]) === null, 'pearson calcula la correlación y devuelve null sin varianza');
+  assert(medianOf([3, 1, 2]) === 2 && medianOf([4, 1, 3, 2]) === 2.5 && medianOf([]) === null, 'median correcta (impar, par y vacía)');
+
+  // Población: 40 estudiantes con habilidad θ ∈ [0,1]; generador determinista.
+  let seedIA = 7;
+  const rngIA = () => ((seedIA = (seedIA * 1103515245 + 12345) % 2147483648) / 2147483648);
+  const bank = buildItemBank(SKILL_UNITS);
+  const quizIds = Object.keys(bank).filter(id => bank[id].type === 'quiz');
+  const QG = quizIds[0];   // ítem "bueno": acierta según θ
+  const QE = quizIds[1];   // ítem "muy fácil": todos aciertan
+  const QR = quizIds[2];   // ítem "invertido": aciertan los de θ bajo (clave errónea)
+  const QH = quizIds[3];   // ítem "muy difícil": solo θ > 0,85
+  const fillers = quizIds.slice(4, 14);
+  const t0 = Date.parse('2026-05-01T10:00:00Z');
+  const synthUsers = Array.from({ length: 40 }, (_, u) => {
+    const theta = (u + 0.5) / 40;
+    const logs = [];
+    let k = 0;
+    const add = (qid, correct, extra = {}) => logs.push({
+      timestamp: new Date(t0 + (k++) * 60000).toISOString(), questionId: qid, questionType: 'quiz',
+      phase: 'initial', outcome: correct ? 'acierto' : 'no_acierto', durationMs: 20000 + u * 100,
+      optionIndex: correct ? bank[qid].correctIndex : (bank[qid].correctIndex === 0 ? 1 : 0), ...extra
+    });
+    fillers.forEach(q => add(q, rngIA() < theta));
+    add(QG, rngIA() < theta);
+    add(QE, true);
+    add(QR, theta < 0.5);
+    add(QH, theta > 0.85);
+    // Un reintento posterior en remediación NO debe contar
+    add(QG, true, { phase: 'remediation' });
+    const sessions = [{ mode: 'lesson', lessonId: 'u1_l1', outcome: u < 12 ? 'abandono' : 'victoria', lastQuestionId: u < 12 ? QH : null }];
+    return { id: `u${u}`, logs, state: { sessions } };
+  });
+  const ia = analyzeItems(synthUsers, bank);
+  const it = id => ia.items.find(i => i.questionId === id);
+
+  assert(ia.respondents === 40 && it(QG).n === 40, 'Usa una respuesta por estudiante e ignora la remediación');
+  assert(it(QE).p === 1 && it(QE).flags.includes('muy_facil'), `Ítem trivial → p = 1 y alerta "muy fácil"`);
+  assert(it(QH).p < 0.4 && it(QH).flags.includes('muy_dificil'), `Ítem difícil → p = ${it(QH).p.toFixed(2)} y alerta "muy difícil"`);
+  assert(it(QG).rpb > 0.2 && it(QG).D > 0.2 && !it(QG).flags.some(f => /discriminacion/.test(f)),
+    `Ítem que depende de la habilidad → rpb = ${it(QG).rpb.toFixed(2)}, D = ${it(QG).D.toFixed(2)}, sin alertas de discriminación`);
+  assert(it(QR).rpb < 0 && it(QR).flags.includes('discriminacion_negativa'), `Ítem con clave invertida → rpb = ${it(QR).rpb.toFixed(2)} y alerta de discriminación negativa`);
+  assert(it(QG).options.length === bank[QG].options.length && it(QG).flags.includes('distractor_no_funcional'),
+    'Detecta distractores que nadie elige (los errores sintéticos usan una sola opción)');
+  assert(it(QH).abandons === 12 && it(QH).flags.includes('abandono_alto'), 'Atribuye los abandonos al reto donde ocurren y alerta si superan el 20%');
+  const lessonU11 = ia.lessons.find(l => l.lessonId === 'u1_l1');
+  assert(lessonU11.started === 40 && lessonU11.completed === 28 && lessonU11.abandoned === 12, 'Tasa de finalización por lección (28/40)');
+  assert(ia.items[0].flags.length >= ia.items[ia.items.length - 1].flags.length, 'Los retos con alertas se listan primero');
+
+  // Pocos datos → sin alertas (evita conclusiones con muestras pequeñas)
+  const small = analyzeItems(synthUsers.slice(0, 5), bank);
+  assert(small.items.every(i => !i.flags.some(f => f !== 'abandono_alto')), 'Con < 10 respuestas no se emiten alertas de dificultad ni discriminación');
+
+  // Calibración de tiempos
+  const obs = observedSecondsByType(synthUsers);
+  assert(obs.quiz >= 20 && obs.quiz <= 24, `Mediana real de las preguntas: ${obs.quiz} s`);
+  const someLesson = orderedLessons[0].lesson;
+  assert(estimateLessonMinutes(someLesson, { quiz: 120 }) > estimateLessonMinutes(someLesson),
+    'La duración estimada de una lección se recalibra con los tiempos observados');
+  assert(modelStepSeconds({ type: 'quiz' }) === 30, 'El modelo inicial de tiempos sigue disponible cuando no hay datos');
+
+  // Exportación
+  const iaCsv = itemsToCSV(ia);
+  assert(iaCsv.startsWith('﻿') && iaCsv.split('\n').length === ia.items.length + 1 && iaCsv.includes('discriminacion_negativa'),
+    'itemsToCSV exporta una fila por reto, con BOM para Excel y las alertas');
+
+  // Instrumentación de la app
+  assert(/durationMs,\s*\n\s*optionIndex,\s*\n\s*sessionMode/.test(appSrc) && /_recordSessionEnd\('abandono'\)/.test(appSrc) && /optionIndex: sess\.selectedOption/.test(appSrc),
+    'La app registra tiempo de respuesta, opción elegida y sesiones abandonadas');
+  assert(/estimateLessonMinutes\(lesson, this\._getObservedSeconds\(\)\)/.test(appSrc), 'La ruta muestra duraciones calibradas con datos reales');
 
   console.log('\n' + '='.repeat(72));
   console.log(`🎉 AUDITORÍA CULMINADA CON ÉXITO: ${passedChecks}/${totalChecks} VERIFICACIONES PASADAS`);

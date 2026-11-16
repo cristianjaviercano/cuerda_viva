@@ -37,12 +37,21 @@ import {
   loseHeart,
   gainHearts,
   pickReviewTheory,
+  modelStepSeconds,
   chunkTheory,
   estimateLessonMinutes,
   SELF_ASSESSMENT_RUBRIC,
   scoreSelfAssessment
 } from './pedagogy.js';
 import { annotateGlossary } from './glossary.js';
+import {
+  analyzeItems,
+  buildItemBank,
+  observedSecondsByType,
+  itemsToCSV,
+  flagLabel,
+  MIN_N_FLAGS
+} from './item-analysis.js';
 import { DRILL_TYPES, renderDrill } from './skill-drills.js';
 import {
   WARMUP_SIZE,
@@ -364,6 +373,8 @@ class CuerdaVivaApp {
   }
 
   _navigateFromActionTarget(tab, itemId) {
+    // Salir de una lección en curso hacia otra sección cuenta como abandono.
+    if (this.lessonSession?.sessionRecordId && !this.lessonSession.sessionClosed) this._recordSessionEnd('abandono');
     document.getElementById('modal-lesson')?.classList.add('hidden');
     pitchDetector.offPitch('lesson-runner');
     this._cleanupDrill();
@@ -509,7 +520,7 @@ class CuerdaVivaApp {
                           <div class="skill-node-caption">
                             <strong>${lesson.title}</strong>
                             <span>${lesson.summary}</span>
-                            <small class="node-minutes">⏱ ~${estimateLessonMinutes(lesson)} min · 🎯 ${(lesson.objectives || []).length} objetivos</small>
+                            <small class="node-minutes">⏱ ~${estimateLessonMinutes(lesson, this._getObservedSeconds())} min · 🎯 ${(lesson.objectives || []).length} objetivos</small>
                             <em class="node-xp-chip">${isDone ? '✓ Completada · Repasar' : `+${lesson.xp} XP · ${lesson.steps.filter(s => s.type !== 'theory').length} retos`}</em>
                           </div>
                         </div>
@@ -759,10 +770,13 @@ class CuerdaVivaApp {
       showIntro: mode === 'lesson' && Array.isArray(lesson.objectives) && lesson.objectives.length > 0
     };
 
+    this._recordSessionStart();
+
     const modal = document.getElementById('modal-lesson');
     modal.classList.remove('hidden');
 
     document.getElementById('btn-quit-lesson').onclick = () => {
+      if (!this.lessonSession?.sessionClosed) this._recordSessionEnd('abandono');
       pitchDetector.offPitch('lesson-runner');
       this._cleanupDrill();
       modal.classList.add('hidden');
@@ -771,6 +785,25 @@ class CuerdaVivaApp {
     };
 
     this._renderCurrentLessonStep();
+  }
+
+  // Registro de sesiones para la analítica (finalización y abandono por reto).
+  _recordSessionStart() {
+    const sess = this.lessonSession;
+    sess.sessionRecordId = `ses_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    const rec = { id: sess.sessionRecordId, mode: sess.mode, lessonId: sess.lesson.id, startedAt: new Date().toISOString(), outcome: null };
+    this.state.sessions = [...(this.state.sessions || []), rec].slice(-300);
+    this._saveState();
+  }
+
+  _recordSessionEnd(outcome) {
+    const sess = this.lessonSession;
+    if (!sess?.sessionRecordId || sess.sessionClosed) return;
+    sess.sessionClosed = true;
+    this.state.sessions = (this.state.sessions || []).map(r => (r.id === sess.sessionRecordId
+      ? { ...r, outcome, completed: outcome === 'victoria' || outcome === 'repaso', endedAt: new Date().toISOString(), lastQuestionId: outcome === 'abandono' ? (sess.currentQid || null) : null }
+      : r));
+    this._saveState();
   }
 
   // Presentación de la lección: objetivos observables y duración estimada.
@@ -788,7 +821,7 @@ class CuerdaVivaApp {
       <div class="lesson-card-step lesson-intro-card">
         <span class="badge-vivid" style="background:${sess.unit.color};color:#fff">${escapeHTML(sess.unit.title || '')}</span>
         <h2 class="lesson-step-title">${lesson.icon || '🎸'} ${escapeHTML(lesson.title)}</h2>
-        <p class="lesson-intro-meta">⏱ ~${estimateLessonMinutes(lesson)} min · ${lesson.steps.filter(st => st.type !== 'theory').length} retos${sess.warmupCount ? ` · incluye ${sess.warmupCount} de calentamiento` : ''}</p>
+        <p class="lesson-intro-meta">⏱ ~${estimateLessonMinutes(lesson, this._getObservedSeconds())} min · ${lesson.steps.filter(st => st.type !== 'theory').length} retos${sess.warmupCount ? ` · incluye ${sess.warmupCount} de calentamiento` : ''}</p>
         <div class="lesson-objectives">
           <strong>🎯 Al terminar podrás:</strong>
           <ul>${lesson.objectives.map(o => `<li>${escapeHTML(o)}</li>`).join('')}</ul>
@@ -959,6 +992,7 @@ class CuerdaVivaApp {
   _renderSessionEnd() {
     const sess = this.lessonSession;
     if (!sess) return;
+    this._recordSessionEnd(sess.mode === 'review' ? 'repaso' : sess.mode === 'standalone_remediation' ? 'remediacion' : sess.outOfHearts ? 'sin_vidas' : 'victoria');
     if (sess.mode === 'standalone_remediation') this._renderStandaloneRemediationComplete();
     else if (sess.mode === 'review') this._renderReviewCompleteScreen();
     else if (sess.outOfHearts) this._renderLessonOutOfHeartsScreen();
@@ -1550,8 +1584,9 @@ class CuerdaVivaApp {
     this._renderCurrentLessonStep();
   }
 
-  _logChallengeOutcome({ step, questionId, outcome, isRemediation, userAnswer, expectedAnswer }) {
+  _logChallengeOutcome({ step, questionId, outcome, isRemediation, userAnswer, expectedAnswer, optionIndex = null }) {
     const sess = this.lessonSession;
+    const durationMs = sess?.stepStartedAt ? Date.now() - sess.stepStartedAt : null;
     // Repaso espaciado: solo la recuperación en la ronda inicial (no la remediación inmediata) mueve la tarjeta.
     if (!isRemediation && step.theoryId && sess && (sess.mode === 'lesson' || sess.mode === 'review')) {
       this.state.srs = recordReview(this.state.srs, step.theoryId, outcome === 'acierto');
@@ -1571,12 +1606,17 @@ class CuerdaVivaApp {
       outcome,
       phase: isRemediation ? 'remediation' : 'initial',
       userAnswer,
-      expectedAnswer
+      expectedAnswer,
+      durationMs,
+      optionIndex,
+      sessionMode: sess?.mode || 'lesson'
     });
   }
 
   _renderInteractiveQuestionStep(step, questionId, isRemediation) {
     const sess = this.lessonSession;
+    sess.stepStartedAt = Date.now();
+    sess.currentQid = questionId;
     sess.selectedOption = null;
     sess.stepResolved = false;
 
@@ -1659,7 +1699,8 @@ class CuerdaVivaApp {
             outcome: isCorrect ? 'acierto' : 'no_acierto',
             isRemediation,
             userAnswer: step.options[sess.selectedOption] || '',
-            expectedAnswer: step.options[step.correctIndex] || ''
+            expectedAnswer: step.options[step.correctIndex] || '',
+            optionIndex: sess.selectedOption
           });
 
           if (isCorrect) {
@@ -2331,6 +2372,9 @@ class CuerdaVivaApp {
           </div>
         `}
       </div>
+
+      <!-- E. CALIDAD DE LOS RETOS (ANÁLISIS DE ÍTEMS) -->
+      <div class="user-section-card" id="item-analysis-card"></div>
     `;
 
     // Eventos del modal de perfil
@@ -2396,6 +2440,8 @@ class CuerdaVivaApp {
       this._triggerDownload(json, `cuerdaviva_respaldo_${(active?.name || 'estudiante').replace(/\s+/g, '_')}.json`, 'application/json;charset=utf-8;');
     });
 
+    this._renderItemAnalysisCard(body.querySelector('#item-analysis-card'));
+
     body.querySelector('#btn-clear-logs')?.addEventListener('click', async () => {
       if (!this.confirmClearPending) {
         this.confirmClearPending = true;
@@ -2409,6 +2455,102 @@ class CuerdaVivaApp {
       this.renderUserModal();
       this._showXPToast('🧹 Bitácora limpiada', 'Listo para nuevos registros');
     });
+  }
+
+  // ==================== ANÁLISIS DE ÍTEMS (PARTE F) ====================
+  // Fuente 'local': todos los perfiles de este dispositivo (p. ej. un aula).
+  // Fuente 'server': todos los perfiles del servidor, anonimizados.
+  async _renderItemAnalysisCard(card, source = 'local') {
+    if (!card) return;
+    let analysis;
+    let observed;
+    if (source === 'server') {
+      try {
+        const res = await fetch('/api/analytics/items', { cache: 'no-store' });
+        const data = await res.json();
+        analysis = data;
+        observed = data.observedSecondsByType || {};
+      } catch (_) {
+        source = 'local';
+      }
+    }
+    if (source === 'local') {
+      const users = userStore.registry?.users || [];
+      analysis = analyzeItems(users, buildItemBank(SKILL_UNITS));
+      observed = observedSecondsByType(users);
+    }
+    const withData = analysis.items.filter(i => i.n > 0);
+    const shown = analysis.items.filter(i => i.n > 0 || i.abandons > 0).slice(0, 15);
+    const fmt = (v, d = 2) => (v === null || v === undefined ? '—' : Number(v).toFixed(d).replace('.', ','));
+    const pct = v => (v === null || v === undefined ? '—' : `${Math.round(v * 100)}%`);
+    const sampleTypes = ['quiz', 'fretboard_find', 'ear_quality', 'chord_change', 'strum_timing'];
+    const lessonsWithData = analysis.lessons.filter(l => l.started > 0).sort((a, b) => a.completionRate - b.completionRate).slice(0, 8);
+
+    card.innerHTML = `
+      <div class="us-head-row">
+        <div>
+          <h4>📊 Calidad de los retos (análisis de ítems)</h4>
+          <p class="muted-hint">Primera respuesta de cada estudiante en ronda inicial · fuente: ${source === 'server' ? 'servidor (perfiles anonimizados)' : 'perfiles de este dispositivo'} ·
+            ${analysis.respondents} estudiante(s), ${withData.length} reto(s) con datos, <strong>${analysis.flagged}</strong> con alertas.
+            Las alertas requieren ≥ ${MIN_N_FLAGS} respuestas por reto.</p>
+        </div>
+      </div>
+      <div class="ia-actions">
+        <button class="duo-btn btn-blue btn-sm" id="btn-ia-csv">⬇️ Exportar análisis (CSV)</button>
+        ${userStore.serverAvailable ? `<button class="duo-btn btn-outline btn-sm" id="btn-ia-source">${source === 'server' ? '💻 Ver este dispositivo' : '🌐 Ver datos del servidor'}</button>` : ''}
+      </div>
+      ${shown.length ? `
+        <div class="ia-table-wrap">
+          <table class="ia-table">
+            <thead><tr><th>Reto</th><th>n</th><th title="Dificultad: proporción de aciertos">p</th><th title="Discriminación punto-biserial corregida">r<sub>pb</sub></th><th title="Índice superior − inferior (27%)">D</th><th>Tiempo</th><th>Abandono</th><th>Alertas</th></tr></thead>
+            <tbody>
+              ${shown.map(i => `
+                <tr class="${i.flags.length ? 'ia-flagged' : ''}">
+                  <td><code>${escapeHTML(i.questionId)}</code><br><small>${escapeHTML(String(i.text).slice(0, 70))}</small></td>
+                  <td>${i.n}</td>
+                  <td>${fmt(i.p)}</td>
+                  <td>${fmt(i.rpb)}</td>
+                  <td>${fmt(i.D)}</td>
+                  <td>${i.medianSec === null ? '—' : `${Math.round(i.medianSec)} s`}</td>
+                  <td>${i.abandons ? `${i.abandons} (${pct(i.abandonRate)})` : '—'}</td>
+                  <td>${i.flags.length ? i.flags.map(f => `<span class="ia-flag" title="${escapeHTML(flagLabel(f))}">${escapeHTML(flagLabel(f).split(' (')[0].split(':')[0])}</span>`).join(' ') : '<span class="ia-ok">OK</span>'}</td>
+                </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      ` : '<p class="muted-hint">Aún no hay respuestas registradas. Completa lecciones (o pide a tus estudiantes que lo hagan) para ver la calidad de cada reto.</p>'}
+      <div class="ia-grid">
+        <div>
+          <strong>⏱ Calibración de tiempos (mediana real vs. modelo)</strong>
+          <ul class="ia-list">
+            ${sampleTypes.map(t => `<li>${escapeHTML(t)}: ${observed[t] ? `<strong>${observed[t]} s</strong>` : 'sin datos suficientes'} · modelo ${Math.round(modelStepSeconds({ type: t }))} s</li>`).join('')}
+          </ul>
+          <small class="muted-hint">Con ≥ 15 respuestas cronometradas por tipo, la duración estimada de cada lección usa la mediana real.</small>
+        </div>
+        <div>
+          <strong>🚪 Lecciones con menor finalización</strong>
+          <ul class="ia-list">
+            ${lessonsWithData.length ? lessonsWithData.map(l => `<li><code>${escapeHTML(l.lessonId)}</code>: ${l.completed}/${l.started} completadas (${pct(l.completionRate)})${l.abandoned ? ` · ${l.abandoned} abandono(s)` : ''}</li>`).join('') : '<li>Sin sesiones registradas.</li>'}
+          </ul>
+        </div>
+      </div>
+    `;
+
+    card.querySelector('#btn-ia-csv')?.addEventListener('click', () => {
+      this._triggerDownload(itemsToCSV(analysis), `cuerdaviva_analisis_items_${todayISO()}.csv`, 'text/csv;charset=utf-8;');
+    });
+    card.querySelector('#btn-ia-source')?.addEventListener('click', () => {
+      this._renderItemAnalysisCard(card, source === 'server' ? 'local' : 'server');
+    });
+  }
+
+  _getObservedSeconds() {
+    // Se recalcula como máximo una vez por minuto: la ruta se renderiza a menudo.
+    const now = Date.now();
+    if (!this._observedCache || now - this._observedCache.at > 60000) {
+      this._observedCache = { at: now, value: observedSecondsByType(userStore.registry?.users || []) };
+    }
+    return this._observedCache.value;
   }
 
   _triggerDownload(content, filename, mimeType) {

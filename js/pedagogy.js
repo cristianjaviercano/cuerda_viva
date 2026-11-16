@@ -130,17 +130,27 @@ export function chunkTheory(body, maxWords = MAX_CHUNK_WORDS) {
   return chunks.length ? chunks : [''];
 }
 
-/** Minutos estimados de una lección según sus pasos (lectura y práctica). */
-export function estimateLessonMinutes(lesson) {
+/** Segundos modelados de un paso (supuestos iniciales, antes de tener datos). */
+export function modelStepSeconds(st) {
+  if (st.type === 'theory') return 40 * chunkTheory(st.body).length;
+  if (st.type === 'quiz' || st.type === 'fretboard_find') return 30;
+  if (st.type === 'play_guitar_chord' || st.type === 'play_guitar_note') return 60;
+  if (st.type === 'ear_quality') return 15 * (st.rounds || 4) + 15;
+  if (st.type === 'chord_change') return (st.durationSec || 30) + 45;
+  if (st.type === 'strum_timing') return ((st.bars || 4) * (st.beatsPerBar || 4) + (st.beatsPerBar || 4)) * (60 / (st.bpm || 70)) + 40;
+  return 30;
+}
+
+/**
+ * Minutos estimados de una lección. Si se pasan medianas observadas por tipo
+ * de reto ({ quiz: 22, ... } en segundos, ver item-analysis.observedSecondsByType),
+ * reemplazan al modelo: la duración se calibra con datos reales.
+ */
+export function estimateLessonMinutes(lesson, observedSeconds = null) {
   let sec = 0;
   for (const st of lesson.steps || []) {
-    if (st.type === 'theory') sec += 40 * chunkTheory(st.body).length;
-    else if (st.type === 'quiz') sec += 30;
-    else if (st.type === 'fretboard_find') sec += 30;
-    else if (st.type === 'play_guitar_chord' || st.type === 'play_guitar_note') sec += 60;
-    else if (st.type === 'ear_quality') sec += 15 * (st.rounds || 4) + 15;
-    else if (st.type === 'chord_change') sec += (st.durationSec || 30) + 45;
-    else if (st.type === 'strum_timing') sec += ((st.bars || 4) * (st.beatsPerBar || 4) + (st.beatsPerBar || 4)) * (60 / (st.bpm || 70)) + 40;
+    const obs = observedSeconds && st.type !== 'theory' ? observedSeconds[st.type] : undefined;
+    sec += Number.isFinite(obs) ? obs : modelStepSeconds(st);
   }
   return Math.max(1, Math.round(sec / 60));
 }
